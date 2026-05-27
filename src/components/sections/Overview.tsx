@@ -58,9 +58,7 @@ export default function Overview({ slide = 0 }: { slide?: number }) {
               gap: 1 
             }}
           >
-            <Typography variant="subtitle1" sx={{ color: "primary.main", display: "flex", alignItems: "center", gap: 1, fontWeight: "bold" }}>
-              🚀 {locale === "tr" ? "Sözümüz Söz!" : "Our Promise!"}
-            </Typography>
+            
             <Typography variant="body1" sx={{ color: "text.primary" }}>
               {t("overview.promise")}
             </Typography>
