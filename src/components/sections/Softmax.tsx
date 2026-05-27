@@ -136,10 +136,10 @@ export default function Softmax({ slide = 0 }: { slide?: number }) {
                 overflowX: "auto"
               }}
             >
-              <div>{t("sm.raw")} [2.0, 1.0, 3.5]</div>
-              <div>{t("sm.evalues")} [e^2.0, e^1.0, e^3.5] ≈ [7.39, 2.72, 33.12]</div>
-              <div>{t("sm.sumval")} 7.39 + 2.72 + 33.12 = 43.23</div>
-              <div style={{ color: "#60a5fa" }}>{t("sm.probs")} [7.39/43.23, 2.72/43.23, 33.12/43.23] ≈ [17.1%, 6.3%, 76.6%]</div>
+              <Box>{t("sm.raw")} [2.0, 1.0, 3.5]</Box>
+              <Box>{t("sm.evalues")} [e^2.0, e^1.0, e^3.5] ≈ [7.39, 2.72, 33.12]</Box>
+              <Box>{t("sm.sumval")} 7.39 + 2.72 + 33.12 = 43.23</Box>
+              <Box sx={{ color: "#60a5fa" }}>{t("sm.probs")} [7.39/43.23, 2.72/43.23, 33.12/43.23] ≈ [17.1%, 6.3%, 76.6%]</Box>
             </Box>
           </Paper>
         </>
@@ -177,60 +177,60 @@ export default function Softmax({ slide = 0 }: { slide?: number }) {
             <SeniorDeveloperMode
               contentEn={
                 <>
-                  <div className="mb-4 p-3 border border-blue-500/30 rounded-lg bg-blue-950/20">
-                    <p className="font-semibold text-blue-400 mb-2">📐 The Formula:</p>
+                  <Box sx={{ mb: 2, p: 2, border: 1, borderColor: "rgba(0,113,227,0.3)", borderRadius: 2, bgcolor: "rgba(0,113,227,0.05)" }}>
+                    <Typography sx={{ fontWeight: "bold", color: "primary.main", mb: 1 }}>📐 The Formula:</Typography>
                     <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light" }}>
                       softmax(xᵢ) = e^xᵢ / Σ(e^xⱼ)
                     </Box>
-                    <p className="text-slate-300 mt-2 text-sm">
+                    <Typography variant="body2" sx={{ color: "text.secondary", mt: 1, fontSize: "0.875rem" }}>
                       For each value: take e^value, then divide by the sum of all e^values. This turns any set of numbers into percentages that add up to 100%.
-                    </p>
-                  </div>
-                  <p>
+                    </Typography>
+                  </Box>
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     In hardware acceleration, directly calculating the softmax function can cause numeric overflow or underflow because <code>e^x</code> grows exponentially. To prevent this, standard libraries implement <strong>Safe Softmax</strong> by subtracting the maximum value from all inputs:
-                  </p>
+                  </Typography>
                   <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto" }}>
                     {"Softmax(x_i) = \\frac{e^{x_i - \\max(x)}}{ \\sum_j e^{x_j - \\max(x)} }"}
                   </Box>
-                  <p className="mt-2 text-slate-300 font-sans">
+                  <Typography variant="body2" sx={{ mt: 2, color: "text.secondary", lineHeight: 1.6 }}>
                     Mathematically, the output is unchanged since subtracting a constant from exponents scales both numerator and denominator by the exact same factor:
-                  </p>
+                  </Typography>
                   <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto", fontSize: "0.8rem" }}>
                     {"\\frac{e^{x_i - c}}{\\sum e^{x_j - c}} = \\frac{e^{x_i} e^{-c}}{\\sum e^{x_j} e^{-c}} = \\frac{e^{x_i}}{\\sum e^{x_j}}"}
                   </Box>
-                  <p className="mt-2 font-semibold">Logit scaling with Temperature:</p>
-                  <p className="text-slate-300 font-sans">
+                  <Typography sx={{ mt: 2, fontWeight: "bold" }}>Logit scaling with Temperature:</Typography>
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     Temperature scaling divide logits by <code>T</code> before applying softmax. As <code>T \to 0</code>, the probability distribution converges to a one-hot vector (deterministic greedy argmax selection). As <code>T \to \infty</code>, the distribution approaches a uniform probability, where all tokens are equally likely.
-                  </p>
+                  </Typography>
                 </>
               }
               contentTr={
                 <>
-                  <div className="mb-4 p-3 border border-blue-500/30 rounded-lg bg-blue-950/20">
-                    <p className="font-semibold text-blue-400 mb-2">📐 Matematiksel Formülü:</p>
+                  <Box sx={{ mb: 2, p: 2, border: 1, borderColor: "rgba(0,113,227,0.3)", borderRadius: 2, bgcolor: "rgba(0,113,227,0.05)" }}>
+                    <Typography sx={{ fontWeight: "bold", color: "primary.main", mb: 1 }}>📐 Matematiksel Formülü:</Typography>
                     <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light" }}>
                       softmax(xᵢ) = e^xᵢ / Σ(e^xⱼ)
                     </Box>
-                    <p className="text-slate-300 mt-2 text-sm">
+                    <Typography variant="body2" sx={{ color: "text.secondary", mt: 1, fontSize: "0.875rem" }}>
                       Her sayının e^sayı değerini hesapla, sonra her birini tüm sayıların toplamına böl. Bu işlem herhangi bir sayı kümesini %100'e tamamlanan olasılıklara dönüştürür.
-                    </p>
-                  </div>
-                  <p>
+                    </Typography>
+                  </Box>
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     Donanım hızlandırıcılarında (GPU/TPU), <code>e^x</code> üstel olarak büyüdüğü için doğrudan softmax hesaplaması yapmak sayısal taşmaya (overflow) veya sıfırlanmaya (underflow) sebep olur. Bunu önlemek için kütüphaneler tüm girdilerden maksimum değeri çıkararak <strong>Güvenli Softmax (Safe Softmax)</strong> formülünü uygular:
-                  </p>
+                  </Typography>
                   <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto" }}>
                     {"Softmax(x_i) = \\frac{e^{x_i - \\max(x)}}{ \\sum_j e^{x_j - \\max(x)} }"}
                   </Box>
-                  <p className="mt-2 text-slate-300 font-sans">
+                  <Typography variant="body2" sx={{ mt: 2, color: "text.secondary", lineHeight: 1.6 }}>
                     Üstel ifadelerden sabit bir sayı çıkarılması hem payı hem de paydayı aynı oranda ölçeklediği için matematiksel olarak sonuç değişmez:
-                  </p>
+                  </Typography>
                   <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto", fontSize: "0.8rem" }}>
                     {"\\frac{e^{x_i - c}}{\\sum e^{x_j - c}} = \\frac{e^{x_i} e^{-c}}{\\sum e^{x_j} e^{-c}} = \\frac{e^{x_i}}{\\sum e^{x_j}}"}
                   </Box>
-                  <p className="mt-2 font-semibold font-sans">Sıcaklık (Temperature) ile Ölçekleme:</p>
-                  <p className="text-slate-300 font-sans">
+                  <Typography sx={{ mt: 2, fontWeight: "bold" }}>Sıcaklık (Temperature) ile Ölçekleme:</Typography>
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     Sıcaklık katsayısı, softmax işlemine girmeden önce ham skorları (logits) <code>T</code> değerine böler. <code>T \to 0</code> durumunda olasılık dağılımı tek bir kazanan kelimeye (argmax) çöker. <code>T \to \infty</code> durumunda ise dağılım tüm kelimelerin eşit şansa sahip olduğu homojen bir yapıya (uniform distribution) yaklaşır.
-                  </p>
+                  </Typography>
                 </>
               }
             />

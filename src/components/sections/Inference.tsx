@@ -441,9 +441,9 @@ export default function Inference({ slide = 0 }: { slide?: number }) {
                     value={temperature}
                     onChange={(_, val) => setTemperature(val as number)}
                   />
-                  <Box sx={{ display: "flex", justifyContent: "between", fontSize: "0.7rem", color: "text.secondary" }}>
-                    <span>0.1 ({locale === "tr" ? "Robotik" : "Robotic"})</span>
-                    <span>2.0 ({locale === "tr" ? "Çılagın" : "Creative"})</span>
+                  <Box sx={{ display: "flex", justifyContent: "space-between", fontSize: "0.7rem", color: "text.secondary" }}>
+                    <Typography variant="caption" component="span" sx={{ fontFamily: "monospace" }}>0.1 ({locale === "tr" ? "Robotik" : "Robotic"})</Typography>
+                    <Typography variant="caption" component="span" sx={{ fontFamily: "monospace" }}>2.0 ({locale === "tr" ? "Çılagın" : "Creative"})</Typography>
                   </Box>
                 </Box>
 
@@ -613,52 +613,52 @@ export default function Inference({ slide = 0 }: { slide?: number }) {
             <SeniorDeveloperMode
               contentEn={
                 <>
-                  <p>
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     Serving Large Language Models at scale in production requires significant engineering optimizations. Because modern parameters scale from 7B to 400B+ parameters, naive float32/float16 inference leads to huge memory footprints and slow response times.
-                  </p>
-                  <p className="mt-2 font-semibold">1. Quantization (Model Compression):</p>
-                  <p className="text-slate-300 font-sans">
+                  </Typography>
+                  <Typography sx={{ mt: 2, fontWeight: "bold" }}>1. Quantization (Model Compression):</Typography>
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     Quantization maps continuous floating-point weights (FP16 or BF16) to discrete lower-precision numerical representations (INT8, FP8, INT4, or NF4):
-                  </p>
+                  </Typography>
                   <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto" }}>
                     {"W_q = round( W / S ) + Z"}
                   </Box>
-                  <p className="text-slate-300 mt-2 font-sans">
+                  <Typography variant="body2" sx={{ mt: 2, color: "text.secondary", lineHeight: 1.6 }}>
                     where <code>S</code> is a scale factor and <code>Z</code> is a zero-point offset. Advanced techniques like <strong>AWQ (Activation-aware Weight Quantization)</strong> and <strong>GPTQ</strong> protect salient weights (e.g. weights corresponding to high-activation tokens) from severe precision reduction, enabling 4-bit quantized models to perform with almost zero perplexity loss compared to their FP16 baselines, reducing GPU VRAM needs by 4x.
-                  </p>
-                  <p className="mt-2 font-semibold">2. Speculative Decoding:</p>
-                  <p className="text-slate-300 font-sans">
+                  </Typography>
+                  <Typography sx={{ mt: 2, fontWeight: "bold" }}>2. Speculative Decoding:</Typography>
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     Text generation is bounded by GPU memory bandwidth (loading weights into SRAM takes longer than computing outputs). **Speculative Decoding** solves this by running a small &quot;draft model&quot; (e.g., LLaMA-1.1B) to quickly generate <code>K</code> candidate tokens autoregressively. Then, the larger &quot;target model&quot; (e.g., LLaMA-70B) evaluates all <code>K</code> tokens in parallel in a single forward pass. Tokens that match the target model&apos;s probability distribution are accepted, achieving up to a 2x-3x speedup.
-                  </p>
-                  <p className="mt-2 font-semibold">3. PagedAttention (KV Cache Management):</p>
-                  <p className="text-slate-300 font-sans">
+                  </Typography>
+                  <Typography sx={{ mt: 2, fontWeight: "bold" }}>3. PagedAttention (KV Cache Management):</Typography>
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     In classical setups, GPU memory for the KV cache must be pre-allocated contiguously based on the maximum sequence length. This leads to up to 60-80% memory waste (&quot;internal fragmentation&quot;) because actual generations are shorter. **PagedAttention** (introduced in vLLM) partitions the KV cache into small, non-contiguous physical pages (similar to virtual memory in operating systems). Pages are allocated dynamically, allowing batch sizes to scale up to 4x, drastically increasing throughput.
-                  </p>
+                  </Typography>
                 </>
               }
               contentTr={
                 <>
-                  <p>
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     Büyük Dil Modellerini endüstriyel boyutta sunmak (serving), büyük mühendislik optimizasyonları gerektirir. 7 milyardan 400 milyarın üzerine çıkan devasa parametre boyutları nedeniyle, ham float16 çıkarımı yüksek donanım maliyeti ve yavaş cevap süresine yol açar.
-                  </p>
-                  <p className="mt-2 font-semibold">1. Nicemleme (Quantization - Model Sıkıştırma):</p>
-                  <p className="text-slate-300 font-sans">
+                  </Typography>
+                  <Typography sx={{ mt: 2, fontWeight: "bold" }}>1. Nicemleme (Quantization - Model Sıkıştırma):</Typography>
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     Nicemleme işlemi, sürekli ondalıklı sayı ağırlıklarını (FP16 veya BF16) daha düşük hassasiyete sahip tamsayı veya küçük ondalık formatlara (INT8, FP8, INT4 veya NF4) yuvarlayarak eşleştirir:
-                  </p>
+                  </Typography>
                   <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto" }}>
                     {"W_q = round( W / S ) + Z"}
                   </Box>
-                  <p className="text-slate-300 mt-2 font-sans">
+                  <Typography variant="body2" sx={{ mt: 2, color: "text.secondary", lineHeight: 1.6 }}>
                     Burada <code>S</code> ölçek çarpanı, <code>Z</code> ise sıfır noktası kaymasıdır. <strong>AWQ (Activation-aware Weight Quantization)</strong> ve <strong>GPTQ</strong> gibi gelişmiş yöntemler, model kalitesi için kritik olan 'hassas ağırlıkları' (etkinleştirme değerleri yüksek olan kanalları) koruyarak 4-bit sıkıştırmada bile FP16 kalitesine yakın sonuçlar üretilmesini sağlar. Bu, VRAM ihtiyacını 4 kat azaltır.
-                  </p>
-                  <p className="mt-2 font-semibold">2. Spekülatif Kod Çözme (Speculative Decoding):</p>
-                  <p className="text-slate-300 font-sans">
+                  </Typography>
+                  <Typography sx={{ mt: 2, fontWeight: "bold" }}>2. Spekülatif Kod Çözme (Speculative Decoding):</Typography>
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     Çıkarım sırasında kelime üretimi GPU bellek bant genişliği ile sınırlıdır (ağırlıkları bellekten çekmek, onları işlemekten çok daha uzun sürer). **Spekülatif Kod Çözme**, bu darboğazı çözmek için daha küçük ve hızlı bir &quot;taslak model&quot; (örn. LLaMA-1.1B) kullanarak ardışık <code>K</code> adet kelime üretir. Büyük asıl model (örn. LLaMA-70B), bu <code>K</code> kelimeyi tek bir ileri geçişte (forward pass) paralel olarak doğrular. Doğrulanan kelimeler kabul edilir, böylece işlem hızı 2 ila 3 kat artırılmış olur.
-                  </p>
-                  <p className="mt-2 font-semibold">3. PagedAttention (KV Cache Yönetimi):</p>
-                  <p className="text-slate-300 font-sans">
+                  </Typography>
+                  <Typography sx={{ mt: 2, fontWeight: "bold" }}>3. PagedAttention (KV Cache Yönetimi):</Typography>
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     Geleneksel çıkarım motorlarında, KV cache bellek alanı her kullanıcı için maksimum bağlam uzunluğuna göre bitişik (contiguous) olarak ayrılırdı. Bu durum, gerçek üretilen metinler kısa kaldığında %60 ila %80 oranında bellek israfına (internal fragmentation) sebep oluyordu. **PagedAttention** (vLLM kütüphanesi ile popülerleşen), işletim sistemlerindeki sanal bellek gibi KV cache verisini küçük, bitişik olmayan bellek sayfalarına böler. Dinamik sayfa yönetimi sayesinde bellek israfı sıfıra yaklaşır ve sunucu kapasitesi (throughput) 4 katına kadar çıkabilir.
-                  </p>
+                  </Typography>
                 </>
               }
             />

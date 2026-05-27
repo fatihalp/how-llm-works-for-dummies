@@ -89,20 +89,6 @@ export default function LayerNorm({ slide = 0 }: { slide?: number }) {
             />
           </Box>
 
-          <Paper component={motion.div} variants={item} sx={{ p: 3 }}>
-            <Typography variant="subtitle1" sx={{ mb: 2, color: "text.secondary", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: "bold" }}>
-              {t("ln.formula.title")}
-            </Typography>
-            <Box sx={{ bgcolor: theme.palette.mode === "dark" ? "grey.950" : "grey.100", p: 3, borderRadius: 2, fontFamily: "monospace", textAlign: "center" }}>
-              <Typography variant="h6" sx={{ color: "primary.main", fontFamily: "monospace", fontWeight: "bold" }}>
-                {t("ln.formula")}
-              </Typography>
-              <Typography variant="caption" sx={{ color: "text.secondary", mt: 1, display: "block" }}>
-                {t("ln.epsilon")}
-              </Typography>
-            </Box>
-          </Paper>
-
           <Paper
             component={motion.div}
             variants={item}
@@ -240,70 +226,70 @@ export default function LayerNorm({ slide = 0 }: { slide?: number }) {
             <SeniorDeveloperMode
               contentEn={
                 <>
-                  <p>
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     In deep neural networks, Layer Normalization (LayerNorm) is applied across the channel/feature dimensions to stabilize the distribution of activations during training.
-                  </p>
-                  <p className="mt-2 font-semibold">Standard LayerNorm Formulation:</p>
-                  <p className="text-slate-300 font-sans">
+                  </Typography>
+                  <Typography sx={{ mt: 2, fontWeight: "bold" }}>Standard LayerNorm Formulation:</Typography>
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     Given a vector <code>x \in \mathbb&#123;R&#125;^d</code> representing the feature activations of a single token:
-                  </p>
+                  </Typography>
                   <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto" }}>
                     {"y = LN(x) = ( (x - μ) / √(σ² + ε) ) · γ + β"}
                   </Box>
-                  <p className="text-slate-300 mt-2 font-sans">
+                  <Typography variant="body2" sx={{ mt: 2, color: "text.secondary", lineHeight: 1.6 }}>
                     where <code>\mu</code> and <code>\sigma^2</code> are the mean and variance computed over the feature dimensions of the single token:
-                  </p>
+                  </Typography>
                   <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto", fontSize: "0.8rem" }}>
-                    <p>{"μ = (1/d) * Σ x_i"}</p>
-                    <p className="mt-1">{"σ² = (1/d) * Σ (x_i - μ)²"}</p>
+                    <Typography variant="body2" sx={{ fontFamily: "monospace", color: "primary.light" }}>{"μ = (1/d) * Σ x_i"}</Typography>
+                    <Typography variant="body2" sx={{ mt: 1, fontFamily: "monospace", color: "primary.light" }}>{"σ² = (1/d) * Σ (x_i - μ)²"}</Typography>
                   </Box>
-                  <p className="text-slate-300 mt-2 font-sans">
+                  <Typography variant="body2" sx={{ mt: 2, color: "text.secondary", lineHeight: 1.6 }}>
                     <code>\gamma</code> (gain) and <code>\beta</code> (bias) are learnable parameters initialized to 1 and 0 respectively, which allow the network to restore representation capacity if necessary.
-                  </p>
-                  <p className="mt-3 font-semibold">RMSNorm Optimization:</p>
-                  <p className="text-slate-300 font-sans">
+                  </Typography>
+                  <Typography sx={{ mt: 2, fontWeight: "bold" }}>RMSNorm Optimization:</Typography>
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     Modern models (LLaMA, Gemma) replace standard LayerNorm with <strong>RMSNorm</strong>. It drops the mean subtraction step entirely, only rescaling by the Root Mean Square of the activations:
-                  </p>
+                  </Typography>
                   <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto" }}>
                     {"RMSNorm(x_i) = ( x_i / √( (1/d) * Σ x_j² + ε ) ) * γ_i"}
                   </Box>
-                  <p className="text-slate-300 mt-2 font-sans">
+                  <Typography variant="body2" sx={{ mt: 2, color: "text.secondary", lineHeight: 1.6 }}>
                     This reduces computational complexity (no mean tracking or extra subtractions) and yields identical downstream task performance, speeding up GPU execution by 10-50% in the normalization kernels.
-                  </p>
+                  </Typography>
                 </>
               }
               contentTr={
                 <>
-                  <p>
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     Derin yapay sinir ağlarında Katman Normalizasyonu (LayerNorm), eğitim boyunca aktivasyonların dağılımını sabitlemek için özellik/kanal boyutları boyunca uygulanır.
-                  </p>
-                  <p className="mt-2 font-semibold">Standart LayerNorm Formülü:</p>
-                  <p className="text-slate-300 font-sans">
+                  </Typography>
+                  <Typography sx={{ mt: 2, fontWeight: "bold" }}>Standart LayerNorm Formülü:</Typography>
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     Tek bir token&apos;a ait özellikleri temsil eden bir <code>x \in \mathbb&#123;R&#125;^d</code> vektörü için:
-                  </p>
+                  </Typography>
                   <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto" }}>
                     {"y = LN(x) = ( (x - μ) / √(σ² + ε) ) · γ + β"}
                   </Box>
-                  <p className="text-slate-300 mt-2 font-sans">
+                  <Typography variant="body2" sx={{ mt: 2, color: "text.secondary", lineHeight: 1.6 }}>
                     Burada <code>\mu</code> ve <code>\sigma^2</code>, tek bir token&apos;ın kendi özellikleri üzerinden hesaplanan ortalaması ve varyansıdır:
-                  </p>
+                  </Typography>
                   <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto", fontSize: "0.8rem" }}>
-                    <p>{"μ = (1/d) * Σ x_i"}</p>
-                    <p className="mt-1">{"σ² = (1/d) * Σ (x_i - μ)²"}</p>
+                    <Typography variant="body2" sx={{ fontFamily: "monospace", color: "primary.light" }}>{"μ = (1/d) * Σ x_i"}</Typography>
+                    <Typography variant="body2" sx={{ mt: 1, fontFamily: "monospace", color: "primary.light" }}>{"σ² = (1/d) * Σ (x_i - μ)²"}</Typography>
                   </Box>
-                  <p className="text-slate-300 mt-2 font-sans">
+                  <Typography variant="body2" sx={{ mt: 2, color: "text.secondary", lineHeight: 1.6 }}>
                     <code>\gamma</code> (gain / ölçek) ve <code>\beta</code> (bias / kayma) sırasıyla 1 ve 0 ile başlayan öğrenilebilir parametrelerdir. Ağın gerekirse temsil gücünü geri kazanmasını sağlarlar.
-                  </p>
-                  <p className="mt-3 font-semibold">RMSNorm Optimizasyonu:</p>
-                  <p className="text-slate-300 font-sans">
+                  </Typography>
+                  <Typography sx={{ mt: 2, fontWeight: "bold" }}>RMSNorm Optimizasyonu:</Typography>
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     LLaMA ve Gemma gibi modern modeller standart LayerNorm yerine <strong>RMSNorm</strong> kullanır. RMSNorm, ortalama çıkarma adımını tamamen atlar ve girdiyi sadece karekök ortalama değeriyle (Root Mean Square) böler:
-                  </p>
+                  </Typography>
                   <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto" }}>
                     {"RMSNorm(x_i) = ( x_i / √( (1/d) * Σ x_j² + ε ) ) * γ_i"}
                   </Box>
-                  <p className="text-slate-300 mt-2 font-sans">
+                  <Typography variant="body2" sx={{ mt: 2, color: "text.secondary", lineHeight: 1.6 }}>
                     Bu basitleştirme, hesaplama maliyetini düşürür (ortalama hesaplamaya ve çıkarma işlemlerine gerek kalmaz) ve benzer model performansı sağlarken GPU normalizasyon çekirdeklerinin %10 ila %50 daha hızlı çalışmasını sağlar.
-                  </p>
+                  </Typography>
                 </>
               }
             />

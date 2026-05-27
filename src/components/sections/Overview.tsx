@@ -43,71 +43,7 @@ export default function Overview({ slide = 0 }: { slide?: number }) {
             />
           </Box>
 
-          <Paper 
-            component={motion.div} 
-            variants={item}
-            elevation={0}
-            sx={{ 
-              p: 3, 
-              bgcolor: theme.palette.mode === "dark" ? "rgba(0, 113, 227, 0.1)" : "rgba(0, 113, 227, 0.05)", 
-              borderColor: theme.palette.mode === "dark" ? "rgba(0, 113, 227, 0.3)" : "rgba(0, 113, 227, 0.2)",
-              borderWidth: 1,
-              borderStyle: "solid",
-              display: "flex", 
-              flexDirection: "column", 
-              gap: 1 
-            }}
-          >
-            
-            <Typography variant="body1" sx={{ color: "text.primary" }}>
-              {t("overview.promise")}
-            </Typography>
-          </Paper>
 
-          {/* Tarihçe & Ortamlarda satmalık bilgi */}
-          <Box 
-            component={motion.div} 
-            variants={item}
-            sx={{ display: "flex", flexWrap: "wrap", gap: 3, mt: 1 }}
-          >
-            <Paper 
-              elevation={0}
-              sx={{ 
-                flex: "1 1 300px",
-                p: 2.5, 
-                bgcolor: theme.palette.mode === "dark" ? "rgba(255, 255, 255, 0.01)" : "rgba(0, 0, 0, 0.01)",
-                borderColor: theme.palette.mode === "dark" ? "grey.800" : "grey.200",
-                borderWidth: 1,
-                borderStyle: "solid",
-              }}
-            >
-              <Typography variant="subtitle2" sx={{ color: "primary.main", fontWeight: "bold", mb: 1, display: "flex", alignItems: "center", gap: 1 }}>
-                📜 {locale === "tr" ? "Tarihçe" : "History"}
-              </Typography>
-              <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
-                {t("overview.history")}
-              </Typography>
-            </Paper>
-
-            <Paper 
-              elevation={0}
-              sx={{ 
-                flex: "1 1 300px",
-                p: 2.5, 
-                bgcolor: theme.palette.mode === "dark" ? "rgba(255, 255, 255, 0.01)" : "rgba(0, 0, 0, 0.01)",
-                borderColor: theme.palette.mode === "dark" ? "grey.800" : "grey.200",
-                borderWidth: 1,
-                borderStyle: "solid",
-              }}
-            >
-              <Typography variant="subtitle2" sx={{ color: "warning.main", fontWeight: "bold", mb: 1, display: "flex", alignItems: "center", gap: 1 }}>
-                💡 {locale === "tr" ? "Ortamlarda Satmalık Bilgi" : "Fun Fact"}
-              </Typography>
-              <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
-                {t("overview.fact")}
-              </Typography>
-            </Paper>
-          </Box>
         </>
       )}
 
@@ -198,56 +134,52 @@ export default function Overview({ slide = 0 }: { slide?: number }) {
             <SeniorDeveloperMode
               contentEn={
                 <>
-                  <p>
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     At a mathematical level, a Decoder-only Large Language Model (LLM) computes the conditional probability distribution of the next token given the sequence of previous tokens:
-                  </p>
+                  </Typography>
                   <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto" }}>
                     P(x_t | x_1, x_2, ..., x_&#123;t-1&#125;; &theta;) = Softmax(Logits_t)
                   </Box>
-                  <p className="mt-2">
-                    where:
-                  </p>
-                  <ul className="list-disc list-inside space-y-1 pl-2">
-                    <li><strong>x_i</strong> represents the token at index <em>i</em>.</li>
-                    <li><strong>&theta;</strong> represents the model&apos;s learnable parameters (weights and biases of self-attention and MLP layers).</li>
-                    <li><strong>Logits_t</strong> is the output of the final linear projection layer mapping back to the vocabulary dimension.</li>
-                  </ul>
-                  <p className="mt-3">
+                  <Typography variant="body2" sx={{ mt: 1, color: "text.secondary" }}>where:</Typography>
+                  <Box component="ul" sx={{ listStyle: "disc", listStylePosition: "inside", pl: 2, display: "flex", flexDirection: "column", gap: 0.5, mt: 1 }}>
+                    <Typography component="li" variant="body2" sx={{ color: "text.secondary" }}><strong>x_i</strong> represents the token at index <em>i</em>.</Typography>
+                    <Typography component="li" variant="body2" sx={{ color: "text.secondary" }}><strong>&theta;</strong> represents the model&apos;s learnable parameters (weights and biases of self-attention and MLP layers).</Typography>
+                    <Typography component="li" variant="body2" sx={{ color: "text.secondary" }}><strong>Logits_t</strong> is the output of the final linear projection layer mapping back to the vocabulary dimension.</Typography>
+                  </Box>
+                  <Typography variant="body2" sx={{ mt: 2, color: "text.secondary", lineHeight: 1.6 }}>
                     During training, we minimize the cross-entropy loss over a corpus of billions of tokens to optimize &theta;:
-                  </p>
+                  </Typography>
                   <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto" }}>
                     L = - &Sigma;_t log P(x_t | x_&lt;t; &theta;)
                   </Box>
-                  <p className="mt-2">
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     Modern architectures (like GPT-4, LLaMA, Claude) stack 32 to 128 layers of Transformer blocks containing multi-head causal attention and SwiGLU feed-forward networks, scaling up to hundreds of billions of parameters.
-                  </p>
+                  </Typography>
                 </>
               }
               contentTr={
                 <>
-                  <p>
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     Matematiksel düzeyde, sadece Dekoder (Decoder-only) içeren bir Büyük Dil Modeli (LLM), önceki token&apos;lar dizisi verildiğinde bir sonraki token&apos;ın koşullu olasılık dağılımını hesaplar:
-                  </p>
+                  </Typography>
                   <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto" }}>
                     P(x_t | x_1, x_2, ..., x_&#123;t-1&#125;; &theta;) = Softmax(Logits_t)
                   </Box>
-                  <p className="mt-2">
-                    Burada:
-                  </p>
-                  <ul className="list-disc list-inside space-y-1 pl-2">
-                    <li><strong>x_i</strong>, <em>i</em>. indeksteki token&apos;ı temsil eder.</li>
-                    <li><strong>&theta;</strong>, modelin öğrenilebilir parametrelerini (öz-dikkat ve MLP katmanlarının ağırlıkları ve sapmaları) temsil eder.</li>
-                    <li><strong>Logits_t</strong>, son doğrusal katmanın kelime haznesi (vocabulary) boyutuna yansıttığı ham skorlardır.</li>
-                  </ul>
-                  <p className="mt-3">
+                  <Typography variant="body2" sx={{ mt: 1, color: "text.secondary" }}>Burada:</Typography>
+                  <Box component="ul" sx={{ listStyle: "disc", listStylePosition: "inside", pl: 2, display: "flex", flexDirection: "column", gap: 0.5, mt: 1 }}>
+                    <Typography component="li" variant="body2" sx={{ color: "text.secondary" }}><strong>x_i</strong>, <em>i</em>. indeksteki token&apos;ı temsil eder.</Typography>
+                    <Typography component="li" variant="body2" sx={{ color: "text.secondary" }}><strong>&theta;</strong>, modelin öğrenilebilir parametrelerini (öz-dikkat ve MLP katmanlarının ağırlıkları ve sapmaları) temsil eder.</Typography>
+                    <Typography component="li" variant="body2" sx={{ color: "text.secondary" }}><strong>Logits_t</strong>, son doğrusal katmanın kelime haznesi (vocabulary) boyutuna yansıttığı ham skorlardır.</Typography>
+                  </Box>
+                  <Typography variant="body2" sx={{ mt: 2, color: "text.secondary", lineHeight: 1.6 }}>
                     Eğitim sırasında, milyarlarca token&apos;lık bir veri kümesi üzerinde çapraz entropi (cross-entropy) kaybını minimize ederek &theta; parametrelerini optimize ederiz:
-                  </p>
+                  </Typography>
                   <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto" }}>
                     L = - &Sigma;_t log P(x_t | x_&lt;t; &theta;)
                   </Box>
-                  <p className="mt-2">
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     Modern mimariler (GPT-4, LLaMA, Claude), nedensel (causal) çok başlı öz-dikkat ve SwiGLU beslemeli ağları içeren 32 ila 128 adet Transformer bloğunu üst üste yığarak yüz milyarlarca parametreye ulaşır.
-                  </p>
+                  </Typography>
                 </>
               }
             />

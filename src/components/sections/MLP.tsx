@@ -18,12 +18,26 @@ export default function MLP({ slide = 0 }: { slide?: number }) {
   const [inputVal, setInputVal] = useState(0.5);
   const range = Array.from({ length: 40 }, (_, i) => (i - 20) / 5);
 
+  const Arrow = ({ delay = 0 }: { delay?: number }) => (
+    <Box component={motion.div} initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }} sx={{ color: "text.secondary", fontSize: "1.5rem", textAlign: "center" }}>
+      ↓
+    </Box>
+  );
+
+  const Capsule = ({ children, color, borderColor, bgcolor, delay = 0 }: { children: React.ReactNode; color: string; borderColor: string; bgcolor: string; delay?: number }) => (
+    <Box component={motion.div} initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay, type: "spring" }} sx={{ px: 2.5, py: 1.5, borderRadius: 3, bgcolor, border: 1, borderColor }}>
+      <Typography variant="body2" sx={{ color, fontWeight: "bold", textAlign: "center", whiteSpace: "nowrap", fontSize: "0.85rem" }}>
+        {children}
+      </Typography>
+    </Box>
+  );
+
   return (
-    <Box 
-      component={motion.div} 
-      variants={container} 
-      initial="hidden" 
-      animate="show" 
+    <Box
+      component={motion.div}
+      variants={container}
+      initial="hidden"
+      animate="show"
       sx={{ display: "flex", flexDirection: "column", gap: 4 }}
     >
       {slide === 0 && (
@@ -32,119 +46,78 @@ export default function MLP({ slide = 0 }: { slide?: number }) {
             <Typography sx={{ fontWeight: "bold" }} variant="h4" component="h3" gutterBottom>
               {t("mlp.title")}
             </Typography>
-            <Typography 
-              variant="body1" 
+            <Typography
+              variant="body1"
               sx={{ color: "text.secondary", fontSize: "1.1rem", lineHeight: 1.7 }}
-              dangerouslySetInnerHTML={{ __html: t("mlp.desc.0") }} 
+              dangerouslySetInnerHTML={{ __html: t("mlp.desc.0") }}
             />
           </Box>
 
+          {/* Visual Flow: Capsule style */}
           <Paper component={motion.div} variants={item} sx={{ p: 3 }}>
-            <Typography variant="subtitle1" sx={{ mb: 4, color: "text.secondary", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: "bold" }}>
+            <Typography variant="subtitle1" sx={{ mb: 3, color: "text.secondary", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: "bold" }}>
               {t("mlp.structure")}
             </Typography>
-            
-            <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 3.5 }}>
-              {/* Input layer */}
-              <Box component={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} sx={{ display: "flex", gap: 1.5 }}>
-                {[...Array(6)].map((_, i) => (
-                  <Box 
-                    key={i} 
-                    sx={{ 
-                      width: 32, 
-                      height: 32, 
-                      borderRadius: "50%", 
-                      bgcolor: "rgba(33, 150, 243, 0.15)", 
-                      border: 1, 
-                      borderColor: "rgba(33, 150, 243, 0.4)", 
-                      display: "flex", 
-                      alignItems: "center", 
-                      justifyContent: "center", 
-                      fontSize: "0.65rem", 
-                      color: "primary.light",
-                      fontFamily: "monospace"
-                    }}
-                  >
-                    x{i+1}
-                  </Box>
-                ))}
-              </Box>
-              <Typography variant="caption" sx={{ color: "text.secondary" }}>{t("mlp.input")}</Typography>
 
-              <Typography variant="caption" sx={{ color: "text.secondary", fontFamily: "monospace", fontStyle: "italic" }}>
-                {t("mlp.multiply1")}
+            <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
+              {/* Step 1: Input */}
+              <Capsule color="#60a5fa" borderColor="rgba(33, 150, 243, 0.4)" bgcolor="rgba(33, 150, 243, 0.08)" delay={0.1}>
+                📥 {locale === "tr" ? "Giriş (768 sayı)" : "Input (768 numbers)"}
+              </Capsule>
+
+              <Arrow delay={0.2} />
+              <Typography variant="caption" sx={{ color: "text.secondary", fontStyle: "italic", mt: -1 }}>
+                {locale === "tr" ? "W₁ ile çarp → 4 kat büyüt" : "× W₁ → expand 4×"}
               </Typography>
 
-              {/* Hidden layer (expanded) */}
-              <Box component={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} sx={{ display: "flex", gap: 1 }}>
-                {[...Array(12)].map((_, i) => (
-                  <Box 
-                    key={i} 
-                    sx={{ 
-                      width: 24, 
-                      height: 24, 
-                      borderRadius: "50%", 
-                      bgcolor: "rgba(76, 175, 80, 0.15)", 
-                      border: 1, 
-                      borderColor: "rgba(76, 175, 80, 0.4)" 
-                    }} 
-                  />
+              {/* Step 2: Hidden expanded */}
+              <Capsule color="#34d399" borderColor="rgba(76, 175, 80, 0.4)" bgcolor="rgba(76, 175, 80, 0.08)" delay={0.3}>
+                🔍 {locale === "tr" ? "Detaylı İnceleme (3072 sayı)" : "Detailed Look (3072 numbers)"}
+              </Capsule>
+
+              {/* Visual: small dots showing some dimmed */}
+              <Box component={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} sx={{ display: "flex", gap: 0.8, flexWrap: "wrap", justifyContent: "center" }}>
+                {[...Array(20)].map((_, i) => (
+                  <Box key={i} sx={{ width: 12, height: 12, borderRadius: "50%", bgcolor: i < 14 ? "#34d399" : "grey.700", opacity: i < 14 ? 0.7 : 0.3 }} />
                 ))}
               </Box>
-              <Typography variant="caption" sx={{ color: "text.secondary" }}>{t("mlp.hidden")}</Typography>
 
-              <Typography variant="caption" sx={{ color: "text.secondary", fontFamily: "monospace", fontStyle: "italic" }}>
-                {t("mlp.activation")}
+              <Arrow delay={0.45} />
+              <Typography variant="caption" sx={{ color: "text.secondary", fontStyle: "italic", mt: -1 }}>
+                {locale === "tr" ? "GELU süzgeci → önemsizleri temizle" : "GELU filter → remove noise"}
               </Typography>
 
-              {/* Hidden after activation */}
-              <Box component={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }} sx={{ display: "flex", gap: 1 }}>
-                {[...Array(12)].map((_, i) => (
-                  <Box 
-                    key={i} 
-                    sx={{ 
-                      width: 24, 
-                      height: 24, 
-                      borderRadius: "50%", 
-                      border: 1, 
-                      borderColor: i % 3 === 0 ? "rgba(76, 175, 80, 0.2)" : "rgba(76, 175, 80, 0.6)",
-                      bgcolor: i % 3 === 0 ? "rgba(76, 175, 80, 0.05)" : "rgba(76, 175, 80, 0.3)"
-                    }} 
-                  />
+              {/* Step 3: After filter */}
+              <Capsule color="#fbbf24" borderColor="rgba(255, 235, 59, 0.4)" bgcolor="rgba(255, 235, 59, 0.08)" delay={0.5}>
+                🧹 {locale === "tr" ? "Süzgeçten Geçmiş" : "After Filtering"}
+              </Capsule>
+
+              {/* Visual: fewer dots, more intense */}
+              <Box component={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.55 }} sx={{ display: "flex", gap: 0.8, flexWrap: "wrap", justifyContent: "center" }}>
+                {[...Array(20)].map((_, i) => (
+                  <Box key={i} sx={{ width: 12, height: 12, borderRadius: "50%", bgcolor: i < 8 ? "#fbbf24" : "grey.700", opacity: i < 8 ? 0.9 : 0.2 }} />
                 ))}
               </Box>
-              <Typography variant="caption" sx={{ color: "text.secondary" }}>{t("mlp.afteract")}</Typography>
 
-              <Typography variant="caption" sx={{ color: "text.secondary", fontFamily: "monospace", fontStyle: "italic" }}>
-                {t("mlp.multiply2")}
+              <Arrow delay={0.6} />
+              <Typography variant="caption" sx={{ color: "text.secondary", fontStyle: "italic", mt: -1 }}>
+                {locale === "tr" ? "W₂ ile çarp → eski boyuta dön" : "× W₂ → compress back"}
               </Typography>
 
-              {/* Output layer */}
-              <Box component={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }} sx={{ display: "flex", gap: 1.5 }}>
-                {[...Array(6)].map((_, i) => (
-                  <Box 
-                    key={i} 
-                    sx={{ 
-                      width: 32, 
-                      height: 32, 
-                      borderRadius: "50%", 
-                      bgcolor: "rgba(33, 150, 243, 0.15)", 
-                      border: 1, 
-                      borderColor: "rgba(33, 150, 243, 0.4)", 
-                      display: "flex", 
-                      alignItems: "center", 
-                      justifyContent: "center", 
-                      fontSize: "0.65rem", 
-                      color: "primary.light",
-                      fontFamily: "monospace"
-                    }}
-                  >
-                    y{i+1}
-                  </Box>
-                ))}
-              </Box>
-              <Typography variant="caption" sx={{ color: "text.secondary" }}>{t("mlp.output")}</Typography>
+              {/* Step 4: Output */}
+              <Capsule color="#60a5fa" borderColor="rgba(33, 150, 243, 0.4)" bgcolor="rgba(33, 150, 243, 0.08)" delay={0.7}>
+                📤 {locale === "tr" ? "Çıktı (768 sayı, anlamlı)" : "Output (768 numbers, meaningful)"}
+              </Capsule>
             </Box>
+          </Paper>
+
+          {/* Summary card */}
+          <Paper component={motion.div} variants={item} elevation={0} sx={{ p: 2.5, bgcolor: theme.palette.mode === "dark" ? "rgba(76, 175, 80, 0.08)" : "rgba(76, 175, 80, 0.04)", border: 1, borderColor: theme.palette.mode === "dark" ? "rgba(76, 175, 80, 0.2)" : "rgba(76, 175, 80, 0.1)", borderRadius: 2 }}>
+            <Typography variant="body1" sx={{ color: "text.primary", fontSize: "1rem", lineHeight: 1.7 }}>
+              {locale === "tr"
+                ? "💡 Özet: Gelen bilgi önce 4 kata çıkarılır (daha detaylı bakmak için), sonra GELU süzgecinden geçer (önemsiz kısımlar atılır), en son eski boyutuna sıkıştırılıp çıktı olarak gönderilir."
+                : "💡 Summary: Input expands 4× (to examine details), passes through GELU filter (removes noise), then compresses back to original size and sent as output."}
+            </Typography>
           </Paper>
         </>
       )}
@@ -155,10 +128,10 @@ export default function MLP({ slide = 0 }: { slide?: number }) {
             <Typography sx={{ fontWeight: "bold" }} variant="h4" component="h3" gutterBottom>
               {t("mlp.title")}
             </Typography>
-            <Typography 
-              variant="body1" 
+            <Typography
+              variant="body1"
               sx={{ color: "text.secondary", fontSize: "1.1rem", lineHeight: 1.7 }}
-              dangerouslySetInnerHTML={{ __html: t("mlp.desc.1") }} 
+              dangerouslySetInnerHTML={{ __html: t("mlp.desc.1") }}
             />
           </Box>
 
@@ -170,11 +143,39 @@ export default function MLP({ slide = 0 }: { slide?: number }) {
               {t("mlp.gelu.desc")}
             </Typography>
 
+            {/* Visual filter analogy */}
+            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 2, mb: 3, flexWrap: "wrap" }}>
+              <Box sx={{ display: "flex", gap: 1 }}>
+                {[0.8, -0.3, 0.6, 0.9, -0.5, 0.4].map((v, i) => (
+                  <Box key={i} sx={{ width: 40, height: 40, borderRadius: 2, bgcolor: v > 0 ? "rgba(76, 175, 80, 0.3)" : "rgba(244, 67, 54, 0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "monospace", fontSize: "0.7rem", color: v > 0 ? "#34d399" : "#f44336", border: 1, borderColor: v > 0 ? "rgba(76, 175, 80, 0.4)" : "rgba(244, 67, 54, 0.3)" }}>
+                    {v > 0 ? `+${v}` : v}
+                  </Box>
+                ))}
+              </Box>
+              <Typography variant="body2" sx={{ color: "text.secondary", fontWeight: "bold" }}>→</Typography>
+              <Box sx={{ px: 2, py: 1, borderRadius: 2, bgcolor: "rgba(0, 113, 227, 0.1)", border: 1, borderColor: "rgba(0, 113, 227, 0.3)" }}>
+                <Typography variant="caption" sx={{ color: "primary.light", fontWeight: "bold", fontSize: "0.7rem" }}>
+                  {locale === "tr" ? "GELU Süzgeci" : "GELU Filter"}
+                </Typography>
+              </Box>
+              <Typography variant="body2" sx={{ color: "text.secondary", fontWeight: "bold" }}>→</Typography>
+              <Box sx={{ display: "flex", gap: 1 }}>
+                {[0.78, 0.05, 0.55, 0.88, 0.02, 0.35].map((v, i) => (
+                  <Box key={i} sx={{ width: 40, height: 40, borderRadius: 2, bgcolor: v > 0.1 ? "rgba(76, 175, 80, 0.3)" : "rgba(244, 67, 54, 0.1)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "monospace", fontSize: "0.65rem", color: v > 0.1 ? "#34d399" : "grey.600", border: 1, borderColor: v > 0.1 ? "rgba(76, 175, 80, 0.4)" : "grey.700" }}>
+                    {v.toFixed(2)}
+                  </Box>
+                ))}
+              </Box>
+            </Box>
+            <Typography variant="caption" sx={{ color: "text.secondary", display: "block", textAlign: "center", mb: 2 }}>
+              {locale === "tr"
+                ? "Sola: ham sayılar. Sağa: GELU'dan geçmiş hali. Negatif sayılar neredeyse sıfırlandı!"
+                : "Left: raw values. Right: after GELU. Negative values are nearly zeroed out!"}
+            </Typography>
+
             <Box sx={{ position: "relative", height: 180, bgcolor: theme.palette.mode === "dark" ? "grey.950" : "grey.100", borderRadius: 2, overflow: "hidden", p: 2, border: 1, borderColor: theme.palette.mode === "dark" ? "grey.850" : "grey.300" }}>
-              {/* Axes */}
               <Box sx={{ position: "absolute", inset: 16, borderLeft: 1, borderBottom: 1, borderColor: "grey.700" }} />
-              {/* GELU curve */}
-              <svg className="absolute inset-4" style={{ width: "calc(100% - 32px)", height: "calc(100% - 32px)", position: "absolute", left: 16, top: 16 }} viewBox="0 0 200 100" preserveAspectRatio="none">
+              <svg style={{ width: "calc(100% - 32px)", height: "calc(100% - 32px)", position: "absolute", left: 16, top: 16 }} viewBox="0 0 200 100" preserveAspectRatio="none">
                 <polyline
                   points={range.map((x, i) => {
                     const px = (i / (range.length - 1)) * 200;
@@ -212,23 +213,39 @@ export default function MLP({ slide = 0 }: { slide?: number }) {
             <Typography sx={{ fontWeight: "bold" }} variant="h4" component="h3" gutterBottom>
               {t("mlp.title")}
             </Typography>
-            <Typography 
-              variant="body1" 
+            <Typography
+              variant="body1"
               sx={{ color: "text.secondary", fontSize: "1.1rem", lineHeight: 1.7 }}
-              dangerouslySetInnerHTML={{ __html: t("mlp.desc.2") }} 
+              dangerouslySetInnerHTML={{ __html: t("mlp.desc.2") }}
             />
           </Box>
 
+          {/* Animated pipeline flow */}
           <Paper component={motion.div} variants={item} sx={{ p: 3 }}>
-            <Typography variant="subtitle1" sx={{ mb: 2, color: "text.secondary", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: "bold" }}>
-              {t("mlp.formula.title")}
-            </Typography>
-            <Box sx={{ bgcolor: theme.palette.mode === "dark" ? "grey.950" : "grey.100", p: 3, borderRadius: 2, fontFamily: "monospace", display: "flex", flexDirection: "column", gap: 1.5 }}>
-              <Typography variant="h6" sx={{ color: "primary.main", fontFamily: "monospace", fontWeight: "bold" }}>
-                MLP(x) = W₂ · GELU(W₁ · x + b₁) + b₂
-              </Typography>
-              <Typography variant="caption" sx={{ color: "text.secondary" }}>
-                {t("mlp.formula.desc")}
+            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1.5, flexWrap: "wrap" }}>
+              {[
+                { label: locale === "tr" ? "📥 Giriş" : "📥 Input", color: "#60a5fa" },
+                { label: "📈 4×", color: "#34d399" },
+                { label: "🧹 GELU", color: "#fbbf24" },
+                { label: "📉 ¼×", color: "#f97316" },
+                { label: locale === "tr" ? "📤 Çıktı" : "📤 Output", color: "#60a5fa" },
+              ].map((step, i) => (
+                <Box key={i} component={motion.div} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.12 }} sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                  <Box sx={{ px: 2, py: 1.5, borderRadius: 2, bgcolor: `${step.color}15`, border: 1, borderColor: `${step.color}40` }}>
+                    <Typography variant="body2" sx={{ fontFamily: "monospace", fontWeight: "bold", color: step.color, fontSize: "0.8rem", whiteSpace: "nowrap" }}>
+                      {step.label}
+                    </Typography>
+                  </Box>
+                  {i < 4 && <Typography variant="body2" sx={{ color: "text.secondary" }}>→</Typography>}
+                </Box>
+              ))}
+            </Box>
+
+            <Box sx={{ mt: 3, p: 2, bgcolor: theme.palette.mode === "dark" ? "grey.950" : "grey.100", borderRadius: 2 }}>
+              <Typography variant="body2" sx={{ color: "text.secondary", fontFamily: "monospace", textAlign: "center" }}>
+                {locale === "tr"
+                  ? "MLP(x) = W₂ · GELU(W₁ · x + b₁) + b₂     ←     Sadece 3 işlem!"
+                  : "MLP(x) = W₂ · GELU(W₁ · x + b₁) + b₂     ←     Only 3 operations!"}
               </Typography>
             </Box>
           </Paper>
@@ -252,70 +269,66 @@ export default function MLP({ slide = 0 }: { slide?: number }) {
             <SeniorDeveloperMode
               contentEn={
                 <>
-                  <p>
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     In the classical Transformer block, the Feed-Forward Network (FFN) consists of two linear transformations with a non-linear activation function in between:
-                  </p>
+                  </Typography>
                   <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto" }}>
                     {"FFN_GELU(x) = GELU(x · W₁ + b₁) · W₂ + b₂"}
                   </Box>
-                  <p className="mt-2 text-slate-300">
+                  <Typography variant="body2" sx={{ mt: 2, color: "text.secondary", lineHeight: 1.6 }}>
                     where <code>W_1 \in \mathbb&#123;R&#125;^&#123;d_&#123;model&#125; \times d_&#123;ff&#125;&#125;</code> (typically <code>d_&#123;ff&#125; = 4 \cdot d_&#123;model&#125;</code>) and <code>W_2 \in \mathbb&#123;R&#125;^&#123;d_&#123;ff&#125; \times d_&#123;model&#125;&#125;</code>.
-                  </p>
-                  <p className="mt-2 font-semibold">The Shift to SwiGLU Gated Activations:</p>
-                  <p className="text-slate-300 font-sans">
+                  </Typography>
+                  <Typography sx={{ mt: 2, fontWeight: "bold" }}>The Shift to SwiGLU Gated Activations:</Typography>
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     Modern state-of-the-art LLMs (like LLaMA-2/3, Mistral, Gemma, PaLM) discard GELU in favor of <strong>SwiGLU</strong> (Swish Gated Linear Unit). A Gated Linear Unit (GLU) is a neural network layer defined as the component-wise product of two linear transformations, one of which is gated by a sigmoid or other activation.
-                  </p>
-                  <p className="mt-2 text-slate-300 font-sans">
+                  </Typography>
+                  <Typography variant="body2" sx={{ mt: 2, color: "text.secondary", lineHeight: 1.6 }}>
                     For SwiGLU, the Swish activation (specifically <strong>SiLU</strong>, where <code>\text&#123;SiLU&#125;(x) = x \cdot \sigma(x)</code>) is used as the gate:
-                  </p>
+                  </Typography>
                   <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto" }}>
                     {"SwiGLU(x) = ( SiLU(x · W_gate) ⊗ (x · W_up) ) · W_down"}
                   </Box>
-                  <p className="mt-2 text-slate-300">
-                    where:
-                  </p>
-                  <ul className="list-disc list-inside space-y-1 pl-2 text-slate-300 font-sans">
-                    <li><code>W_&#123;\text&#123;gate&#125;&#125;</code> and <code>W_&#123;\text&#123;up&#125;&#125;</code> project the hidden vector into <code>d_&#123;ff&#125;</code> dimensions.</li>
-                    <li><code>\otimes</code> represents the element-wise (Hadamard) product.</li>
-                    <li><code>W_&#123;\text&#123;down&#125;&#125;</code> projects the gating output back down to <code>d_&#123;model&#125;</code>.</li>
-                  </ul>
-                  <p className="mt-2 text-slate-300 font-sans">
+                  <Typography variant="body2" sx={{ mt: 1, color: "text.secondary" }}>where:</Typography>
+                  <Box component="ul" sx={{ listStyle: "disc", listStylePosition: "inside", pl: 2, display: "flex", flexDirection: "column", gap: 0.5, mt: 1 }}>
+                    <Typography component="li" variant="body2" sx={{ color: "text.secondary" }}><code>W_&#123;\text&#123;gate&#125;&#125;</code> and <code>W_&#123;\text&#123;up&#125;&#125;</code> project the hidden vector into <code>d_&#123;ff&#125;</code> dimensions.</Typography>
+                    <Typography component="li" variant="body2" sx={{ color: "text.secondary" }}><code>\otimes</code> represents the element-wise (Hadamard) product.</Typography>
+                    <Typography component="li" variant="body2" sx={{ color: "text.secondary" }}><code>W_&#123;\text&#123;down&#125;&#125;</code> projects the gating output back down to <code>d_&#123;model&#125;</code>.</Typography>
+                  </Box>
+                  <Typography variant="body2" sx={{ mt: 2, color: "text.secondary", lineHeight: 1.6 }}>
                     Because SwiGLU introduces an additional projection matrix, to maintain the same number of parameters, the FFN hidden dimension is typically scaled down to approximately <code>\frac&#123;8&#125;&#123;3&#125; d_&#123;model&#125;</code> rather than <code>4 d_&#123;model&#125;</code>. SwiGLU provides significantly better empirical results in convergence speed and downstream task loss.
-                  </p>
+                  </Typography>
                 </>
               }
               contentTr={
                 <>
-                  <p>
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     Klasik Transformer bloğunda, Beslemeli Ağ (Feed-Forward Network - FFN / MLP), aralarında doğrusal olmayan bir aktivasyon fonksiyonu barındıran iki adet doğrusal katmandan oluşur:
-                  </p>
+                  </Typography>
                   <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto" }}>
                     {"FFN_GELU(x) = GELU(x · W₁ + b₁) · W₂ + b₂"}
                   </Box>
-                  <p className="mt-2 text-slate-300">
+                  <Typography variant="body2" sx={{ mt: 2, color: "text.secondary", lineHeight: 1.6 }}>
                     Burada <code>W_1 \in \mathbb&#123;R&#125;^&#123;d_&#123;model&#125; \times d_&#123;ff&#125;&#125;</code> (genellikle <code>d_&#123;ff&#125; = 4 \cdot d_&#123;model&#125;</code>) ve <code>W_2 \in \mathbb&#123;R&#125;^&#123;d_&#123;ff&#125; \times d_&#123;model&#125;&#125;</code> boyutlarındadır.
-                  </p>
-                  <p className="mt-2 font-semibold">Gelişmiş SwiGLU Kapılı Aktivasyonlarına Geçiş:</p>
-                  <p className="text-slate-300 font-sans">
+                  </Typography>
+                  <Typography sx={{ mt: 2, fontWeight: "bold" }}>Gelişmiş SwiGLU Kapılı Aktivasyonlarına Geçiş:</Typography>
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     Modern son teknoloji LLM&apos;ler (örn. LLaMA-2/3, Mistral, Gemma, PaLM), GELU yerine <strong>SwiGLU</strong> (Swish Gated Linear Unit) kapı mekanizmasını tercih ederler. Gated Linear Unit (GLU), girdinin iki ayrı doğrusal yansıtma matrisi ile çarpılıp, birinin aktivasyon fonksiyonundan (kapı) geçirilerek diğeriyle eleman bazında çarpılmasıdır.
-                  </p>
-                  <p className="mt-2 text-slate-300 font-sans">
+                  </Typography>
+                  <Typography variant="body2" sx={{ mt: 2, color: "text.secondary", lineHeight: 1.6 }}>
                     SwiGLU formülasyonunda, kapı olarak Swish (yani <strong>SiLU</strong>, burada <code>\text&#123;SiLU&#125;(x) = x \cdot \sigma(x)</code>) kullanılır:
-                  </p>
+                  </Typography>
                   <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto" }}>
                     {"SwiGLU(x) = ( SiLU(x · W_gate) ⊗ (x · W_up) ) · W_down"}
                   </Box>
-                  <p className="mt-2 text-slate-300">
-                    Burada:
-                  </p>
-                  <ul className="list-disc list-inside space-y-1 pl-2 text-slate-300 font-sans">
-                    <li><code>W_&#123;\text&#123;gate&#125;&#125;</code> ve <code>W_&#123;\text&#123;up&#125;&#125;</code> girdiyi <code>d_&#123;ff&#125;</code> boyutuna çıkarır.</li>
-                    <li><code>\otimes</code> Hadamard (eleman bazında) çarpımını temsil eder.</li>
-                    <li><code>W_&#123;\text&#123;down&#125;&#125;</code> elde edilen vektörü tekrar ana model boyutu olan <code>d_&#123;model&#125;</code> seviyesine düşürür.</li>
-                  </ul>
-                  <p className="mt-2 text-slate-300 font-sans">
+                  <Typography variant="body2" sx={{ mt: 1, color: "text.secondary" }}>Burada:</Typography>
+                  <Box component="ul" sx={{ listStyle: "disc", listStylePosition: "inside", pl: 2, display: "flex", flexDirection: "column", gap: 0.5, mt: 1 }}>
+                    <Typography component="li" variant="body2" sx={{ color: "text.secondary" }}><code>W_&#123;\text&#123;gate&#125;&#125;</code> ve <code>W_&#123;\text&#123;up&#125;&#125;</code> girdiyi <code>d_&#123;ff&#125;</code> boyutuna çıkarır.</Typography>
+                    <Typography component="li" variant="body2" sx={{ color: "text.secondary" }}><code>\otimes</code> Hadamard (eleman bazında) çarpımını temsil eder.</Typography>
+                    <Typography component="li" variant="body2" sx={{ color: "text.secondary" }}><code>W_&#123;\text&#123;down&#125;&#125;</code> elde edilen vektörü tekrar ana model boyutu olan <code>d_&#123;model&#125;</code> seviyesine düşürür.</Typography>
+                  </Box>
+                  <Typography variant="body2" sx={{ mt: 2, color: "text.secondary", lineHeight: 1.6 }}>
                     SwiGLU fazladan bir parametre matrisi (up projection) getirdiği için, parametre bütçesini sabit tutmak adına ara katman boyutu genellikle <code>4 d_&#123;model&#125;</code> yerine <code>\frac&#123;8&#125;&#123;3&#125; d_&#123;model&#125;</code> civarında tutulur. SwiGLU, karmaşık ilişkileri öğrenmede ve eğitim kaybını düşürmede klasik GELU&apos;ya göre çok daha yüksek başarı sağlamaktadır.
-                  </p>
+                  </Typography>
                 </>
               }
             />

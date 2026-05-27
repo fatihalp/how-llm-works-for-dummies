@@ -213,9 +213,7 @@ export default function Embedding({ slide = 0 }: { slide?: number }) {
                   </Box>
                 );
               })}
-              <Typography variant="caption" sx={{ position: "absolute", bottom: 8, right: 8, color: "text.secondary", fontFamily: "monospace" }}>
-                {t("embed.2d")}
-              </Typography>
+
             </Box>
           </Paper>
 
@@ -238,50 +236,50 @@ export default function Embedding({ slide = 0 }: { slide?: number }) {
             <SeniorDeveloperMode
               contentEn={
                 <>
-                  <p>
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     In production, an embedding layer is represented by a parameter matrix <code>W_e</code> of shape <code>(V, d_model)</code>. The lookup is computationally optimized as a slice selection (equivalent to multiplying a one-hot vector representation of the token ID with the embedding weight matrix):
-                  </p>
+                  </Typography>
                   <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto" }}>
                     {"x_t = Embedding(t_t) = W_e[t_t, :]"}
                   </Box>
-                  <p className="mt-2 font-semibold">Position Embeddings:</p>
-                  <p className="text-slate-300">
+                  <Typography sx={{ mt: 2, fontWeight: "bold" }}>Position Embeddings:</Typography>
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     Since Transformer&apos;s self-attention has no inherent sense of token order (permutation invariance), positional information must be injected. Modern architectures (like LLaMA-2/3, Mistral, Gemma) discard original additive sinusoidal position embeddings in favor of <strong>Rotary Position Embeddings (RoPE)</strong>.
-                  </p>
-                  <p className="mt-2 font-semibold">How RoPE Works:</p>
-                  <p className="text-slate-300 font-sans">
+                  </Typography>
+                  <Typography sx={{ mt: 2, fontWeight: "bold" }}>How RoPE Works:</Typography>
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     Instead of adding a position vector to the token embedding, RoPE applies a rotation to the Query (Q) and Key (K) vectors in 2D planes. For a query vector <code>q</code> at position <code>m</code>:
-                  </p>
+                  </Typography>
                   <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto" }}>
                     {"R_{Θ, m}^d q = diag(R_1, R_2, ..., R_{d/2}) q"}
                   </Box>
-                  <p className="mt-2 text-slate-300 font-sans">
+                  <Typography variant="body2" sx={{ mt: 2, color: "text.secondary", lineHeight: 1.6 }}>
                     where each <code>R_i</code> is a 2D rotation matrix rotating the <code>2i</code> and <code>2i+1</code> dimensions of the vector by angle <code>m \theta_i</code>. This preserves relative distances because the inner product of queries and keys depends only on their relative distance <code>m - n</code>.
-                  </p>
+                  </Typography>
                 </>
               }
               contentTr={
                 <>
-                  <p>
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     Gelişmiş uygulamalarda gömme (embedding) katmanı, <code>(V, d_model)</code> boyutlarında bir parametre matrisi olan <code>W_e</code> ile temsil edilir. Gömme arama (lookup) işlemi, bilgisayarda doğrudan bir indeks erişimi (dilim seçimi) şeklinde yapılır:
-                  </p>
+                  </Typography>
                   <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto" }}>
                     {"x_t = Embedding(t_t) = W_e[t_t, :]"}
                   </Box>
-                  <p className="mt-2 font-semibold">Pozisyon Kodlama (Position Embeddings):</p>
-                  <p className="text-slate-300">
+                  <Typography sx={{ mt: 2, fontWeight: "bold" }}>Pozisyon Kodlama (Position Embeddings):</Typography>
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     Transformer&apos;ın öz-dikkat mekanizması yer değiştirme altında değişmez (permutation-invariant) olduğundan, kelimelerin sırasını modele bildirmek için konumsal bilgilerin eklenmesi gerekir. Modern mimariler (LLaMA-2/3, Mistral, Gemma gibi), eklemeli sinüzoidal pozisyon vektörleri yerine <strong>Döner Konumsal Gömme (Rotary Position Embeddings - RoPE)</strong> kullanır.
-                  </p>
-                  <p className="mt-2 font-semibold font-sans">RoPE Nasıl Çalışır?</p>
-                  <p className="text-slate-300 font-sans">
+                  </Typography>
+                  <Typography sx={{ mt: 2, fontWeight: "bold" }}>RoPE Nasıl Çalışır?</Typography>
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     RoPE, pozisyon vektörlerini doğrudan gömme vektörüne eklemek yerine, dikkat katmanındaki Sorgu (Q) ve Anahtar (K) vektörlerini iki boyutlu düzlemlerde döndürür. <code>m</code>. pozisyondaki bir <code>q</code> sorgu vektörü için rotasyon şu şekildedir:
-                  </p>
+                  </Typography>
                   <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto" }}>
                     {"R_{Θ, m}^d q = diag(R_1, R_2, ..., R_{d/2}) q"}
                   </Box>
-                  <p className="mt-2 text-slate-300 font-sans">
+                  <Typography variant="body2" sx={{ mt: 2, color: "text.secondary", lineHeight: 1.6 }}>
                     Burada her <code>R_i</code>, vektörün ilgili boyutlarını <code>m \theta_i</code> açısıyla döndüren 2B bir rotasyon matrisidir. Bu sayede sorgu ve anahtar vektörlerinin iç çarpımı, sadece kelimelerin birbirine olan bağıl mesafesine (<code>m - n</code>) bağlı hale gelir.
-                  </p>
+                  </Typography>
                 </>
               }
             />

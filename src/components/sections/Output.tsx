@@ -73,7 +73,7 @@ export default function Output({ slide = 0 }: { slide?: number }) {
             </Typography>
             
             <Box sx={{ bgcolor: theme.palette.mode === "dark" ? "grey.950" : "grey.100", p: 2.5, borderRadius: 2, mb: 3, fontFamily: "monospace", fontSize: "1.05rem" }}>
-              <span style={{ color: theme.palette.text.primary }}>{currentStep.prompt}</span>
+              <Box component="span" sx={{ color: "text.primary" }}>{currentStep.prompt}</Box>
               <motion.span
                 animate={{ opacity: [1, 0] }}
                 transition={{ repeat: Infinity, duration: 0.8 }}
@@ -255,58 +255,101 @@ export default function Output({ slide = 0 }: { slide?: number }) {
             <Typography variant="body1" sx={{ color: "text.primary", fontSize: "1rem" }} dangerouslySetInnerHTML={{ __html: t("out.insight") }} />
           </Paper>
 
+          <Box
+            component={motion.div}
+            variants={item}
+            sx={{ display: "flex", flexWrap: "wrap", gap: 3 }}
+          >
+            <Paper
+              elevation={0}
+              sx={{
+                flex: "1 1 300px",
+                p: 2.5,
+                bgcolor: theme.palette.mode === "dark" ? "rgba(255, 255, 255, 0.01)" : "rgba(0, 0, 0, 0.01)",
+                borderColor: theme.palette.mode === "dark" ? "grey.800" : "grey.200",
+                borderWidth: 1,
+                borderStyle: "solid",
+              }}
+            >
+              <Typography variant="subtitle2" sx={{ color: "primary.main", fontWeight: "bold", mb: 1, display: "flex", alignItems: "center", gap: 1 }}>
+                📜 {locale === "tr" ? "Tarihçe" : "History"}
+              </Typography>
+              <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
+                {t("out.history")}
+              </Typography>
+            </Paper>
+            <Paper
+              elevation={0}
+              sx={{
+                flex: "1 1 300px",
+                p: 2.5,
+                bgcolor: theme.palette.mode === "dark" ? "rgba(255, 255, 255, 0.01)" : "rgba(0, 0, 0, 0.01)",
+                borderColor: theme.palette.mode === "dark" ? "grey.800" : "grey.200",
+                borderWidth: 1,
+                borderStyle: "solid",
+              }}
+            >
+              <Typography variant="subtitle2" sx={{ color: "warning.main", fontWeight: "bold", mb: 1, display: "flex", alignItems: "center", gap: 1 }}>
+                💡 {locale === "tr" ? "Ortamlarda Satmalık Bilgi" : "Fun Fact"}
+              </Typography>
+              <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
+                {t("out.fact")}
+              </Typography>
+            </Paper>
+          </Box>
+
           <Box component={motion.div} variants={item}>
             <SeniorDeveloperMode
               contentEn={
                 <>
-                  <p>
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     Causal self-attention scales quadratically <code>O(N^2)</code> with context length <code>N</code>. Since generation is autoregressive, re-evaluating the full history on every forward pass causes huge computational redundancies.
-                  </p>
-                  <p className="mt-2 font-semibold">The KV Cache Optimization:</p>
-                  <p className="text-slate-300 font-sans">
+                  </Typography>
+                  <Typography sx={{ mt: 2, fontWeight: "bold" }}>The KV Cache Optimization:</Typography>
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     To bypass redundant matrix multiplications, production inference engines implement the **KV Cache**. For each layer, Key and Value vectors of past tokens are stored in memory. At step <code>t</code>, we only project the Query (Q), Key (K), and Value (V) vectors for the <em>newly generated token</em>:
-                  </p>
+                  </Typography>
                   <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto", fontWeight: "bold" }}>
                     {"K_cached^(l) ← [K_cached^(l); k_t^(l)],  V_cached^(l) ← [V_cached^(l); v_t^(l)]"}
                   </Box>
-                  <p className="text-slate-300 mt-2 font-sans">
+                  <Typography variant="body2" sx={{ mt: 2, color: "text.secondary", lineHeight: 1.6 }}>
                     This reduces the attention computation for the current token to <code>O(N)</code> rather than <code>O(N^2)</code>, converting the memory-bound stage of generation to a linear scaling complexity.
-                  </p>
-                  <p className="mt-3 font-semibold">Advanced Decoding Strategies:</p>
-                  <p className="text-slate-300 font-sans">
+                  </Typography>
+                  <Typography sx={{ mt: 2, fontWeight: "bold" }}>Advanced Decoding Strategies:</Typography>
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     Rather than selecting the token with the highest score (greedy decoding, which can lead to repetitive loops), models sample from filtered subsets of logits:
-                  </p>
-                  <ul className="list-disc list-inside space-y-1.5 pl-2 text-slate-300 font-sans">
-                    <li><strong>Top-K Sampling:</strong> Caps the selection pool to the <code>K</code> tokens with the highest probabilities.</li>
-                    <li><strong>Top-p (Nucleus) Sampling:</strong> Dynamically calculates the smallest set of tokens whose cumulative probability exceeds the threshold <code>p</code> (e.g., <code>p = 0.90</code>). Tokens outside this &quot;nucleus&quot; are discarded, preventing the model from picking nonsensical outliers while preserving creativity.</li>
-                  </ul>
+                  </Typography>
+                  <Box component="ul" sx={{ listStyle: "disc", listStylePosition: "inside", pl: 2, display: "flex", flexDirection: "column", gap: 1, mt: 1 }}>
+                    <Typography component="li" variant="body2" sx={{ color: "text.secondary" }}><strong>Top-K Sampling:</strong> Caps the selection pool to the <code>K</code> tokens with the highest probabilities.</Typography>
+                    <Typography component="li" variant="body2" sx={{ color: "text.secondary" }}><strong>Top-p (Nucleus) Sampling:</strong> Dynamically calculates the smallest set of tokens whose cumulative probability exceeds the threshold <code>p</code> (e.g., <code>p = 0.90</code>). Tokens outside this &quot;nucleus&quot; are discarded, preventing the model from picking nonsensical outliers while preserving creativity.</Typography>
+                  </Box>
                 </>
               }
               contentTr={
                 <>
-                  <div className="mb-3 p-3 bg-slate-800/50 rounded-lg">
-                    <p className="font-semibold text-white mb-1">⚡ Verimlilik Sorunu:</p>
-                    <p className="text-slate-300 text-sm">
+                  <Box sx={{ mb: 2, p: 2, bgcolor: "rgba(255,255,255,0.03)", borderRadius: 2 }}>
+                    <Typography sx={{ fontWeight: "bold", color: "common.white", mb: 0.5 }}>⚡ Verimlilik Sorunu:</Typography>
+                    <Typography variant="body2" sx={{ color: "text.secondary" }}>
                       Her yeni kelime üretirken model tüm geçmiş kelimelere yeniden bakmak zorunda. Bu, özellikle uzun metinlerde (1000+ kelime) çok büyük bir işlem yükü demek.
-                    </p>
-                  </div>
-                  <div className="mb-3 p-3 bg-slate-800/50 rounded-lg">
-                    <p className="font-semibold text-green-400 mb-1">💡 Çözüm: KV Cache (Bellekleme)</p>
-                    <p className="text-slate-300 text-sm">
+                    </Typography>
+                  </Box>
+                  <Box sx={{ mb: 2, p: 2, bgcolor: "rgba(255,255,255,0.03)", borderRadius: 2 }}>
+                    <Typography sx={{ fontWeight: "bold", color: "success.light", mb: 0.5 }}>💡 Çözüm: KV Cache (Bellekleme)</Typography>
+                    <Typography variant="body2" sx={{ color: "text.secondary" }}>
                       Daha önce hesaplanmış Key (K) ve Value (V) vektörleri bellekten silinmez, saklanır. Yeni kelime için sadece o kelimenin K ve V vektörü hesaplanır ve eskilerin yanına eklenir. Böylece her seferinde sıfırdan hesaplama yapmak zorunda kalmayız.
-                    </p>
-                  </div>
-                  <div className="mb-3 p-3 bg-slate-800/50 rounded-lg">
-                    <p className="font-semibold text-blue-400 mb-1">🎯 Seçim Stratejileri (Nasıl Karar Veriyor?)</p>
-                    <p className="text-slate-300 text-sm mb-2">
+                    </Typography>
+                  </Box>
+                  <Box sx={{ mb: 2, p: 2, bgcolor: "rgba(255,255,255,0.03)", borderRadius: 2 }}>
+                    <Typography sx={{ fontWeight: "bold", color: "primary.light", mb: 0.5 }}>🎯 Seçim Stratejileri (Nasıl Karar Veriyor?)</Typography>
+                    <Typography variant="body2" sx={{ color: "text.secondary", mb: 1 }}>
                       Model her zaman en yüksek olasılıklı kelimeyi seçmez. Bazen yaratıcılık için farklı stratejiler kullanılır:
-                    </p>
-                    <ul className="space-y-2 text-sm text-slate-300">
-                      <li><strong className="text-yellow-400">Greedy (Açgözlü):</strong> En yüksek puanlı kelimeyi seç. Garantici ama sıkıcı, hep aynı cümleleri kurar.</li>
-                      <li><strong className="text-yellow-400">Top-K:</strong> İlk K (örn. 40) kelime arasından rastgele seç. Biraz çeşitlilik katar.</li>
-                      <li><strong className="text-yellow-400">Top-p (Nucleus):</strong> Toplam olasılığı %90'ı geçene kadar en iyi kelimeleri havuza al, gerisini at. En popüler yöntem; hem mantıklı hem yaratıcı.</li>
-                    </ul>
-                  </div>
+                    </Typography>
+                    <Box component="ul" sx={{ listStyle: "disc", listStylePosition: "inside", pl: 2, display: "flex", flexDirection: "column", gap: 1 }}>
+                      <Typography component="li" variant="body2" sx={{ color: "text.secondary" }}><Box component="span" sx={{ color: "warning.light", fontWeight: "bold" }}>Greedy (Açgözlü):</Box> En yüksek puanlı kelimeyi seç. Garantici ama sıkıcı, hep aynı cümleleri kurar.</Typography>
+                      <Typography component="li" variant="body2" sx={{ color: "text.secondary" }}><Box component="span" sx={{ color: "warning.light", fontWeight: "bold" }}>Top-K:</Box> İlk K (örn. 40) kelime arasından rastgele seç. Biraz çeşitlilik katar.</Typography>
+                      <Typography component="li" variant="body2" sx={{ color: "text.secondary" }}><Box component="span" sx={{ color: "warning.light", fontWeight: "bold" }}>Top-p (Nucleus):</Box> Toplam olasılığı %90'ı geçene kadar en iyi kelimeleri havuza al, gerisini at. En popüler yöntem; hem mantıklı hem yaratıcı.</Typography>
+                    </Box>
+                  </Box>
                 </>
               }
             />

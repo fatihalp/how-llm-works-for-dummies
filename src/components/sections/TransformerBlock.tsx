@@ -273,29 +273,29 @@ export default function TransformerBlock({ slide = 0 }: { slide?: number }) {
             <SeniorDeveloperMode
               contentEn={
                 <>
-                  <p>
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     The standard Transformer formulation utilizes Layer Normalization (LayerNorm) and residual connections. The configuration of these blocks has changed in modern designs.
-                  </p>
-                  <p className="mt-2 font-semibold">Post-LN vs Pre-LN:</p>
-                  <p className="text-slate-300 font-sans">
+                  </Typography>
+                  <Typography sx={{ mt: 2, fontWeight: "bold" }}>Post-LN vs Pre-LN:</Typography>
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     Original BERT/GPT models used <strong>Post-LN</strong>, where normalization is applied <em>after</em> the sub-layer addition:
-                  </p>
+                  </Typography>
                   <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto" }}>
                     {"x_{l+1} = LayerNorm( x_l + SubLayer(x_l) )"}
                   </Box>
-                  <p className="text-slate-300 mt-2 font-sans">
+                  <Typography variant="body2" sx={{ mt: 2, color: "text.secondary", lineHeight: 1.6 }}>
                     This caused difficulty in training deep architectures because gradients near the input layer decayed exponentially. Modern architectures use <strong>Pre-LN</strong>:
-                  </p>
+                  </Typography>
                   <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto" }}>
                     {"x_{l+1} = x_l + SubLayer( LayerNorm(x_l) )"}
                   </Box>
-                  <p className="text-slate-300 mt-2 font-sans">
+                  <Typography variant="body2" sx={{ mt: 2, color: "text.secondary", lineHeight: 1.6 }}>
                     This enables a direct identity path (the <em>residual stream</em>) for gradients to flow undisturbed back to the input layers, allowing stable training of models with hundreds of layers without warmup schedules.
-                  </p>
-                  <p className="mt-2 font-semibold">RMSNorm (Root Mean Square Normalization):</p>
-                  <p className="text-slate-300 font-sans">
+                  </Typography>
+                  <Typography sx={{ mt: 2, fontWeight: "bold" }}>RMSNorm (Root Mean Square Normalization):</Typography>
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     To save GPU execution time, LLaMA-2/3 and Gemma replace traditional LayerNorm with <strong>RMSNorm</strong>. Standard LayerNorm requires computing both the mean and variance:
-                  </p>
+                  </Typography>
                   <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto" }}>
                     {"LN(x) = ( (x - μ) / √(σ² + ε) ) · γ + β"}
                   </Box>
@@ -303,29 +303,29 @@ export default function TransformerBlock({ slide = 0 }: { slide?: number }) {
               }
               contentTr={
                 <>
-                  <p>
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     Standart Transformer bloğunda Katman Normalizasyonu (LayerNorm) ve artık (residual) bağlantılar kullanılır. Ancak bu bileşenlerin dizilişi zamanla evrim geçirmiştir.
-                  </p>
-                  <p className="mt-2 font-semibold">Post-LN vs Pre-LN (Hizalama Farkı):</p>
-                  <p className="text-slate-300 font-sans">
+                  </Typography>
+                  <Typography sx={{ mt: 2, fontWeight: "bold" }}>Post-LN vs Pre-LN (Hizalama Farkı):</Typography>
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     İlk Transformer mimarilerinde norm işlemi alt katman işleminden <em>sonra</em> uygulanırdı (<strong>Post-LN</strong>):
-                  </p>
+                  </Typography>
                   <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto" }}>
                     {"x_{l+1} = LayerNorm( x_l + SubLayer(x_l) )"}
                   </Box>
-                  <p className="text-slate-300 mt-2 font-sans">
+                  <Typography variant="body2" sx={{ mt: 2, color: "text.secondary", lineHeight: 1.6 }}>
                     Bu yöntem derin modellerin eğitilmesinde kararsızlıklara yol açıyordu çünkü gradyanlar geriye doğru giderken sönümleniyordu. Modern modeller (Llama, Gemma, GPT-4) <strong>Pre-LN</strong> kullanır:
-                  </p>
+                  </Typography>
                   <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto" }}>
                     {"x_{l+1} = x_l + SubLayer( LayerNorm(x_l) )"}
                   </Box>
-                  <p className="text-slate-300 mt-2 font-sans">
+                  <Typography variant="body2" sx={{ mt: 2, color: "text.secondary", lineHeight: 1.6 }}>
                     Pre-LN sayesinde artık akış (<em>residual stream</em>) kesintisiz bir otoyol gibi çalışır. Gradyanlar ağın derinliklerinden ilk katmana kadar hiç bozulmadan akabilir.
-                  </p>
-                  <p className="mt-2 font-semibold">RMSNorm (Karekök Ortalaması Normalizasyonu):</p>
-                  <p className="text-slate-300 font-sans">
+                  </Typography>
+                  <Typography sx={{ mt: 2, fontWeight: "bold" }}>RMSNorm (Karekök Ortalaması Normalizasyonu):</Typography>
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     Hesaplama maliyetini düşürmek amacıyla LLaMA ve Gemma gibi modern modeller LayerNorm yerine <strong>RMSNorm</strong> kullanır. Standart LayerNorm hem ortalama (mean) hem de varyans hesaplamayı gerektirir:
-                  </p>
+                  </Typography>
                   <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto" }}>
                     {"RMSNorm(x_i) = ( x_i / √( (1/d) * Σ x_j² + ε ) ) * γ_i"}
                   </Box>

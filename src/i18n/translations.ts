@@ -26,10 +26,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "overview.desc.1": "Think of it like a very smart autocomplete on your phone. Let's look at some examples of autocomplete predictions.",
     "overview.desc.2": "We will explore the entire journey of a language model from input to output in 10 steps. You will grasp the logic behind every step.",
     "overview.autocomplete": "Think of it like autocomplete, but much smarter:",
-    "overview.promise": "We will prepare a simple text dataset, train the world's simplest LLM model on it, and let you run live inference at the end of this guide!",
     "overview.next": "Let's explore each step of the pipeline to see what happens inside an LLM.",
-    "overview.history": "Actually, these algorithms are not new. However, it wasn't predicted that they would keep getting better and provide better answers when fed this much text (books, etc.). Models like ChatGPT know all the books written to date and almost all the text on the internet.",
-    "overview.fact": "While the human brain is estimated to consist of 100 Trillion connections, current models consist of 1 Trillion parameters. I heard it somewhere too. Take it with a grain of salt!",
 
     // Tokenization
     "token.title": "Tokens",
@@ -72,9 +69,9 @@ export const translations: Record<Locale, Record<string, string>> = {
 
     // Self-Attention
     "attn.title": "Self-Attention & Projection",
-    "attn.desc.0": "<strong>Self-Attention</strong> lets each word look at every other word in the sentence and decide which ones are relevant. This is how the model captures context.",
-    "attn.desc.1": "Words decide how much attention to pay to each other using three vectors: Query (Q) (what to find), Key (K) (what it contains), and Value (V) (what it provides).",
-    "attn.desc.2": "Modern models run multiple attention heads in parallel (Multi-Head) and use a linear projection matrix (W_O) to combine their outputs.",
+    "attn.desc.0": "<strong>Self-Attention</strong> lets each word look at every other word in the sentence and decide which ones matter. Each word asks: 'Who here is relevant to me?' — just like you focus on your friend's voice in a noisy crowd!",
+    "attn.desc.1": "Each word decides importance using 3 questions: <strong>Query (Q)</strong> = 'What am I looking for?', <strong>Key (K)</strong> = 'What do you have?', <strong>Value (V)</strong> = 'What info do you give?'. Q matches with K (attention score), then V is retrieved.",
+    "attn.desc.2": "The model doesn't use just one eye — it uses <strong>multiple eyes (Multi-Head)</strong>. Each eye looks at something different: one focuses on subjects, another on verbs, another on adjectives. All views are then merged (<strong>Concat</strong>) and transformed into a single meaningful output (<strong>Projection</strong>).",
     "attn.hover": "Hover over a word to see what it \"pays attention\" to:",
     "attn.attends": "\"{word}\" attends to each word with these weights:",
     "attn.hoverhint": "Hover over a word above...",
@@ -95,9 +92,9 @@ export const translations: Record<Locale, Record<string, string>> = {
 
     // MLP
     "mlp.title": "MLP (Feed-Forward Network)",
-    "mlp.desc.0": "After attention finds relationships, the <strong>MLP</strong> (Multi-Layer Perceptron) processes that information to reason about it and store knowledge.",
-    "mlp.desc.1": "The activation function (GELU) introduces non-linearity. Without it, the network could only learn simple, straight-line patterns.",
-    "mlp.desc.2": "The input is expanded 4x in the hidden layer, activated, and compressed back down. View the step-by-step neural flow chart below.",
+    "mlp.desc.0": "<strong>Attention</strong> finds which words relate to each other. <strong>MLP</strong> takes that information and <strong>thinks</strong> about it, makes sense of it. Simply put: Attention says 'who to listen to?', MLP says 'what does this mean?'.",
+    "mlp.desc.1": "Inside the MLP, a <strong>GELU filter</strong> softly removes unnecessary info and amplifies what matters. Like a coffee filter — bad bits get discarded, the good stuff passes through.",
+    "mlp.desc.2": "Summary: info expands 4x (details), passes through a filter (cleanup), compresses back down (summary). Follow the steps below!",
     "mlp.structure": "Structure of the MLP",
     "mlp.input": "Input (d_model = 768)",
     "mlp.multiply1": "↓ Multiply by W₁ ↓",
@@ -169,6 +166,8 @@ export const translations: Record<Locale, Record<string, string>> = {
     "out.temp.med.desc": "Balanced — creative but coherent",
     "out.temp.high": "High (1.5)",
     "out.temp.high.desc": "Very random, surprising outputs",
+    "out.history": "Actually, these algorithms are not new. However, it wasn't predicted that they would keep getting better and provide better answers when fed this much text (books, etc.). Models like ChatGPT know all the books written to date and almost all the text on the internet.",
+    "out.fact": "While the human brain is estimated to consist of 100 Trillion connections, current models consist of 1 Trillion parameters. I heard it somewhere too. Take it with a grain of salt!",
     "out.insight": "<strong>Key Insight:</strong> LLMs generate one token at a time. A 100-word response requires 100 passes through the network. This makes generation computationally demanding.",
 
     // Training
@@ -236,14 +235,11 @@ export const translations: Record<Locale, Record<string, string>> = {
 
     // Overview
     "overview.title": "Bu ChatGPT nasıl çalışıyor ya?",
-    "overview.desc.0": "Yapay zeka modelleri (LLM) inanılmaz. LLM o kadar inanılmaz ki bu uygulamayı bile Gemini ile yaptım. Böyle bir teknoloji öğrenilmez mi? Eminim arka planı çok zor sanıyorsun. 10. adımda işin temel prensiplerini öğreneceğine söz veriyorum. Ufkun açılacak bak gör.",
+    "overview.desc.0": "Yapay zeka modelleri (LLM) öyle inanılmaz ki bu uygulamayı bile Gemini ile yapıldı. Böyle bir teknoloji öğrenilmez mi? Eminim arka planı çok zor sanıyorsun. Korkma gel, ufkun açılacak.",
     "overview.desc.1": "Tıpkı telefonlarımızdaki akıllı kelime tamamlama (klavye) gibidir. Aşağıda bunun nasıl çalıştığına dair birkaç örneği görebilirsin.",
     "overview.desc.2": "Bir dil modelinin girdiden çıktıya tüm yolculuğunu 10 adımda göreceğiz. Her adımda işin mantığını kavrayacaksın.",
     "overview.autocomplete": "Klavye üstündeki kelime tamamlama gibi düşün, ama çok daha zekisi:",
-    "overview.promise": "Bu rehberin en başında kendi yazacağımız basit bir modeli eğitip test edeceğiz! Sonunda kendi cümlenizi yazıp modelin tahminlerini görebileceksiniz.",
     "overview.next": "Gelin bu aşamaları tek tek inceleyip içerde neler döndüğünü görelim!",
-    "overview.history": "Aslında bu algoritmalar yeni değil. Ancak bu kadar çok yazı (kitap vs.) verilince daha iyiye giderek daha iyi cevap vermesi tahmin edilmiyordu. ChatGPT gibi modeller bugüne kadar yazılmış tüm kitapları ve neredeyse tüm internetteki yazıları biliyor.",
-    "overview.fact": "İnsan beyninin 100 Trilyon parametreden oluştuğu tahmin edilirken, güncel modeller 1 Trilyon parametreden oluşuyor. Ben de bir yerde duydum. Yani yersen!",
 
     // Tokenization
     "token.title": "Token",
@@ -286,9 +282,9 @@ export const translations: Record<Locale, Record<string, string>> = {
 
     // Self-Attention
     "attn.title": "Öz-Dikkat ve Yansıtma",
-    "attn.desc.0": "<strong>Self-Attention</strong>, cümledeki her kelimenin diğer kelimelere tek tek bakıp hangilerinin kendisiyle alakalı olduğuna karar vermesidir. Kelimeler bağlamı bu sayede kavrar.",
-    "attn.desc.1": "Bir kelime, diğer kelimelere ne kadar odaklanacağını Sorgu (Q), Anahtar (K) ve Değer (V) adı verilen vektörlerin matematiksel çarpımıyla belirler.",
-    "attn.desc.2": "Model birden fazla dikkat kafasını paralel çalıştırır (Multi-Head). Sonra bu kafalardan çıkan sonuçları yansıtma matrisi (W_O) ile birleştirerek tek bir çıktı üretir.",
+    "attn.desc.0": "<strong>Self-Attention (Öz-Dikkat)</strong>, modelin bir cümleyi anlama şeklidir. Her kelime diğer tüm kelimelere bakar ve 'Benim için hangisi önemli?' diye karar verir. Tıpkı bir kalabalıkta sadece arkadaşının sesine odaklanman gibi!",
+    "attn.desc.1": "Her kelime, diğerlerine ne kadar önem vereceğini 3 soruyla belirler: <strong>Query (Q)</strong> = 'Ne arıyorum?', <strong>Key (K)</strong> = 'Sende ne var?', <strong>Value (V)</strong> = 'Bana ne bilgi verirsin?'. Önce Q ile K eşleşir (ilgi skoru), sonra V bilgisi alınır.",
+    "attn.desc.2": "Model işi tek gözle değil, <strong>birden fazla gözle (Multi-Head)</strong> yapar. Her göz farklı bir şeye bakar: biri özneye, biri fiile, biri sıfatlara odaklanır. Sonra tüm gözlerin gördükleri birleştirilir (<strong>Concat</strong>) ve tek bir anlamlı sonuca dönüştürülür (<strong>Projection</strong>).",
     "attn.hover": "Kelimelerin üzerine gel ve o kelimenin hangilerine odaklandığını gör:",
     "attn.attends": "\"{word}\" kelimesinin diğer kelimelere odaklanma oranları:",
     "attn.hoverhint": "Görmek için yukarıdaki kelimelerin üzerine fareyle gel...",
@@ -309,9 +305,9 @@ export const translations: Record<Locale, Record<string, string>> = {
 
     // MLP
     "mlp.title": "Mantık Katmanı (MLP)",
-    "mlp.desc.0": "Dikkat mekanizması kelimelerin arasındaki bağlantıyı kurdu. Şimdi sıra bu bilgiyi <strong>yorumlamakta</strong>. MLP katmanı, Attention'ın topladığı bilgileri alır, üzerinde düşünür ve anlam çıkarır. Yani Attention 'neye bakacağımı?' söyler, MLP ise 'bunun anlamı ne?' der.",
-    "mlp.desc.1": "MLP'nin içinde <strong>GELU</strong> adlı bir süzgeç var. Bu süzgeç, önemsiz bilgileri eler, önemli olanları güçlendirir. Tıpkı bir öğrencinin sınav öncesi 'bu konu çıkmaz' deyip bazı sayfaları atlaması gibi!",
-    "mlp.desc.2": "Özetle: Bilgi önce 4 kat büyütülür (detaylı incelenir), sonra süzgeçten geçirilir (gereksizler atılır), en son da eski boyutuna sıkıştırılıp bir sonraki katmana gönderilir. Aşağıdaki şemada adımları takip et!",
+    "mlp.desc.0": "<strong>Attention</strong> hangi kelimelerin birbiriyle alakalı olduğunu bulur. <strong>MLP</strong> ise bu bilgiyi alır ve onun hakkında <strong>düşünür</strong>, yorum yapar. Kısacası: Attention 'kimi dinleyelim?' der, MLP 'bu ne anlama geliyor?' der.",
+    "mlp.desc.1": "MLP'nin içinde <strong>GELU süzgeci</strong> var. Gereksiz bilgileri yumuşakça süzer, önemli olanları güçlendirir. Tıpkı bir barista'nın kahve telvesini süzmesi gibi — kötü kısımlar atılır, iyi kısım kalır.",
+    "mlp.desc.2": "Özet: Bilgi 4 kata çıkarılır (detay), süzgeçten geçer (temizlik), eski boyutuna döner (özet). Aşağıdaki adımları takip et!",
     "mlp.structure": "Mantık Katmanının İç Yapısı",
     "mlp.input": "Gelen Bilgi (768 sayılık vektör)",
     "mlp.multiply1": "↓ 1. Çarpma: Bilgiyi 4'e katla (detaylı incele) ↓",
@@ -383,6 +379,8 @@ export const translations: Record<Locale, Record<string, string>> = {
     "out.temp.med.desc": "Hem mantıklı hem de hafif yaratıcı",
     "out.temp.high": "Yaratıcı/Çılgın (1.5)",
     "out.temp.high.desc": "Çok rastgele kelimeler seçer, şaşırtır",
+    "out.history": "Aslında bu algoritmalar yeni değil. Ancak bu kadar çok yazı (kitap vs.) verilince daha iyiye giderek daha iyi cevap vermesi tahmin edilmiyordu. ChatGPT gibi modeller bugüne kadar yazılmış tüm kitapları ve neredeyse tüm internetteki yazıları biliyor.",
+    "out.fact": "İnsan beyninin 100 Trilyon parametreden oluştuğu tahmin edilirken, güncel modeller 1 Trilyon parametreden oluşuyor. Ben de bir yerde duydum. Yani yersen!",
     "out.insight": "<strong>Olayın Sırrı:</strong> Modeller her kelimeyi tek tek üretir. 100 kelimelik bir cevap için model tüm katmanlarını 100 kez baştan aşağı çalıştırır! Yapay zekanın yazarken yavaşça kelime kelime ilerlemesinin sebebi de tam olarak budur.",
 
     // Training

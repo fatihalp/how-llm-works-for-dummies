@@ -357,10 +357,10 @@ function AppContent() {
                   ? <Sun style={{ width: 16, height: 16 }} />
                   : <Moon style={{ width: 16, height: 16 }} />}
               </IconButton>
-              <Button size="small" variant="outlined" sx={{ minWidth: 44, px: 1, py: 0.25 }}
+              <Button size="small" variant="outlined" sx={{ minWidth: 44, px: 1, py: 0.25, fontSize: "1rem" }}
                 onClick={() => setLocale(locale === "en" ? "tr" : "en")}
               >
-                {locale.toUpperCase()}
+                {locale === "en" ? "🇹🇷" : "🇬🇧"}
               </Button>
               <IconButton onClick={prev} disabled={isFirst} size="small">
                 <ChevronLeft style={{ width: 18, height: 18 }} />

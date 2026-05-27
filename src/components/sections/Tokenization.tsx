@@ -243,50 +243,50 @@ export default function Tokenization({ slide = 0 }: { slide?: number }) {
             <SeniorDeveloperMode
               contentEn={
                 <>
-                  <p>
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     Modern LLMs use subword tokenization algorithms, primarily <strong>Byte Pair Encoding (BPE)</strong> (GPT, LLaMA) or <strong>WordPiece</strong> (BERT). 
-                  </p>
-                  <p className="mt-2 font-semibold">BPE Algorithm Workflow:</p>
-                  <ol className="list-decimal list-inside space-y-1.5 pl-2">
-                    <li>Initialize vocabulary with all individual characters (and byte values 0-255).</li>
-                    <li>Count frequency of consecutive symbol pairs in the training corpus.</li>
-                    <li>Merge the most frequent pair <code>(A, B)</code> to create a new token <code>AB</code>.</li>
-                    <li>Repeat step 2-3 until vocabulary reaches target size (e.g., 32,000 for LLaMA, 100,000 for GPT-4).</li>
-                  </ol>
-                  <p className="mt-3 font-semibold">Deterministic Mapping:</p>
-                  <p>
+                  </Typography>
+                  <Typography sx={{ mt: 2, fontWeight: "bold" }}>BPE Algorithm Workflow:</Typography>
+                  <Box component="ol" sx={{ listStyle: "decimal", listStylePosition: "inside", pl: 2, display: "flex", flexDirection: "column", gap: 0.5, mt: 1 }}>
+                    <Typography component="li" variant="body2" sx={{ color: "text.secondary" }}>Initialize vocabulary with all individual characters (and byte values 0-255).</Typography>
+                    <Typography component="li" variant="body2" sx={{ color: "text.secondary" }}>Count frequency of consecutive symbol pairs in the training corpus.</Typography>
+                    <Typography component="li" variant="body2" sx={{ color: "text.secondary" }}>Merge the most frequent pair <code>(A, B)</code> to create a new token <code>AB</code>.</Typography>
+                    <Typography component="li" variant="body2" sx={{ color: "text.secondary" }}>Repeat step 2-3 until vocabulary reaches target size (e.g., 32,000 for LLaMA, 100,000 for GPT-4).</Typography>
+                  </Box>
+                  <Typography sx={{ mt: 2, fontWeight: "bold" }}>Deterministic Mapping:</Typography>
+                  <Typography variant="body2" sx={{ mt: 1, color: "text.secondary", lineHeight: 1.6 }}>
                     Mathematically, tokenization is a deterministic mapping function:
-                  </p>
+                  </Typography>
                   <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto" }}>
                     {"f: Unicode Text → [t_1, t_2, ..., t_N]  where  t_i ∈ {0, 1, ..., V - 1}"}
                   </Box>
-                  <p className="mt-2">
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     This guarantees zero out-of-vocabulary (OOV) errors because unknown words are split into individual bytes or characters. BPE is trained on the corpus but inference is computed using a precompiled static merge file.
-                  </p>
+                  </Typography>
                 </>
               }
               contentTr={
                 <>
-                  <p>
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     Modern LLM&apos;ler, alt-kelime (subword) tokenlaştırma algoritmaları kullanır. Genellikle <strong>Byte Pair Encoding (BPE)</strong> (GPT, LLaMA) veya <strong>WordPiece</strong> (BERT) tercih edilir.
-                  </p>
-                  <p className="mt-2 font-semibold">BPE Algoritmasının Çalışma Mantığı:</p>
-                  <ol className="list-decimal list-inside space-y-1.5 pl-2">
-                    <li>Sözlüğü tüm tekil karakterler (veya 0-255 arasındaki bayt değerleri) ile başlatır.</li>
-                    <li>Eğitim veri kümesindeki ardışık sembol çiftlerinin frekansını sayar.</li>
-                    <li>En sık geçen <code>(A, B)</code> çiftini birleştirip <code>AB</code> şeklinde yeni bir token oluşturur.</li>
-                    <li>Hedef sözlük boyutuna (örn. LLaMA için 32.000, GPT-4 için 100.000) ulaşılana kadar 2-3. adımları tekrarlar.</li>
-                  </ol>
-                  <p className="mt-3 font-semibold">Deterministik Eşleme:</p>
-                  <p>
+                  </Typography>
+                  <Typography sx={{ mt: 2, fontWeight: "bold" }}>BPE Algoritmasının Çalışma Mantığı:</Typography>
+                  <Box component="ol" sx={{ listStyle: "decimal", listStylePosition: "inside", pl: 2, display: "flex", flexDirection: "column", gap: 0.5, mt: 1 }}>
+                    <Typography component="li" variant="body2" sx={{ color: "text.secondary" }}>Sözlüğü tüm tekil karakterler (veya 0-255 arasındaki bayt değerleri) ile başlatır.</Typography>
+                    <Typography component="li" variant="body2" sx={{ color: "text.secondary" }}>Eğitim veri kümesindeki ardışık sembol çiftlerinin frekansını sayar.</Typography>
+                    <Typography component="li" variant="body2" sx={{ color: "text.secondary" }}>En sık geçen <code>(A, B)</code> çiftini birleştirip <code>AB</code> şeklinde yeni bir token oluşturur.</Typography>
+                    <Typography component="li" variant="body2" sx={{ color: "text.secondary" }}>Hedef sözlük boyutuna (örn. LLaMA için 32.000, GPT-4 için 100.000) ulaşılana kadar 2-3. adımları tekrarlar.</Typography>
+                  </Box>
+                  <Typography sx={{ mt: 2, fontWeight: "bold" }}>Deterministik Eşleme:</Typography>
+                  <Typography variant="body2" sx={{ mt: 1, color: "text.secondary", lineHeight: 1.6 }}>
                     Matematiksel olarak tokenlaştırma, deterministik bir eşleme fonksiyonudur:
-                  </p>
+                  </Typography>
                   <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto" }}>
                     {"f: Unicode Metin → [t_1, t_2, ..., t_N]  burada  t_i ∈ {0, 1, ..., V - 1}"}
                   </Box>
-                  <p className="mt-2">
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
                     Bu sayede sözlük dışı (out-of-vocabulary - OOV) hatası alma olasılığı sıfıra indirilir, çünkü bilinmeyen kelimeler tekil baytlara veya karakterlere kadar parçalanabilir.
-                  </p>
+                  </Typography>
                 </>
               }
             />
