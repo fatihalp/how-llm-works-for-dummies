@@ -7,9 +7,19 @@ const container = { hidden: {}, show: { transition: { staggerChildren: 0.1 } } }
 const item = { hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } };
 
 export default function Overview() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
 
   const pipelineKeys = ["overview.pipeline.1", "overview.pipeline.2", "overview.pipeline.3", "overview.pipeline.4", "overview.pipeline.5"];
+
+  const examples = locale === "tr" ? [
+    { input: "Bir varmış, bir", output: "yokmuş", color: "text-green-400" },
+    { input: "Türkiye'nin başkenti", output: "Ankara'dır", color: "text-blue-400" },
+    { input: "Kedi halının üzerine", output: "oturdu", color: "text-yellow-400" },
+  ] : [
+    { input: "The cat sat on the", output: "mat", color: "text-green-400" },
+    { input: "Once upon a", output: "time", color: "text-blue-400" },
+    { input: "The capital of France is", output: "Paris", color: "text-yellow-400" },
+  ];
 
   return (
     <motion.div variants={container} initial="hidden" animate="show" className="space-y-8">
@@ -21,11 +31,7 @@ export default function Overview() {
       <motion.div variants={item} className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
         <h4 className="text-lg font-semibold text-white mb-4">{t("overview.autocomplete")}</h4>
         <div className="flex flex-col gap-3">
-          {[
-            { input: "The cat sat on the", output: "mat", color: "text-green-400" },
-            { input: "Once upon a", output: "time", color: "text-blue-400" },
-            { input: "The capital of France is", output: "Paris", color: "text-yellow-400" },
-          ].map((ex, i) => (
+          {examples.map((ex, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, x: -20 }}

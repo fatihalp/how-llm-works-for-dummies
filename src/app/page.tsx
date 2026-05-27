@@ -120,12 +120,12 @@ function AppContent() {
               onClick={() => goTo(i)}
               className={`w-full text-left px-4 py-2.5 flex items-center gap-3 text-sm transition-all ${
                 i === currentStep
-                  ? "bg-purple-600/20 text-purple-300 border-r-2 border-purple-400"
+                  ? "bg-slate-800 text-slate-100 font-semibold border-r-2 border-blue-500"
                   : "text-slate-400 hover:text-slate-200 hover:bg-slate-800"
               }`}
             >
               <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                i === currentStep ? "bg-purple-500 text-white" : i < currentStep ? "bg-green-600 text-white" : "bg-slate-700 text-slate-400"
+                i === currentStep ? "bg-blue-600 text-white" : i < currentStep ? "bg-slate-600 text-white" : "bg-slate-700 text-slate-400"
               }`}>
                 {i < currentStep ? "✓" : i + 1}
               </span>
@@ -137,7 +137,7 @@ function AppContent() {
           {t("app.step", { current: currentStep + 1, total: sections.length })}
         </div>
       </aside>
-
+ 
       {/* Main content */}
       <main className="flex-1 flex flex-col overflow-hidden">
         {/* Top bar */}
@@ -151,7 +151,7 @@ function AppContent() {
               title={theme === "light" ? "Switch to Dark Mode" : "Switch to Light Mode"}
             >
               {theme === "light" ? (
-                <Moon className="w-4 h-4 text-purple-600" />
+                <Moon className="w-4 h-4 text-blue-600" />
               ) : (
                 <Sun className="w-4 h-4 text-yellow-400" />
               )}
@@ -162,7 +162,7 @@ function AppContent() {
               <button
                 onClick={() => setLocale("en")}
                 className={`px-2.5 py-1.5 rounded-md text-xs font-medium transition-all ${
-                  locale === "en" ? "bg-purple-600 text-white" : "text-slate-400 hover:text-white"
+                  locale === "en" ? "bg-blue-600 text-white" : "text-slate-400 hover:text-white"
                 }`}
               >
                 EN
@@ -170,7 +170,7 @@ function AppContent() {
               <button
                 onClick={() => setLocale("tr")}
                 className={`px-2.5 py-1.5 rounded-md text-xs font-medium transition-all ${
-                  locale === "tr" ? "bg-purple-600 text-white" : "text-slate-400 hover:text-white"
+                  locale === "tr" ? "bg-blue-600 text-white" : "text-slate-400 hover:text-white"
                 }`}
               >
                 TR
@@ -187,7 +187,7 @@ function AppContent() {
             <button
               onClick={next}
               disabled={currentStep === sections.length - 1}
-              className="p-2 rounded-lg bg-purple-600 text-white hover:bg-purple-500 disabled:opacity-30 disabled:cursor-not-allowed transition"
+              className="p-2 rounded-lg bg-blue-600 text-white hover:bg-blue-500 disabled:opacity-30 disabled:cursor-not-allowed transition"
             >
               <ChevronRight className="w-4 h-4" />
             </button>

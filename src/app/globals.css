@@ -1,41 +1,41 @@
 @import "tailwindcss";
 
 :root {
-  /* Light Mode values by default for a clean, premium white design */
-  --background: #f8fafc;
-  --foreground: #0f172a;
+  /* Apple Light Mode Design System */
+  --background: #ffffff;
+  --foreground: #1d1d1f;
   --slate-900: #ffffff;
-  --slate-800: #f1f5f9;
-  --slate-700: #e2e8f0;
-  --slate-600: #cbd5e1;
-  --slate-500: #64748b;
-  --slate-400: #475569;
-  --slate-300: #1e293b;
-  --slate-200: #0f172a;
-  --slate-100: #090d16;
-  --text-white: #0f172a;
-  --scrollbar-track: #f1f5f9;
-  --scrollbar-thumb: #cbd5e1;
-  --scrollbar-thumb-hover: #94a3b8;
+  --slate-800: #f5f5f7;
+  --slate-700: #d2d2d7;
+  --slate-600: #e8e8ed;
+  --slate-500: #86868b;
+  --slate-400: #48484a;
+  --slate-300: #1d1d1f;
+  --slate-200: #1d1d1f;
+  --slate-100: #1d1d1f;
+  --text-white: #1d1d1f;
+  --scrollbar-track: #f5f5f7;
+  --scrollbar-thumb: #d2d2d7;
+  --scrollbar-thumb-hover: #86868b;
 }
 
 .dark {
-  /* Dark Mode values for a stunning deep black / dark indigo theme */
-  --background: #0b0f19;
-  --foreground: #f1f5f9;
-  --slate-900: #111827;
-  --slate-800: #1f2937;
-  --slate-700: #374151;
-  --slate-600: #4b5563;
-  --slate-500: #6b7280;
-  --slate-400: #9ca3af;
-  --slate-300: #d1d5db;
-  --slate-200: #e5e7eb;
-  --slate-100: #f3f4f6;
+  /* Apple Dark Mode Design System */
+  --background: #000000;
+  --foreground: #f5f5f7;
+  --slate-900: #161617;
+  --slate-800: #222224;
+  --slate-700: #323234;
+  --slate-600: #424245;
+  --slate-500: #86868b;
+  --slate-400: #aeaeb2;
+  --slate-300: #f5f5f7;
+  --slate-200: #f5f5f7;
+  --slate-100: #ffffff;
   --text-white: #ffffff;
-  --scrollbar-track: #111827;
-  --scrollbar-thumb: #374151;
-  --scrollbar-thumb-hover: #4b5563;
+  --scrollbar-track: #161617;
+  --scrollbar-thumb: #424245;
+  --scrollbar-thumb-hover: #86868b;
 }
 
 @theme {
@@ -53,24 +53,37 @@
   --color-white: var(--text-white);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Apple Blue Monochrome Mapping for Purples */
+  --color-purple-950: #000b1a;
+  --color-purple-900: #001f4d;
+  --color-purple-800: #002d66;
+  --color-purple-700: #004399;
+  --color-purple-600: #0066cc;
+  --color-purple-500: #0071e3;
+  --color-purple-400: #338eed;
+  --color-purple-300: #66abf2;
+  --color-purple-200: #99c8f7;
+  --color-purple-100: #cce4fc;
+  --color-purple-50: #f2f8ff;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  transition: background-color 0.3s cubic-bezier(0.25, 0.1, 0.25, 1), color 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
-/* Ensure smooth theme transition for standard elements */
+/* Ensure smooth theme transitions globally */
 *, *::before, *::after {
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+  transition: background-color 0.3s cubic-bezier(0.25, 0.1, 0.25, 1), border-color 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--scrollbar-track); }
-::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 3px; }
+/* Apple style scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 10px; border: 2px solid var(--background); }
 ::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-thumb-hover); }
 
 /* Smooth scroll */
