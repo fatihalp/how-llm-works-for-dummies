@@ -216,7 +216,7 @@ export const translations: Record<Locale, Record<string, string>> = {
   tr: {
     // App chrome
     "app.title": "LLM'ler Nasıl Çalışır",
-    "app.subtitle": "Öğrenci işi, çok kolay ve görsel rehber!",
+    "app.subtitle": "Beş yaşında gibi anlatıyoruz.",
     "app.step": "Adım {current} / {total}",
 
     // Sidebar section titles
@@ -234,7 +234,7 @@ export const translations: Record<Locale, Record<string, string>> = {
 
     // Overview
     "overview.title": "Büyük Dil Modeli (LLM) de Neyin Nesi?",
-    "overview.desc.0": "Büyük Dil Modeli (LLM), milyarlarca cümle okuyarak dildeki kalıpları öğrenmiş bir bilgisayar programıdır. Sıradaki kelimeyi tahmin ederek metinler üretebilir.",
+    "overview.desc.0": "Yapay zeka modelleri (LLM) inanılmaz. Eminim arka planı çok zor sanıyorsun. 10. adımda işin temel prensiplerini öğreneceğine söz veriyorum. Ufkun açılacak bak gör.",
     "overview.desc.1": "Tıpkı telefonlarımızdaki akıllı kelime tamamlama (klavye) gibidir. Aşağıda bunun nasıl çalıştığına dair birkaç örneği görebilirsin.",
     "overview.desc.2": "Sözümüz söz: Bu rehberin en başında kendi yazacağımız basit bir modeli eğitip test edeceğiz! Sonunda kendi cümlenizi yazıp modelin tahminlerini görebileceksiniz.",
     "overview.autocomplete": "Klavye üstündeki kelime tamamlama gibi düşün, ama çok daha zekisi:",

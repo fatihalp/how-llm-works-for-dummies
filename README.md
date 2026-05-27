@@ -1,3 +1,7 @@
+# How LLMs Work / LLM'ler Nasıl Çalışır
+
+![Book Cover](./cover.jpg)
+
 This interactive 10-step project explains how LLMs work in just 10 minutes. - Bu interaktif 10 adımlı proje, LLM'lerin nasıl çalıştığını sadece 10 dakikada anlatıyor.
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).

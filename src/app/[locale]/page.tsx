@@ -179,7 +179,7 @@ function AppContent() {
       </aside>
  
       {/* Main content */}
-      <main className="flex-1 flex flex-col overflow-hidden">
+      <main className="flex-1 flex flex-col overflow-hidden relative">
         {/* Top bar */}
         <header className="h-14 bg-slate-900/50 backdrop-blur border-b border-slate-700 flex items-center justify-between px-6 shrink-0 z-10">
           <h2 className="text-lg font-semibold text-white truncate max-w-[200px] sm:max-w-xs">{t(sections[currentStep].titleKey)}</h2>
@@ -260,7 +260,7 @@ function AppContent() {
         </div>
 
         {/* Content area */}
-        <div className="flex-1 overflow-y-auto p-6 md:p-10 relative">
+        <div className="flex-1 overflow-y-auto p-6 md:p-10 pb-24 relative">
           <AnimatePresence mode="wait" custom={direction}>
             <motion.div
               key={sections[currentStep].id + "_" + currentSlide + "_" + locale}
@@ -275,6 +275,19 @@ function AppContent() {
             </motion.div>
           </AnimatePresence>
         </div>
+
+        {/* Floating Next Button */}
+        {!(currentStep === sections.length - 1 && currentSlide === sections[currentStep].slidesCount - 1) && (
+          <div className="absolute bottom-6 right-6 md:bottom-10 md:right-10 z-20">
+            <button
+              onClick={next}
+              className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition-all hover:scale-105 duration-200 cursor-pointer text-base active:scale-95 group"
+            >
+              <span>{locale === "tr" ? "İleri" : "Next"}</span>
+              <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </button>
+          </div>
+        )}
       </main>
     </div>
   );
