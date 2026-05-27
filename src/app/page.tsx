@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight, Brain, Layers, Zap, Globe } from "lucide-react";
+import { ChevronLeft, ChevronRight, Brain, Layers, Zap, Globe, Sun, Moon } from "lucide-react";
 import { I18nProvider, useI18n } from "@/i18n/context";
 
 import Overview from "@/components/sections/Overview";
@@ -57,6 +57,29 @@ function AppContent() {
   const [currentStep, setCurrentStep] = useState(0);
   const [direction, setDirection] = useState(0);
   const { t, locale, setLocale } = useI18n();
+  const [theme, setTheme] = useState<"light" | "dark">("dark");
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme") as "light" | "dark" | null;
+    const initialTheme = savedTheme || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    setTheme(initialTheme);
+    if (initialTheme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const nextTheme = theme === "light" ? "dark" : "light";
+    setTheme(nextTheme);
+    localStorage.setItem("theme", nextTheme);
+    if (nextTheme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  };
 
   const goTo = (idx: number) => {
     setDirection(idx > currentStep ? 1 : -1);
@@ -121,6 +144,19 @@ function AppContent() {
         <header className="h-14 bg-slate-900/50 backdrop-blur border-b border-slate-700 flex items-center justify-between px-6 shrink-0">
           <h2 className="text-lg font-semibold text-white">{t(sections[currentStep].titleKey)}</h2>
           <div className="flex items-center gap-3">
+            {/* Theme Toggle */}
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition flex items-center justify-center cursor-pointer"
+              title={theme === "light" ? "Switch to Dark Mode" : "Switch to Light Mode"}
+            >
+              {theme === "light" ? (
+                <Moon className="w-4 h-4 text-purple-600" />
+              ) : (
+                <Sun className="w-4 h-4 text-yellow-400" />
+              )}
+            </button>
+
             {/* Language switcher */}
             <div className="flex items-center gap-1 bg-slate-800 rounded-lg p-0.5">
               <button
