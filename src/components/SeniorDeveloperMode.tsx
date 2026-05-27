@@ -1,8 +1,8 @@
 "use client";
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, Code2 } from "lucide-react";
+
 import { useI18n } from "@/i18n/context";
+import { Accordion, AccordionSummary, AccordionDetails, Box, Typography, useTheme } from "@mui/material";
+import { ChevronDown, Code2 } from "lucide-react";
 
 interface SeniorDeveloperModeProps {
   titleTr?: string;
@@ -17,44 +17,78 @@ export default function SeniorDeveloperMode({
   contentTr,
   contentEn,
 }: SeniorDeveloperModeProps) {
-  const [isOpen, setIsOpen] = useState(false);
   const { locale } = useI18n();
+  const theme = useTheme();
 
   const title = locale === "tr" ? titleTr : titleEn;
   const content = locale === "tr" ? contentTr : contentEn;
 
   return (
-    <div className="mt-8 border border-slate-800 rounded-xl bg-slate-900/30 overflow-hidden transition-all duration-300">
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between p-5 text-left font-mono text-base md:text-lg text-slate-300 hover:text-white hover:bg-slate-800/40 transition cursor-pointer"
+    <Accordion
+      disableGutters
+      square={false}
+      sx={{
+        mt: 4,
+        borderRadius: 3,
+        border: 1,
+        borderColor: theme.palette.mode === "dark" ? "grey.800" : "grey.300",
+        bgcolor: theme.palette.mode === "dark" ? "rgba(17, 24, 39, 0.3)" : "rgba(255, 255, 255, 0.4)",
+        backgroundImage: "none",
+        "&:before": { display: "none" },
+        overflow: "hidden"
+      }}
+    >
+      <AccordionSummary
+        expandIcon={<ChevronDown style={{ color: theme.palette.text.secondary, width: 22, height: 22 }} />}
+        sx={{
+          py: 1,
+          px: 3,
+          bgcolor: theme.palette.mode === "dark" ? "rgba(17, 24, 39, 0.1)" : "rgba(0, 0, 0, 0.02)",
+          "&:hover": {
+            bgcolor: theme.palette.mode === "dark" ? "rgba(255, 255, 255, 0.03)" : "rgba(0, 0, 0, 0.04)"
+          }
+        }}
       >
-        <div className="flex items-center gap-3">
-          <Code2 className="w-5 h-5 md:w-6 md:h-6 text-blue-500 shrink-0" />
-          <span className="font-semibold tracking-wider uppercase">{title}</span>
-        </div>
-        <motion.div
-          animate={{ rotate: isOpen ? 180 : 0 }}
-          transition={{ duration: 0.2 }}
-        >
-          <ChevronDown className="w-5 h-5 md:w-6 md:h-6 text-slate-400 shrink-0" />
-        </motion.div>
-      </button>
-
-      <AnimatePresence initial={false}>
-        {isOpen && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.25, ease: "easeInOut" }}
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+          <Code2 style={{ color: "#0071e3", width: 22, height: 22 }} />
+          <Typography 
+            variant="subtitle1" 
+            sx={{ 
+              fontFamily: "monospace", 
+              letterSpacing: "0.05em",
+              textTransform: "uppercase",
+              fontWeight: "bold"
+            }}
           >
-            <div className="p-6 border-t border-slate-800/80 bg-slate-950/40 text-slate-200 text-base leading-relaxed space-y-4 font-sans">
-              {content}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+            {title}
+          </Typography>
+        </Box>
+      </AccordionSummary>
+      <AccordionDetails 
+        sx={{ 
+          p: 3, 
+          borderTop: 1, 
+          borderColor: theme.palette.mode === "dark" ? "grey.800" : "grey.300",
+          bgcolor: theme.palette.mode === "dark" ? "rgba(10, 15, 30, 0.4)" : "rgba(255, 255, 255, 0.5)",
+          color: "text.primary",
+          fontSize: "1rem",
+          lineHeight: 1.7,
+          fontFamily: "var(--font-sans)",
+          "& p": { mb: 2 },
+          "& p:last-child": { mb: 0 },
+          "& code": {
+            bgcolor: theme.palette.mode === "dark" ? "grey.950" : "grey.100",
+            px: 0.75,
+            py: 0.25,
+            borderRadius: 1,
+            fontFamily: "monospace"
+          }
+        }}
+      >
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          {content}
+        </Box>
+      </AccordionDetails>
+    </Accordion>
   );
 }

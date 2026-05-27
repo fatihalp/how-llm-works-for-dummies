@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { useI18n } from "@/i18n/context";
 import SeniorDeveloperMode from "@/components/SeniorDeveloperMode";
+import { Box, Typography, Paper, Slider, useTheme } from "@mui/material";
 
 const container = { hidden: {}, show: { transition: { staggerChildren: 0.1 } } };
 const item = { hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } };
@@ -20,6 +21,7 @@ const labelsTr = ["kedi", "köpek", "balık", "araba", "minder"];
 
 export default function Softmax({ slide = 0 }: { slide?: number }) {
   const { t, locale } = useI18n();
+  const theme = useTheme();
   const [rawValues, setRawValues] = useState([2.0, 1.0, 0.1, -1.0, 3.5]);
   const probs = softmax(rawValues);
 
@@ -32,150 +34,205 @@ export default function Softmax({ slide = 0 }: { slide?: number }) {
   };
 
   return (
-    <motion.div variants={container} initial="hidden" animate="show" className="space-y-8">
+    <Box 
+      component={motion.div} 
+      variants={container} 
+      initial="hidden" 
+      animate="show" 
+      sx={{ display: "flex", flexDirection: "column", gap: 4 }}
+    >
       {slide === 0 && (
         <>
-          <motion.div variants={item}>
-            <h3 className="text-2xl font-bold text-white mb-3">{t("sm.title")}</h3>
-            <p className="text-slate-300 leading-relaxed text-lg" dangerouslySetInnerHTML={{ __html: t("sm.desc.0") }} />
-          </motion.div>
+          <Box component={motion.div} variants={item}>
+            <Typography sx={{ fontWeight: "bold" }} variant="h4" component="h3" gutterBottom>
+              {t("sm.title")}
+            </Typography>
+            <Typography 
+              variant="body1" 
+              sx={{ color: "text.secondary", fontSize: "1.1rem", lineHeight: 1.7 }}
+              dangerouslySetInnerHTML={{ __html: t("sm.desc.0") }} 
+            />
+          </Box>
 
-          <motion.div variants={item} className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
-            <h4 className="text-base font-semibold text-slate-400 uppercase tracking-wide mb-4">
+          <Paper component={motion.div} variants={item} sx={{ p: 3 }}>
+            <Typography variant="subtitle1" sx={{ mb: 3, color: "text.secondary", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: "bold" }}>
               {t("sm.interactive")}
-            </h4>
+            </Typography>
 
-            <div className="space-y-4">
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}>
               {rawValues.map((val, i) => (
-                <div key={i} className="flex items-center gap-4">
-                  <span className="w-12 text-xs text-slate-400 font-mono">{labels[i]}</span>
-                  <input
-                    type="range"
+                <Box key={i} sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                  <Typography variant="body2" sx={{ width: 56, fontFamily: "monospace", color: "text.secondary" }}>
+                    {labels[i]}
+                  </Typography>
+                  <Slider
                     min={-5}
                     max={5}
                     step={0.1}
                     value={val}
-                    onChange={(e) => updateValue(i, parseFloat(e.target.value))}
-                    className="flex-1 accent-blue-600 cursor-pointer"
+                    onChange={(_, newVal) => updateValue(i, newVal as number)}
+                    sx={{ flexGrow: 1 }}
                   />
-                  <span className="w-12 text-xs text-slate-300 font-mono text-right">{val.toFixed(1)}</span>
-                  <div className="w-32 flex items-center gap-2">
-                    <motion.div
-                      className="h-5 bg-blue-500 rounded"
-                      animate={{ width: `${probs[i] * 100}%` }}
+                  <Typography variant="body2" sx={{ width: 40, fontFamily: "monospace", color: "text.primary", textAlign: "right" }}>
+                    {val.toFixed(1)}
+                  </Typography>
+                  <Box sx={{ width: 140, display: "flex", alignItems: "center", gap: 1.5 }}>
+                    <Box
+                      component={motion.div}
+                      sx={{
+                        height: 20,
+                        bgcolor: "primary.main",
+                        borderRadius: 1,
+                      }}
+                      animate={{ width: `${probs[i] * 90}px` }}
                       transition={{ type: "spring", stiffness: 300, damping: 30 }}
                     />
-                    <span className="text-xs text-blue-300 font-mono whitespace-nowrap">
+                    <Typography variant="caption" sx={{ color: "primary.light", fontFamily: "monospace", fontWeight: "bold", whiteSpace: "nowrap" }}>
                       {(probs[i] * 100).toFixed(1)}%
-                    </span>
-                  </div>
-                </div>
+                    </Typography>
+                  </Box>
+                </Box>
               ))}
-            </div>
+            </Box>
 
-            <div className="mt-4 text-xs text-slate-400">
-              {t("sm.sum")} <span className="text-white font-mono">{probs.reduce((a, b) => a + b, 0).toFixed(4)}</span> {t("sm.always")}
-            </div>
-          </motion.div>
+            <Typography variant="caption" sx={{ color: "text.secondary", mt: 3, display: "block", fontFamily: "monospace" }}>
+              {t("sm.sum")}{" "}
+              <Box component="span" sx={{ color: "text.primary", fontWeight: "bold" }}>
+                {probs.reduce((a, b) => a + b, 0).toFixed(4)}
+              </Box>{" "}
+              {t("sm.always")}
+            </Typography>
+          </Paper>
         </>
       )}
 
       {slide === 1 && (
         <>
-          <motion.div variants={item}>
-            <h3 className="text-2xl font-bold text-white mb-3">{t("sm.title")}</h3>
-            <p className="text-slate-300 leading-relaxed text-lg" dangerouslySetInnerHTML={{ __html: t("sm.desc.1") }} />
-          </motion.div>
+          <Box component={motion.div} variants={item}>
+            <Typography sx={{ fontWeight: "bold" }} variant="h4" component="h3" gutterBottom>
+              {t("sm.title")}
+            </Typography>
+            <Typography 
+              variant="body1" 
+              sx={{ color: "text.secondary", fontSize: "1.1rem", lineHeight: 1.7 }}
+              dangerouslySetInnerHTML={{ __html: t("sm.desc.1") }} 
+            />
+          </Box>
 
-          <motion.div variants={item} className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
-            <h4 className="text-base font-semibold text-slate-400 uppercase tracking-wide mb-3">{t("sm.formula.title")}</h4>
-            <div className="bg-slate-900 rounded-lg p-5 font-mono text-base text-center space-y-2.5">
-              <p className="text-green-400">softmax(xᵢ) = e^xᵢ / Σ(e^xⱼ)</p>
-              <p className="text-slate-500 text-xs">{t("sm.formula.desc")}</p>
-            </div>
-          </motion.div>
+          <Paper component={motion.div} variants={item} sx={{ p: 3 }}>
+            <Typography variant="subtitle1" sx={{ mb: 2, color: "text.secondary", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: "bold" }}>
+              {t("sm.formula.title")}
+            </Typography>
+            <Box sx={{ bgcolor: theme.palette.mode === "dark" ? "grey.950" : "grey.100", p: 3, borderRadius: 2, fontFamily: "monospace", textAlign: "center", display: "flex", flexDirection: "column", gap: 1 }}>
+              <Typography variant="h6" sx={{ color: "primary.main", fontFamily: "monospace", fontWeight: "bold" }}>
+                softmax(xᵢ) = e^xᵢ / Σ(e^xⱼ)
+              </Typography>
+              <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                {t("sm.formula.desc")}
+              </Typography>
+            </Box>
+          </Paper>
 
-          <motion.div variants={item} className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
-            <h4 className="text-base font-semibold text-slate-400 uppercase tracking-wide mb-3">{t("sm.example")}</h4>
-            <div className="bg-slate-900 rounded-lg p-5 font-mono text-sm space-y-1.5 overflow-x-auto">
-              <p className="text-slate-400">{t("sm.raw")} [{rawValues.map(v => v.toFixed(1)).join(", ")}]</p>
-              <p className="text-blue-400">{t("sm.evalues")} [{rawValues.map(v => Math.exp(v).toFixed(2)).join(", ")}]</p>
-              <p className="text-yellow-400">{t("sm.sumval")} {rawValues.map(v => Math.exp(v)).reduce((a, b) => a + b, 0).toFixed(2)}</p>
-              <p className="text-green-400">{t("sm.probs")} [{probs.map(p => p.toFixed(4)).join(", ")}]</p>
-            </div>
-          </motion.div>
+          <Paper component={motion.div} variants={item} sx={{ p: 3 }}>
+            <Typography variant="subtitle1" sx={{ mb: 2, color: "text.secondary", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: "bold" }}>
+              {t("sm.example")}
+            </Typography>
+            <Box 
+              sx={{ 
+                bgcolor: theme.palette.mode === "dark" ? "grey.950" : "grey.100", 
+                p: 3, 
+                borderRadius: 2, 
+                fontFamily: "monospace", 
+                display: "flex", 
+                flexDirection: "column", 
+                gap: 1,
+                fontSize: "0.9rem",
+                overflowX: "auto"
+              }}
+            >
+              <div>{t("sm.raw")} [2.0, 1.0, 3.5]</div>
+              <div>{t("sm.evalues")} [e^2.0, e^1.0, e^3.5] ≈ [7.39, 2.72, 33.12]</div>
+              <div>{t("sm.sumval")} 7.39 + 2.72 + 33.12 = 43.23</div>
+              <div style={{ color: "#60a5fa" }}>{t("sm.probs")} [7.39/43.23, 2.72/43.23, 33.12/43.23] ≈ [17.1%, 6.3%, 76.6%]</div>
+            </Box>
+          </Paper>
         </>
       )}
 
       {slide === 2 && (
         <>
-          <motion.div variants={item}>
-            <h3 className="text-2xl font-bold text-white mb-3">{t("sm.title")}</h3>
-            <p className="text-slate-300 leading-relaxed text-lg" dangerouslySetInnerHTML={{ __html: t("sm.desc.2") }} />
-          </motion.div>
+          <Box component={motion.div} variants={item}>
+            <Typography sx={{ fontWeight: "bold" }} variant="h4" component="h3" gutterBottom>
+              {t("sm.title")}
+            </Typography>
+            <Typography 
+              variant="body1" 
+              sx={{ color: "text.secondary", fontSize: "1.1rem", lineHeight: 1.7 }}
+              dangerouslySetInnerHTML={{ __html: t("sm.desc.2") }} 
+            />
+          </Box>
 
-          <motion.div variants={item} className="text-slate-400 text-base bg-blue-900/20 border border-blue-800/30 rounded-lg p-5">
-            <span dangerouslySetInnerHTML={{ __html: t("sm.insight") }} />
-          </motion.div>
+          <Paper
+            component={motion.div}
+            variants={item}
+            elevation={0}
+            sx={{
+              p: 2.5,
+              bgcolor: theme.palette.mode === "dark" ? "rgba(0, 113, 227, 0.1)" : "rgba(0, 113, 227, 0.05)",
+              border: 1,
+              borderColor: theme.palette.mode === "dark" ? "rgba(0, 113, 227, 0.2)" : "rgba(0, 113, 227, 0.1)",
+              borderRadius: 2
+            }}
+          >
+            <Typography variant="body1" sx={{ color: "text.primary", fontSize: "1rem" }} dangerouslySetInnerHTML={{ __html: t("sm.insight") }} />
+          </Paper>
 
-          <motion.div variants={item}>
+          <Box component={motion.div} variants={item}>
             <SeniorDeveloperMode
               contentEn={
                 <>
                   <p>
-                    In GPU kernels, a naive implementation of Softmax:
+                    In hardware acceleration, directly calculating the softmax function can cause numeric overflow or underflow because <code>e^x</code> grows exponentially. To prevent this, standard libraries implement <strong>Safe Softmax</strong> by subtracting the maximum value from all inputs:
                   </p>
-                  <div className="bg-slate-950 p-3 rounded my-2 font-mono text-center text-blue-400 overflow-x-auto font-bold">
-                    {"Softmax(x_i) = e^(x_i) / Σ e^(x_j)"}
-                  </div>
-                  <p className="text-slate-300 mt-2">
-                    suffers from numerical instability. Large positive values of <code>x_i</code> lead to float overflow (exponents of values greater than ~88 exceed single-precision float capacity). To guarantee numerical stability, hardware implementations subtract the maximum input value:
+                  <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto" }}>
+                    {"Softmax(x_i) = \\frac{e^{x_i - \\max(x)}}{ \\sum_j e^{x_j - \\max(x)} }"}
+                  </Box>
+                  <p className="mt-2 text-slate-300 font-sans">
+                    Mathematically, the output is unchanged since subtracting a constant from exponents scales both numerator and denominator by the exact same factor:
                   </p>
-                  <div className="bg-slate-950 p-3 rounded my-2 font-mono text-center text-blue-400 overflow-x-auto font-bold">
-                    {"Softmax(x_i) = Softmax(x_i - C)  where  C = max_j(x_j)"}
-                  </div>
-                  <p className="text-slate-300 mt-2 font-semibold">Temperature Scaling Mathematics:</p>
-                  <p className="text-slate-300">
-                    During decoding/sampling, temperature <code>T &gt; 0</code> scales the logits before Softmax:
-                  </p>
-                  <div className="bg-slate-950 p-3 rounded my-2 font-mono text-center text-blue-400 overflow-x-auto font-bold">
-                    {"P(x_i | x_{<t}) = e^(x_i / T) / Σ e^(x_j / T)"}
-                  </div>
-                  <p className="text-slate-300 mt-2">
-                    As <code>T \to 0</code>, the probability of the maximum value approaches 1, reducing the operation to a deterministic ArgMax selection. As <code>T \to \infty</code>, the scaling drives all exponents to 1, causing the distribution to converge to a uniform distribution <code>1 / V</code>.
+                  <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto", fontSize: "0.8rem" }}>
+                    {"\\frac{e^{x_i - c}}{\\sum e^{x_j - c}} = \\frac{e^{x_i} e^{-c}}{\\sum e^{x_j} e^{-c}} = \\frac{e^{x_i}}{\\sum e^{x_j}}"}
+                  </Box>
+                  <p className="mt-2 font-semibold">Logit scaling with Temperature:</p>
+                  <p className="text-slate-300 font-sans">
+                    Temperature scaling divide logits by <code>T</code> before applying softmax. As <code>T \to 0</code>, the probability distribution converges to a one-hot vector (deterministic greedy argmax selection). As <code>T \to \infty</code>, the distribution approaches a uniform probability, where all tokens are equally likely.
                   </p>
                 </>
               }
               contentTr={
                 <>
                   <p>
-                    GPU çekirdeklerinde (kernels), Softmax fonksiyonunun doğrudan hesaplanması:
+                    Donanım hızlandırıcılarında (GPU/TPU), <code>e^x</code> üstel olarak büyüdüğü için doğrudan softmax hesaplaması yapmak sayısal taşmaya (overflow) veya sıfırlanmaya (underflow) sebep olur. Bunu önlemek için kütüphaneler tüm girdilerden maksimum değeri çıkararak <strong>Güvenli Softmax (Safe Softmax)</strong> formülünü uygular:
                   </p>
-                  <div className="bg-slate-950 p-3 rounded my-2 font-mono text-center text-blue-400 overflow-x-auto font-bold">
-                    {"Softmax(x_i) = e^(x_i) / Σ e^(x_j)"}
-                  </div>
-                  <p className="text-slate-300 mt-2">
-                    sayısal kararsızlığa yol açar. Büyük pozitif <code>x_i</code> değerleri için <code>e^(x_i)</code> hesaplanırken float taşması (overflow) meydana gelir (örneğin single-precision float değerleri ~88&apos;in üzerindeki üslerde taşma yaşar). Bunu önlemek amacıyla, kararlı bir GPU uygulaması için logit değerlerinden maksimum değer (C) çıkarılır:
+                  <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto" }}>
+                    {"Softmax(x_i) = \\frac{e^{x_i - \\max(x)}}{ \\sum_j e^{x_j - \\max(x)} }"}
+                  </Box>
+                  <p className="mt-2 text-slate-300 font-sans">
+                    Üstel ifadelerden sabit bir sayı çıkarılması hem payı hem de paydayı aynı oranda ölçeklediği için matematiksel olarak sonuç değişmez:
                   </p>
-                  <div className="bg-slate-950 p-3 rounded my-2 font-mono text-center text-blue-400 overflow-x-auto font-bold">
-                    {"Softmax(x_i) = Softmax(x_i - C)  burada  C = max_j(x_j)"}
-                  </div>
-                  <p className="text-slate-300 mt-2 font-semibold">Sıcaklık (Temperature) Ölçekleme Matematiği:</p>
-                  <p className="text-slate-300">
-                    Metin üretme (kod çözme) sırasında sıcaklık parametresi <code>T &gt; 0</code>, Softmax öncesi logit değerlerini bölerek dağılımı kontrol eder:
-                  </p>
-                  <div className="bg-slate-950 p-3 rounded my-2 font-mono text-center text-blue-400 overflow-x-auto font-bold">
-                    {"P(x_i | x_{<t}) = e^(x_i / T) / Σ e^(x_j / T)"}
-                  </div>
-                  <p className="text-slate-300 mt-2">
-                    <code>T \to 0</code> durumunda en büyük değere sahip elemanın olasılığı 1&apos;e yaklaşır ve sistem deterministik ArgMax seçimine dönüşür. <code>T \to \infty</code> durumunda ise tüm logitlerin üs değerleri 1&apos;e yaklaşarak dağılımın üniform (eşit dağılımlı) <code>1 / V</code> olmasına neden olur.
+                  <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto", fontSize: "0.8rem" }}>
+                    {"\\frac{e^{x_i - c}}{\\sum e^{x_j - c}} = \\frac{e^{x_i} e^{-c}}{\\sum e^{x_j} e^{-c}} = \\frac{e^{x_i}}{\\sum e^{x_j}}"}
+                  </Box>
+                  <p className="mt-2 font-semibold font-sans">Sıcaklık (Temperature) ile Ölçekleme:</p>
+                  <p className="text-slate-300 font-sans">
+                    Sıcaklık katsayısı, softmax işlemine girmeden önce ham skorları (logits) <code>T</code> değerine böler. <code>T \to 0</code> durumunda olasılık dağılımı tek bir kazanan kelimeye (argmax) çöker. <code>T \to \infty</code> durumunda ise dağılım tüm kelimelerin eşit şansa sahip olduğu homojen bir yapıya (uniform distribution) yaklaşır.
                   </p>
                 </>
               }
             />
-          </motion.div>
+          </Box>
         </>
       )}
-    </motion.div>
+    </Box>
   );
 }

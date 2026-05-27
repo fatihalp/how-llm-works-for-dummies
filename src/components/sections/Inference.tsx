@@ -5,6 +5,23 @@ import { motion } from "framer-motion";
 import { useI18n } from "@/i18n/context";
 import SeniorDeveloperMode from "@/components/SeniorDeveloperMode";
 import { Play, RotateCcw, Sparkles, BookOpen, ChevronRight, HelpCircle } from "lucide-react";
+import { 
+  Box, 
+  Typography, 
+  Paper, 
+  Button, 
+  Slider, 
+  Select, 
+  MenuItem, 
+  TextField, 
+  Table, 
+  TableBody, 
+  TableCell, 
+  TableContainer, 
+  TableHead, 
+  TableRow, 
+  useTheme 
+} from "@mui/material";
 
 const container = { hidden: {}, show: { transition: { staggerChildren: 0.1 } } };
 const item = { hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } };
@@ -22,6 +39,7 @@ function tokenizeText(text: string): string[] {
 
 export default function Inference({ slide = 0 }: { slide?: number }) {
   const { t, locale } = useI18n();
+  const theme = useTheme();
 
   // Training text state
   const [trainingText, setTrainingText] = useState("");
@@ -194,285 +212,359 @@ export default function Inference({ slide = 0 }: { slide?: number }) {
   };
 
   return (
-    <motion.div variants={container} initial="hidden" animate="show" className="space-y-8 pb-10">
+    <Box 
+      component={motion.div} 
+      variants={container} 
+      initial="hidden" 
+      animate="show" 
+      sx={{ display: "flex", flexDirection: "column", gap: 4, pb: 5 }}
+    >
       {slide === 0 && (
         <>
-          <motion.div variants={item}>
-            <h3 className="text-2xl font-bold text-white mb-3">{t("infer.title")}</h3>
-            <p className="text-slate-300 leading-relaxed text-lg" dangerouslySetInnerHTML={{ __html: t("infer.desc.0") }} />
-          </motion.div>
+          <Box component={motion.div} variants={item}>
+            <Typography sx={{ fontWeight: "bold" }} variant="h4" component="h3" gutterBottom>
+              {t("infer.title")}
+            </Typography>
+            <Typography 
+              variant="body1" 
+              sx={{ color: "text.secondary", fontSize: "1.1rem", lineHeight: 1.7 }}
+              dangerouslySetInnerHTML={{ __html: t("infer.desc.0") }} 
+            />
+          </Box>
 
           {/* Training Paragraph (Interactive Dataset) */}
-          <motion.div variants={item} className="bg-slate-800/50 rounded-xl p-6 border border-slate-700 space-y-4">
-            <div className="flex justify-between items-center">
-              <div className="flex items-center gap-2">
-                <BookOpen className="w-5 h-5 text-blue-500" />
-                <h4 className="text-md font-semibold text-white">
+          <Paper component={motion.div} variants={item} sx={{ p: 3, display: "flex", flexDirection: "column", gap: 2 }}>
+            <Box sx={{ display: "flex", justifyContent: "between", alignItems: "center" }}>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <BookOpen style={{ color: "#0071e3", width: 22, height: 22 }} />
+                <Typography sx={{ fontWeight: "bold" }} variant="subtitle1">
                   {locale === "tr" ? "Eğitim Verisi (Paragraf)" : "Training Data (Paragraph)"}
-                </h4>
-              </div>
-              <button
+                </Typography>
+              </Box>
+              <Button
+                variant="outlined"
+                size="small"
                 onClick={() => setIsEditingText(!isEditingText)}
-                className="text-xs px-3 py-1.5 rounded-lg bg-slate-700 text-slate-300 hover:bg-slate-600 hover:text-white transition cursor-pointer"
               >
                 {isEditingText 
                   ? (locale === "tr" ? "Eğitimi Tamamla" : "Save & Retrain") 
                   : (locale === "tr" ? "Metni Düzenle" : "Edit Text")}
-              </button>
-            </div>
+              </Button>
+            </Box>
 
             {isEditingText ? (
-              <textarea
+              <TextField
+                multiline
+                fullWidth
+                rows={4}
                 value={trainingText}
                 onChange={(e) => {
                   setTrainingText(e.target.value);
                   setHasUserEdited(true);
                 }}
-                rows={4}
-                className="w-full bg-slate-950 border border-slate-700 rounded-lg p-3 text-sm text-white font-mono focus:outline-none focus:border-blue-500 transition"
+                sx={{ 
+                  bgcolor: "background.default",
+                  "& .MuiInputBase-input": { fontFamily: "monospace", fontSize: "0.95rem" }
+                }}
               />
             ) : (
-              <p className="bg-slate-900/80 p-4 border border-slate-800/80 rounded-lg text-sm text-slate-300 font-mono leading-relaxed select-all">
+              <Typography 
+                variant="body2" 
+                sx={{ 
+                  bgcolor: theme.palette.mode === "dark" ? "grey.950" : "grey.100", 
+                  p: 2.5, 
+                  borderRadius: 2, 
+                  fontFamily: "monospace", 
+                  lineHeight: 1.7,
+                  userSelect: "all"
+                }}
+              >
                 {trainingText}
-              </p>
+              </Typography>
             )}
 
-            <div className="flex flex-wrap gap-4 text-xs text-slate-400">
-              <div>
-                {locale === "tr" ? "Toplam Kelime:" : "Total Tokens (Running text):"}{" "}
-                <span className="text-white font-bold font-mono">{tokens.length}</span>
-              </div>
-              <div>
-                {locale === "tr" ? "Sözlük Boyutu (Benzersiz):" : "Vocabulary Size (Unique):"}{" "}
-                <span className="text-blue-400 font-bold font-mono">{vocabulary.length}</span>
-              </div>
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 3, fontSize: "0.8rem", color: "text.secondary" }}>
+              <Typography variant="caption" sx={{ fontFamily: "monospace" }}>
+                {locale === "tr" ? "Toplam Kelime:" : "Total Tokens:"}{" "}
+                <Box component="span" sx={{ color: "text.primary", fontWeight: "bold" }}>{tokens.length}</Box>
+              </Typography>
+              <Typography variant="caption" sx={{ fontFamily: "monospace" }}>
+                {locale === "tr" ? "Sözlük Boyutu:" : "Vocabulary Size:"}{" "}
+                <Box component="span" sx={{ color: "primary.light", fontWeight: "bold" }}>{vocabulary.length}</Box>
+              </Typography>
               {hasUserEdited && (
-                <button
+                <Button
+                  size="small"
+                  color="error"
+                  startIcon={<RotateCcw style={{ width: 14, height: 14 }} />}
                   onClick={() => {
                     setTrainingText(defaultTexts[locale]);
                     setHasUserEdited(false);
                     resetGeneration();
                   }}
-                  className="text-red-400 hover:underline flex items-center gap-1 cursor-pointer"
+                  sx={{ py: 0 }}
                 >
-                  <RotateCcw className="w-3 h-3" />
-                  {locale === "tr" ? "Varsayılana Sıfırla" : "Reset to default"}
-                </button>
+                  {locale === "tr" ? "Sıfırla" : "Reset"}
+                </Button>
               )}
-            </div>
-          </motion.div>
+            </Box>
+          </Paper>
 
-          {/* Comparison table */}
-          <motion.div variants={item} className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
-            <h4 className="text-lg font-semibold text-white mb-4">{t("infer.table.title")}</h4>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-blue-900/10 border border-blue-500/20 rounded-lg p-4">
-                <p className="text-sm font-bold text-blue-400 mb-3">{t("infer.col.training")}</p>
-                <ul className="text-xs text-slate-300 space-y-2 font-mono">
-                  <li>• {t("infer.t1")}</li>
-                  <li>• {t("infer.t2")}</li>
-                  <li>• {t("infer.t3")}</li>
-                  <li>• {t("infer.t4")}</li>
-                  <li>• {t("infer.t5")}</li>
-                </ul>
-              </div>
-              <div className="bg-green-900/10 border border-green-500/20 rounded-lg p-4">
-                <p className="text-sm font-bold text-green-400 mb-3">{t("infer.col.inference")}</p>
-                <ul className="text-xs text-slate-300 space-y-2 font-mono">
-                  <li>• {t("infer.i1")}</li>
-                  <li>• {t("infer.i2")}</li>
-                  <li>• {t("infer.i3")}</li>
-                  <li>• {t("infer.i4")}</li>
-                  <li>• {t("infer.i5")}</li>
-                </ul>
-              </div>
-            </div>
-          </motion.div>
+          {/* Comparison Table */}
+          <Box component={motion.div} variants={item}>
+            <TableContainer component={Paper}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell sx={{ fontWeight: "bold", width: "50%" }}>{t("infer.col.training")}</TableCell>
+                    <TableCell sx={{ fontWeight: "bold", width: "50%" }}>{t("infer.col.inference")}</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <TableRow>
+                    <TableCell sx={{ color: "text.secondary", py: 1.5 }}>• {t("infer.t1")}</TableCell>
+                    <TableCell sx={{ color: "text.secondary", py: 1.5 }}>• {t("infer.i1")}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell sx={{ color: "text.secondary", py: 1.5 }}>• {t("infer.t2")}</TableCell>
+                    <TableCell sx={{ color: "text.secondary", py: 1.5 }}>• {t("infer.i2")}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell sx={{ color: "text.secondary", py: 1.5 }}>• {t("infer.t3")}</TableCell>
+                    <TableCell sx={{ color: "text.secondary", py: 1.5 }}>• {t("infer.i3")}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell sx={{ color: "text.secondary", py: 1.5 }}>• {t("infer.t4")}</TableCell>
+                    <TableCell sx={{ color: "text.secondary", py: 1.5 }}>• {t("infer.i4")}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell sx={{ color: "text.secondary", py: 1.5 }}>• {t("infer.t5")}</TableCell>
+                    <TableCell sx={{ color: "text.secondary", py: 1.5 }}>• {t("infer.i5")}</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Box>
         </>
       )}
 
       {slide === 1 && (
         <>
-          <motion.div variants={item}>
-            <h3 className="text-2xl font-bold text-white mb-3">
+          <Box component={motion.div} variants={item}>
+            <Typography sx={{ fontWeight: "bold" }} variant="h4" component="h3" gutterBottom>
               {locale === "tr" ? "Çıkarım ve Cümle Üretim Laboratuvarı" : "Inference & Sentence Playground"}
-            </h3>
-            <p className="text-slate-300 leading-relaxed text-lg" dangerouslySetInnerHTML={{ __html: t("infer.desc.1") }} />
-          </motion.div>
+            </Typography>
+            <Typography 
+              variant="body1" 
+              sx={{ color: "text.secondary", fontSize: "1.1rem", lineHeight: 1.7 }}
+              dangerouslySetInnerHTML={{ __html: t("infer.desc.1") }} 
+            />
+          </Box>
 
-          <motion.div variants={item} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", lg: "1fr 1fr" }, gap: 4 }}>
             {/* Live Model Parameters / Temperature */}
-            <div className="space-y-6">
-              <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
-                <h4 className="text-sm font-semibold text-slate-400 uppercase tracking-wide mb-3">
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 4 }}>
+              <Paper component={motion.div} variants={item} sx={{ p: 3 }}>
+                <Typography variant="caption" sx={{ color: "text.secondary", textTransform: "uppercase", letterSpacing: "0.05em", mb: 2, display: "block", fontWeight: "bold" }}>
                   {locale === "tr" ? "Model Parametreleri: Olasılık Dağılımları" : "Model Parameters: Probability Distribution"}
-                </h4>
-                <p className="text-xs text-slate-400 mb-4">
+                </Typography>
+                <Typography variant="caption" sx={{ color: "text.secondary", mb: 3, display: "block", lineHeight: 1.5 }}>
                   {locale === "tr"
                     ? "Sözlükten bir kelime seçin. Modelin bu kelimeden sonra hangi kelimelerin gelebileceğini nasıl öğrendiğini canlı olarak görün."
                     : "Select a word from vocabulary to inspect the model's learned transition probability distribution."}
-                </p>
+                </Typography>
 
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="text-xs text-slate-300 font-mono">P( next_word |</span>
-                  <select
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 3 }}>
+                  <Typography variant="caption" sx={{ fontFamily: "monospace" }}>P( next_word |</Typography>
+                  <Select
+                    size="small"
                     value={selectedLookupWord}
                     onChange={(e) => setSelectedLookupWord(e.target.value)}
-                    className="bg-slate-900 border border-slate-700 rounded px-2 py-1 text-sm text-white font-mono focus:outline-none focus:border-blue-500 cursor-pointer"
+                    sx={{ fontFamily: "monospace", minWidth: 100 }}
                   >
                     {vocabulary.map(word => (
-                      <option key={word} value={word}>{word}</option>
+                      <MenuItem key={word} value={word} sx={{ fontFamily: "monospace" }}>{word}</MenuItem>
                     ))}
-                  </select>
-                  <span className="text-xs text-slate-300 font-mono">)</span>
-                </div>
+                  </Select>
+                  <Typography variant="caption" sx={{ fontFamily: "monospace" }}>)</Typography>
+                </Box>
 
-                <div className="space-y-3 mt-2">
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                   {transitionProbs.length > 0 ? (
                     transitionProbs.map((item, i) => (
-                      <div key={item.word} className="flex items-center gap-3">
-                        <span className="w-16 text-xs font-mono text-slate-300 truncate">{item.word}</span>
-                        <div className="flex-1 h-3 bg-slate-900 rounded overflow-hidden">
-                          <motion.div
+                      <Box key={item.word} sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                        <Typography variant="body2" noWrap sx={{ width: 64, fontFamily: "monospace", color: "text.primary" }}>
+                          {item.word}
+                        </Typography>
+                        <Box sx={{ flexGrow: 1, height: 12, bgcolor: theme.palette.mode === "dark" ? "grey.950" : "grey.200", borderRadius: 1, overflow: "hidden" }}>
+                          <Box
+                            component={motion.div}
                             initial={{ width: 0 }}
                             animate={{ width: `${item.probability * 100}%` }}
                             transition={{ type: "spring", stiffness: 100 }}
-                            className={`h-full rounded ${i === 0 ? "bg-blue-500" : "bg-slate-600"}`}
+                            sx={{
+                              height: "100%",
+                              bgcolor: i === 0 ? "primary.main" : "grey.600",
+                              borderRadius: 1
+                            }}
                           />
-                        </div>
-                        <span className="w-12 text-right text-xs font-mono text-blue-300">
+                        </Box>
+                        <Typography variant="caption" sx={{ width: 36, textAlign: "right", fontFamily: "monospace", color: "primary.light" }}>
                           {(item.probability * 100).toFixed(0)}%
-                        </span>
-                        <span className="text-[10px] text-slate-500 font-mono">
+                        </Typography>
+                        <Typography variant="caption" sx={{ width: 28, color: "text.secondary", fontFamily: "monospace" }}>
                           ({item.rawCount}x)
-                        </span>
-                      </div>
+                        </Typography>
+                      </Box>
                     ))
                   ) : (
-                    <p className="text-xs text-slate-500 italic text-center py-6">
+                    <Typography variant="body2" sx={{ fontStyle: "italic", color: "text.secondary", textAlign: "center", py: 3 }}>
                       {locale === "tr" ? "Bu kelimeden sonra bir geçiş yok (cümle sonu)." : "No transitions found for this word (end of text)."}
-                    </p>
+                    </Typography>
                   )}
-                </div>
-              </div>
+                </Box>
+              </Paper>
 
-              <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
-                <h4 className="text-sm font-semibold text-slate-400 uppercase tracking-wide mb-3">
+              <Paper component={motion.div} variants={item} sx={{ p: 3 }}>
+                <Typography variant="caption" sx={{ color: "text.secondary", textTransform: "uppercase", letterSpacing: "0.05em", mb: 2, display: "block", fontWeight: "bold" }}>
                   {locale === "tr" ? "Olasılıkları Şekillendir: Sıcaklık (Temperature)" : "Shape Probabilities: Temperature Slider"}
-                </h4>
-                <div className="space-y-4">
-                  <div className="flex justify-between text-xs font-mono">
-                    <span className="text-slate-400">Temperature:</span>
-                    <span className="text-blue-400 font-bold">{temperature.toFixed(2)}</span>
-                  </div>
-                  <input
-                    type="range"
+                </Typography>
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                  <Box sx={{ display: "flex", justifyContent: "between", fontFamily: "monospace", fontSize: "0.85rem" }}>
+                    <Typography variant="caption" sx={{ color: "text.secondary" }}>Temperature:</Typography>
+                    <Typography variant="caption" sx={{ color: "primary.light", fontWeight: "bold" }}>{temperature.toFixed(2)}</Typography>
+                  </Box>
+                  <Slider
                     min={0.1}
                     max={2.0}
                     step={0.1}
                     value={temperature}
-                    onChange={(e) => setTemperature(parseFloat(e.target.value))}
-                    className="w-full accent-blue-600 cursor-pointer"
+                    onChange={(_, val) => setTemperature(val as number)}
                   />
-                  <div className="flex justify-between text-[10px] text-slate-500 font-mono">
-                    <span>0.1 (Robotik)</span>
-                    <span>2.0 (Yaratıcı / Çılgın)</span>
-                  </div>
-                </div>
+                  <Box sx={{ display: "flex", justifyContent: "between", fontSize: "0.7rem", color: "text.secondary" }}>
+                    <span>0.1 ({locale === "tr" ? "Robotik" : "Robotic"})</span>
+                    <span>2.0 ({locale === "tr" ? "Çılagın" : "Creative"})</span>
+                  </Box>
+                </Box>
 
-                <div className="bg-slate-900/60 border border-slate-800 p-4 rounded-lg text-xs space-y-2 mt-4">
-                  <h5 className="font-semibold text-slate-300 flex items-center gap-1.5">
-                    <HelpCircle className="w-3.5 h-3.5 text-blue-500" />
+                <Box sx={{ bgcolor: theme.palette.mode === "dark" ? "grey.950" : "grey.100", p: 2, borderRadius: 1.5, mt: 3, border: 1, borderColor: theme.palette.mode === "dark" ? "grey.850" : "grey.300" }}>
+                  <Typography variant="caption" sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1, color: "text.primary", fontWeight: "bold" }}>
+                    <HelpCircle style={{ color: "#0071e3", width: 16, height: 16 }} />
                     {locale === "tr" ? "Sıcaklık Nasıl Etki Eder?" : "How does Temperature work?"}
-                  </h5>
-                  <p className="text-slate-400 leading-relaxed font-sans">
+                  </Typography>
+                  <Typography variant="caption" sx={{ color: "text.secondary", lineHeight: 1.5, display: "block" }}>
                     {temperature < 0.5 
                       ? (locale === "tr" 
-                        ? "Düşük Sıcaklık: Olasılıkları keskinleştirir. En yüksek skorlu kelimenin kazanma şansını aşırı artırır, tahminleri robotik/tahmin edilebilir yapar." 
-                        : "Low Temperature: Sharpens probabilities. The highest count candidate dominates, leading to deterministic, highly predictable predictions.")
+                        ? "Düşük Sıcaklık: Olasılıkları keskinleştirir. En yüksek skorlu kelimenin kazanma şansını aşırı artırır, tahminleri robotik yapar." 
+                        : "Low Temperature: Sharpens probabilities. The highest count candidate dominates, leading to highly predictable predictions.")
                       : temperature > 1.2
                       ? (locale === "tr" 
                         ? "Yüksek Sıcaklık: Olasılıkları birbirine yakınlaştırır. Düşük olasılıklı kelimelerin seçilme şansını artırarak metin üretimini yaratıcı ve çılgın yapar." 
-                        : "High Temperature: Softens probabilities. Flattens out distributions, allowing low-probability words to be selected, raising creativity or nonsense outputs.")
+                        : "High Temperature: Softens probabilities. Flattens out distributions, allowing low-probability words to be selected, raising creativity.")
                       : (locale === "tr" 
                         ? "Dengeli Sıcaklık: Kelimelerin gerçek sıklıklarına göre doğal bir akışta örnekleme yapar." 
                         : "Balanced Temperature: Follows the natural training counts directly for a healthy, human-like generation flow.")}
-                  </p>
-                </div>
-              </div>
-            </div>
+                  </Typography>
+                </Box>
+              </Paper>
+            </Box>
 
             {/* Sentence Generation Playground */}
-            <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700 space-y-6 flex flex-col justify-between">
-              <div>
-                <div className="flex justify-between items-center flex-wrap gap-2 mb-3">
-                  <h4 className="text-sm font-bold text-white flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-blue-500" />
-                    {locale === "tr" ? "Cümle Üretim Laboratuvarı" : "Autoregressive Sentence Generator"}
-                  </h4>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs text-slate-400">{locale === "tr" ? "Başlangıç:" : "Start Word:"}</span>
-                    <select
+            <Paper component={motion.div} variants={item} sx={{ p: 3, display: "flex", flexDirection: "column", justifyContent: "between", height: "100%" }}>
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                <Box sx={{ display: "flex", justifyContent: "between", alignItems: "center", flexWrap: "wrap", gap: 1 }}>
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                    <Sparkles style={{ color: "#0071e3", width: 20, height: 20 }} />
+                    <Typography sx={{ fontWeight: "bold" }} variant="subtitle2">
+                      {locale === "tr" ? "Cümle Üretim Laboratuvarı" : "Autoregressive Sentence Generator"}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                    <Typography variant="caption" sx={{ color: "text.secondary" }}>{locale === "tr" ? "Başlangıç:" : "Start Word:"}</Typography>
+                    <Select
+                      size="small"
                       value={generationPrompt}
                       onChange={(e) => {
                         setGenerationPrompt(e.target.value);
                         resetGeneration();
                       }}
-                      className="bg-slate-900 border border-slate-700 rounded px-2 py-0.5 text-xs text-white font-mono focus:outline-none focus:border-blue-500 cursor-pointer"
+                      sx={{ fontFamily: "monospace", fontSize: "0.8rem", height: 32 }}
                     >
                       {vocabulary.map(word => (
-                        <option key={word} value={word}>{word}</option>
+                        <MenuItem key={word} value={word} sx={{ fontFamily: "monospace", fontSize: "0.8rem" }}>{word}</MenuItem>
                       ))}
-                    </select>
-                  </div>
-                </div>
+                    </Select>
+                  </Box>
+                </Box>
 
-                {/* Text screen display */}
-                <div className="bg-slate-950/80 border border-slate-800 rounded-lg p-5 min-h-[120px] font-mono text-sm leading-relaxed relative flex flex-wrap items-center gap-1.5">
+                {/* Text Screen Display */}
+                <Box 
+                  sx={{ 
+                    bgcolor: theme.palette.mode === "dark" ? "grey.950" : "grey.100", 
+                    border: 1, 
+                    borderColor: theme.palette.mode === "dark" ? "grey.850" : "grey.300", 
+                    borderRadius: 2, 
+                    p: 2.5, 
+                    minHeight: 140, 
+                    fontFamily: "monospace", 
+                    fontSize: "0.95rem", 
+                    lineHeight: 1.7,
+                    display: "flex", 
+                    flexWrap: "wrap", 
+                    alignItems: "center", 
+                    gap: 1
+                  }}
+                >
                   {generatedTokens.length > 0 ? (
                     generatedTokens.map((tok, i) => {
                       const isPunct = /[.,!?;]/.test(tok);
                       const isLast = i === generatedTokens.length - 1;
                       return (
-                        <motion.span
+                        <Box
                           key={i}
+                          component={motion.span}
                           initial={{ opacity: 0, scale: 0.8 }}
                           animate={{ opacity: 1, scale: 1 }}
-                          className={`${
-                            isLast 
-                              ? "text-blue-400 font-bold bg-blue-500/10 px-1 rounded border border-blue-500/20" 
-                              : (tok.startsWith("[") ? "text-red-400 font-mono text-xs" : "text-slate-200")
-                          }`}
+                          sx={{
+                            color: isLast ? "primary.light" : (tok.startsWith("[") ? "error.light" : "text.primary"),
+                            fontWeight: isLast || tok.startsWith("[") ? "bold" : "normal",
+                            bgcolor: isLast ? "rgba(0,113,227,0.1)" : "transparent",
+                            px: isLast ? 0.5 : 0,
+                            borderRadius: 1,
+                            fontFamily: "monospace"
+                          }}
                         >
                           {tok}{!isPunct && " "}
-                        </motion.span>
+                        </Box>
                       );
                     })
                   ) : (
-                    <span className="text-slate-500 italic font-sans text-xs">
+                    <Typography variant="body2" sx={{ color: "text.secondary", fontStyle: "italic", display: "block" }}>
                       {locale === "tr" ? "Başlamak için aşağıdaki butonları kullanın..." : "Use the controls below to start generating tokens..."}
-                    </span>
+                    </Typography>
                   )}
-                  <motion.span
+                  <Box
+                    component={motion.span}
                     animate={{ opacity: [1, 0] }}
                     transition={{ repeat: Infinity, duration: 0.8 }}
-                    className="text-blue-500 font-bold w-1 h-4 bg-blue-500 inline-block"
+                    sx={{ width: 3, height: 18, bgcolor: "primary.main", display: "inline-block", ml: 0.5 }}
                   />
-                </div>
-              </div>
+                </Box>
+              </Box>
 
-              {/* Generation controls */}
-              <div className="flex gap-3 flex-wrap">
-                <button
+              {/* Generation Controls */}
+              <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap", mt: 4 }}>
+                <Button
+                  variant="outlined"
                   onClick={handleGenerateStep}
                   disabled={isAutoGenerating}
-                  className="flex items-center gap-1 px-4 py-2 bg-slate-700 hover:bg-slate-600 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-lg text-sm transition cursor-pointer"
+                  startIcon={<ChevronRight style={{ width: 16, height: 16 }} />}
+                  sx={{ textTransform: "none" }}
                 >
-                  <ChevronRight className="w-4 h-4" />
                   {locale === "tr" ? "1 Kelime Üret" : "Generate 1 Word"}
-                </button>
-                <button
+                </Button>
+                <Button
+                  variant="contained"
                   onClick={() => {
                     if (isAutoGenerating) {
                       setIsAutoGenerating(false);
@@ -483,51 +575,62 @@ export default function Inference({ slide = 0 }: { slide?: number }) {
                       setIsAutoGenerating(true);
                     }
                   }}
-                  className="flex items-center gap-1 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-sm transition cursor-pointer"
+                  startIcon={<Play style={{ width: 14, height: 14 }} />}
                 >
-                  <Play className="w-3.5 h-3.5" />
                   {isAutoGenerating 
                     ? (locale === "tr" ? "Durdur" : "Stop") 
                     : (locale === "tr" ? "Otomatik Üret" : "Auto-Generate")}
-                </button>
-                <button
+                </Button>
+                <Button
+                  variant="text"
+                  color="secondary"
                   onClick={resetGeneration}
-                  className="flex items-center gap-1 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-sm transition cursor-pointer border border-slate-700"
+                  startIcon={<RotateCcw style={{ width: 14, height: 14 }} />}
                 >
-                  <RotateCcw className="w-3.5 h-3.5" />
                   {locale === "tr" ? "Temizle" : "Reset"}
-                </button>
-              </div>
-            </div>
-          </motion.div>
+                </Button>
+              </Box>
+            </Paper>
+          </Box>
 
-          <motion.div variants={item} className="text-slate-400 text-sm bg-blue-900/20 border border-blue-800/30 rounded-lg p-4">
-            <span dangerouslySetInnerHTML={{ __html: t("infer.insight") }} />
-          </motion.div>
+          <Paper
+            component={motion.div}
+            variants={item}
+            elevation={0}
+            sx={{
+              p: 2.5,
+              bgcolor: theme.palette.mode === "dark" ? "rgba(0, 113, 227, 0.1)" : "rgba(0, 113, 227, 0.05)",
+              border: 1,
+              borderColor: theme.palette.mode === "dark" ? "rgba(0, 113, 227, 0.2)" : "rgba(0, 113, 227, 0.1)",
+              borderRadius: 2
+            }}
+          >
+            <Typography variant="body1" sx={{ color: "text.primary", fontSize: "1rem" }} dangerouslySetInnerHTML={{ __html: t("infer.insight") }} />
+          </Paper>
 
           {/* Senior Developer Mode */}
-          <motion.div variants={item}>
+          <Box component={motion.div} variants={item}>
             <SeniorDeveloperMode
               contentEn={
                 <>
                   <p>
                     Serving Large Language Models at scale in production requires significant engineering optimizations. Because modern parameters scale from 7B to 400B+ parameters, naive float32/float16 inference leads to huge memory footprints and slow response times.
                   </p>
-                  <p className="mt-2 font-semibold font-sans">1. Quantization (Model Compression):</p>
+                  <p className="mt-2 font-semibold">1. Quantization (Model Compression):</p>
                   <p className="text-slate-300 font-sans">
                     Quantization maps continuous floating-point weights (FP16 or BF16) to discrete lower-precision numerical representations (INT8, FP8, INT4, or NF4):
                   </p>
-                  <div className="bg-slate-950 p-3 rounded my-2 font-mono text-center text-blue-400 overflow-x-auto">
+                  <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto" }}>
                     {"W_q = round( W / S ) + Z"}
-                  </div>
+                  </Box>
                   <p className="text-slate-300 mt-2 font-sans">
                     where <code>S</code> is a scale factor and <code>Z</code> is a zero-point offset. Advanced techniques like <strong>AWQ (Activation-aware Weight Quantization)</strong> and <strong>GPTQ</strong> protect salient weights (e.g. weights corresponding to high-activation tokens) from severe precision reduction, enabling 4-bit quantized models to perform with almost zero perplexity loss compared to their FP16 baselines, reducing GPU VRAM needs by 4x.
                   </p>
-                  <p className="mt-2 font-semibold font-sans">2. Speculative Decoding:</p>
+                  <p className="mt-2 font-semibold">2. Speculative Decoding:</p>
                   <p className="text-slate-300 font-sans">
                     Text generation is bounded by GPU memory bandwidth (loading weights into SRAM takes longer than computing outputs). **Speculative Decoding** solves this by running a small &quot;draft model&quot; (e.g., LLaMA-1.1B) to quickly generate <code>K</code> candidate tokens autoregressively. Then, the larger &quot;target model&quot; (e.g., LLaMA-70B) evaluates all <code>K</code> tokens in parallel in a single forward pass. Tokens that match the target model&apos;s probability distribution are accepted, achieving up to a 2x-3x speedup.
                   </p>
-                  <p className="mt-2 font-semibold font-sans">3. PagedAttention (KV Cache Management):</p>
+                  <p className="mt-2 font-semibold">3. PagedAttention (KV Cache Management):</p>
                   <p className="text-slate-300 font-sans">
                     In classical setups, GPU memory for the KV cache must be pre-allocated contiguously based on the maximum sequence length. This leads to up to 60-80% memory waste (&quot;internal fragmentation&quot;) because actual generations are shorter. **PagedAttention** (introduced in vLLM) partitions the KV cache into small, non-contiguous physical pages (similar to virtual memory in operating systems). Pages are allocated dynamically, allowing batch sizes to scale up to 4x, drastically increasing throughput.
                   </p>
@@ -538,30 +641,30 @@ export default function Inference({ slide = 0 }: { slide?: number }) {
                   <p>
                     Büyük Dil Modellerini endüstriyel boyutta sunmak (serving), büyük mühendislik optimizasyonları gerektirir. 7 milyardan 400 milyarın üzerine çıkan devasa parametre boyutları nedeniyle, ham float16 çıkarımı yüksek donanım maliyeti ve yavaş cevap süresine yol açar.
                   </p>
-                  <p className="mt-2 font-semibold font-sans">1. Nicemleme (Quantization - Model Sıkıştırma):</p>
+                  <p className="mt-2 font-semibold">1. Nicemleme (Quantization - Model Sıkıştırma):</p>
                   <p className="text-slate-300 font-sans">
                     Nicemleme işlemi, sürekli ondalıklı sayı ağırlıklarını (FP16 veya BF16) daha düşük hassasiyete sahip tamsayı veya küçük ondalık formatlara (INT8, FP8, INT4 veya NF4) yuvarlayarak eşleştirir:
                   </p>
-                  <div className="bg-slate-950 p-3 rounded my-2 font-mono text-center text-blue-400 overflow-x-auto">
+                  <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto" }}>
                     {"W_q = round( W / S ) + Z"}
-                  </div>
+                  </Box>
                   <p className="text-slate-300 mt-2 font-sans">
                     Burada <code>S</code> ölçek çarpanı, <code>Z</code> ise sıfır noktası kaymasıdır. <strong>AWQ (Activation-aware Weight Quantization)</strong> ve <strong>GPTQ</strong> gibi gelişmiş yöntemler, model kalitesi için kritik olan 'hassas ağırlıkları' (etkinleştirme değerleri yüksek olan kanalları) koruyarak 4-bit sıkıştırmada bile FP16 kalitesine yakın sonuçlar üretilmesini sağlar. Bu, VRAM ihtiyacını 4 kat azaltır.
                   </p>
-                  <p className="mt-2 font-semibold font-sans">2. Spekülatif Kod Çözme (Speculative Decoding):</p>
+                  <p className="mt-2 font-semibold">2. Spekülatif Kod Çözme (Speculative Decoding):</p>
                   <p className="text-slate-300 font-sans">
                     Çıkarım sırasında kelime üretimi GPU bellek bant genişliği ile sınırlıdır (ağırlıkları bellekten çekmek, onları işlemekten çok daha uzun sürer). **Spekülatif Kod Çözme**, bu darboğazı çözmek için daha küçük ve hızlı bir &quot;taslak model&quot; (örn. LLaMA-1.1B) kullanarak ardışık <code>K</code> adet kelime üretir. Büyük asıl model (örn. LLaMA-70B), bu <code>K</code> kelimeyi tek bir ileri geçişte (forward pass) paralel olarak doğrular. Doğrulanan kelimeler kabul edilir, böylece işlem hızı 2 ila 3 kat artırılmış olur.
                   </p>
-                  <p className="mt-2 font-semibold font-sans">3. PagedAttention (KV Cache Yönetimi):</p>
+                  <p className="mt-2 font-semibold">3. PagedAttention (KV Cache Yönetimi):</p>
                   <p className="text-slate-300 font-sans">
                     Geleneksel çıkarım motorlarında, KV cache bellek alanı her kullanıcı için maksimum bağlam uzunluğuna göre bitişik (contiguous) olarak ayrılırdı. Bu durum, gerçek üretilen metinler kısa kaldığında %60 ila %80 oranında bellek israfına (internal fragmentation) sebep oluyordu. **PagedAttention** (vLLM kütüphanesi ile popülerleşen), işletim sistemlerindeki sanal bellek gibi KV cache verisini küçük, bitişik olmayan bellek sayfalarına böler. Dinamik sayfa yönetimi sayesinde bellek israfı sıfıra yaklaşır ve sunucu kapasitesi (throughput) 4 katına kadar çıkabilir.
                   </p>
                 </>
               }
             />
-          </motion.div>
+          </Box>
         </>
       )}
-    </motion.div>
+    </Box>
   );
 }

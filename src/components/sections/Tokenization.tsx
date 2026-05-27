@@ -1,20 +1,23 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useI18n } from "@/i18n/context";
 import SeniorDeveloperMode from "@/components/SeniorDeveloperMode";
+import { Box, Typography, Paper, TextField, useTheme } from "@mui/material";
 
 const container = { hidden: {}, show: { transition: { staggerChildren: 0.08 } } };
 const item = { hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } };
 
 const tokenColors = [
-  "bg-red-500/20 border-red-500/50 text-red-300",
-  "bg-blue-500/20 border-blue-500/50 text-blue-300",
-  "bg-green-500/20 border-green-500/50 text-green-300",
-  "bg-yellow-500/20 border-yellow-500/50 text-yellow-300",
-  "bg-purple-500/20 border-purple-500/50 text-purple-300",
-  "bg-pink-500/20 border-pink-500/50 text-pink-300",
-  "bg-cyan-500/20 border-cyan-500/50 text-cyan-300",
-  "bg-orange-500/20 border-orange-500/50 text-orange-300",
+  { bg: "rgba(239, 68, 68, 0.15)", border: "rgba(239, 68, 68, 0.4)", text: "#f87171" },
+  { bg: "rgba(59, 130, 246, 0.15)", border: "rgba(59, 130, 246, 0.4)", text: "#60a5fa" },
+  { bg: "rgba(16, 185, 129, 0.15)", border: "rgba(16, 185, 129, 0.4)", text: "#34d399" },
+  { bg: "rgba(245, 158, 11, 0.15)", border: "rgba(245, 158, 11, 0.4)", text: "#fbbf24" },
+  { bg: "rgba(139, 92, 246, 0.15)", border: "rgba(139, 92, 246, 0.4)", text: "#a78bfa" },
+  { bg: "rgba(236, 72, 153, 0.15)", border: "rgba(236, 72, 153, 0.4)", text: "#f472b6" },
+  { bg: "rgba(6, 182, 212, 0.15)", border: "rgba(6, 182, 212, 0.4)", text: "#22d3ee" },
+  { bg: "rgba(249, 115, 22, 0.15)", border: "rgba(249, 115, 22, 0.4)", text: "#fb923c" },
 ];
 
 function simpleTokenize(text: string): string[] {
@@ -44,6 +47,7 @@ function simpleTokenize(text: string): string[] {
 
 export default function Tokenization({ slide = 0 }: { slide?: number }) {
   const { t, locale } = useI18n();
+  const theme = useTheme();
   const [inputText, setInputText] = useState("");
   const [hasUserEdited, setHasUserEdited] = useState(false);
 
@@ -56,96 +60,186 @@ export default function Tokenization({ slide = 0 }: { slide?: number }) {
   const tokens = simpleTokenize(inputText);
 
   return (
-    <motion.div variants={container} initial="hidden" animate="show" className="space-y-8">
+    <Box 
+      component={motion.div} 
+      variants={container} 
+      initial="hidden" 
+      animate="show" 
+      sx={{ display: "flex", flexDirection: "column", gap: 4 }}
+    >
       {slide === 0 && (
         <>
-          <motion.div variants={item}>
-            <h3 className="text-2xl font-bold text-white mb-3">{t("token.title")}</h3>
-            <p className="text-slate-300 leading-relaxed text-lg" dangerouslySetInnerHTML={{ __html: t("token.desc.0") }} />
-          </motion.div>
+          <Box component={motion.div} variants={item}>
+            <Typography sx={{ fontWeight: "bold" }} variant="h4" component="h3" gutterBottom>
+              {t("token.title")}
+            </Typography>
+            <Typography 
+              variant="body1" 
+              sx={{ color: "text.secondary", fontSize: "1.1rem", lineHeight: 1.7 }}
+              dangerouslySetInnerHTML={{ __html: t("token.desc.0") }} 
+            />
+          </Box>
 
-          <motion.div variants={item} className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
-            <h4 className="text-base font-semibold text-slate-400 uppercase tracking-wide mb-3">{t("token.try")}</h4>
-            <input
-              type="text"
+          <Paper component={motion.div} variants={item} sx={{ p: 3 }}>
+            <Typography variant="subtitle1" sx={{ mb: 2, color: "text.secondary", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: "bold" }}>
+              {t("token.try")}
+            </Typography>
+            <TextField
+              fullWidth
+              variant="outlined"
               value={inputText}
               onChange={(e) => {
                 setInputText(e.target.value);
                 setHasUserEdited(true);
               }}
-              className="w-full bg-slate-950 border border-slate-600 rounded-lg px-4 py-3 text-white font-mono text-base focus:outline-none focus:border-blue-500 transition"
               placeholder={t("token.placeholder")}
+              sx={{ 
+                bgcolor: "background.default", 
+                borderRadius: 1,
+                "& .MuiInputBase-input": { fontFamily: "monospace", fontSize: "1.1rem" }
+              }}
             />
-          </motion.div>
+          </Paper>
         </>
       )}
 
       {slide === 1 && (
         <>
-          <motion.div variants={item}>
-            <h3 className="text-2xl font-bold text-white mb-3">{t("token.title")}</h3>
-            <p className="text-slate-300 leading-relaxed text-lg" dangerouslySetInnerHTML={{ __html: t("token.desc.1") }} />
-          </motion.div>
+          <Box component={motion.div} variants={item}>
+            <Typography sx={{ fontWeight: "bold" }} variant="h4" component="h3" gutterBottom>
+              {t("token.title")}
+            </Typography>
+            <Typography 
+              variant="body1" 
+              sx={{ color: "text.secondary", fontSize: "1.1rem", lineHeight: 1.7 }}
+              dangerouslySetInnerHTML={{ __html: t("token.desc.1") }} 
+            />
+          </Box>
 
-          <motion.div variants={item} className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
-            <h4 className="text-base font-semibold text-slate-400 uppercase tracking-wide mb-4">{t("token.tokens")}</h4>
-            <div className="flex flex-wrap gap-2">
-              {tokens.map((token, i) => (
-                <motion.div
-                  key={`${token}-${i}`}
-                  initial={{ opacity: 0, scale: 0.5 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: i * 0.05, type: "spring", stiffness: 300 }}
-                  className={`border rounded-lg px-3.5 py-2 font-mono text-base ${tokenColors[i % tokenColors.length]}`}
-                >
-                  {token === " " ? "⎵" : token}
-                </motion.div>
-              ))}
-            </div>
+          <Paper component={motion.div} variants={item} sx={{ p: 3 }}>
+            <Typography variant="subtitle1" sx={{ mb: 3, color: "text.secondary", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: "bold" }}>
+              {t("token.tokens")}
+            </Typography>
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1.5 }}>
+              {tokens.map((token, i) => {
+                const colorConfig = tokenColors[i % tokenColors.length];
+                return (
+                  <Box
+                    key={`${token}-${i}`}
+                    component={motion.div}
+                    initial={{ opacity: 0, scale: 0.5 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: i * 0.05, type: "spring", stiffness: 300 }}
+                    sx={{
+                      px: 2,
+                      py: 1,
+                      fontFamily: "monospace",
+                      fontSize: "1.1rem",
+                      borderRadius: 2,
+                      border: 1,
+                      borderColor: colorConfig.border,
+                      bgcolor: colorConfig.bg,
+                      color: theme.palette.mode === "dark" ? colorConfig.text : "text.primary",
+                    }}
+                  >
+                    {token === " " ? "⎵" : token}
+                  </Box>
+                );
+              })}
+            </Box>
             {tokens.length > 0 && (
-              <p className="text-slate-400 text-sm mt-4">
-                {t("token.total")} <span className="text-white font-bold">{tokens.length}</span>
-              </p>
+              <Typography variant="body2" sx={{ color: "text.secondary", mt: 3 }}>
+                {t("token.total")}{" "}
+                <Box component="span" sx={{ color: "text.primary", fontWeight: "bold", fontSize: "1rem" }}>
+                  {tokens.length}
+                </Box>
+              </Typography>
             )}
-          </motion.div>
+          </Paper>
         </>
       )}
 
       {slide === 2 && (
         <>
-          <motion.div variants={item}>
-            <h3 className="text-2xl font-bold text-white mb-3">{t("token.title")}</h3>
-            <p className="text-slate-300 leading-relaxed text-lg" dangerouslySetInnerHTML={{ __html: t("token.desc.2") }} />
-          </motion.div>
+          <Box component={motion.div} variants={item}>
+            <Typography sx={{ fontWeight: "bold" }} variant="h4" component="h3" gutterBottom>
+              {t("token.title")}
+            </Typography>
+            <Typography 
+              variant="body1" 
+              sx={{ color: "text.secondary", fontSize: "1.1rem", lineHeight: 1.7 }}
+              dangerouslySetInnerHTML={{ __html: t("token.desc.2") }} 
+            />
+          </Box>
 
-          <motion.div variants={item} className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
-            <h4 className="text-base font-semibold text-slate-400 uppercase tracking-wide mb-4">{t("token.ids")}</h4>
-            <div className="flex flex-wrap gap-2.5">
-              {tokens.slice(0, 12).map((token, i) => (
-                <motion.div
-                  key={`id-${i}`}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 + i * 0.05 }}
-                  className="flex flex-col items-center gap-1"
-                >
-                  <span className={`border rounded-lg px-3 py-1.5 font-mono text-sm ${tokenColors[i % tokenColors.length]}`}>
-                    {token === " " ? "⎵" : token}
-                  </span>
-                  <span className="text-xs text-slate-500">↓</span>
-                  <span className="bg-slate-700 rounded px-2.5 py-1 font-mono text-sm text-slate-300">
-                    {(i * 137 + 42) % 50000}
-                  </span>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
+          <Paper component={motion.div} variants={item} sx={{ p: 3 }}>
+            <Typography variant="subtitle1" sx={{ mb: 3, color: "text.secondary", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: "bold" }}>
+              {t("token.ids")}
+            </Typography>
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 3 }}>
+              {tokens.slice(0, 12).map((token, i) => {
+                const colorConfig = tokenColors[i % tokenColors.length];
+                return (
+                  <Box
+                    key={`id-${i}`}
+                    component={motion.div}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 + i * 0.05 }}
+                    sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 1 }}
+                  >
+                    <Box
+                      sx={{
+                        px: 1.5,
+                        py: 0.75,
+                        fontFamily: "monospace",
+                        fontSize: "0.9rem",
+                        borderRadius: 1.5,
+                        border: 1,
+                        borderColor: colorConfig.border,
+                        bgcolor: colorConfig.bg,
+                        color: theme.palette.mode === "dark" ? colorConfig.text : "text.primary",
+                      }}
+                    >
+                      {token === " " ? "⎵" : token}
+                    </Box>
+                    <Typography variant="caption" sx={{ color: "text.secondary" }}>↓</Typography>
+                    <Paper
+                      elevation={0}
+                      sx={{
+                        px: 1.5,
+                        py: 0.5,
+                        fontFamily: "monospace",
+                        fontSize: "0.9rem",
+                        bgcolor: theme.palette.mode === "dark" ? "grey.800" : "grey.300",
+                        color: "text.primary",
+                        border: "none"
+                      }}
+                    >
+                      {(i * 137 + 42) % 50000}
+                    </Paper>
+                  </Box>
+                );
+              })}
+            </Box>
+          </Paper>
 
-          <motion.div variants={item} className="text-slate-400 text-base bg-blue-900/20 border border-blue-800/30 rounded-lg p-5">
-            <span dangerouslySetInnerHTML={{ __html: t("token.insight") }} />
-          </motion.div>
+          <Paper
+            component={motion.div}
+            variants={item}
+            elevation={0}
+            sx={{
+              p: 2.5,
+              bgcolor: theme.palette.mode === "dark" ? "rgba(0, 113, 227, 0.1)" : "rgba(0, 113, 227, 0.05)",
+              border: 1,
+              borderColor: theme.palette.mode === "dark" ? "rgba(0, 113, 227, 0.2)" : "rgba(0, 113, 227, 0.1)",
+              borderRadius: 2
+            }}
+          >
+            <Typography variant="body1" sx={{ color: "text.primary", fontSize: "1rem" }} dangerouslySetInnerHTML={{ __html: t("token.insight") }} />
+          </Paper>
 
-          <motion.div variants={item}>
+          <Box component={motion.div} variants={item}>
             <SeniorDeveloperMode
               contentEn={
                 <>
@@ -159,12 +253,13 @@ export default function Tokenization({ slide = 0 }: { slide?: number }) {
                     <li>Merge the most frequent pair <code>(A, B)</code> to create a new token <code>AB</code>.</li>
                     <li>Repeat step 2-3 until vocabulary reaches target size (e.g., 32,000 for LLaMA, 100,000 for GPT-4).</li>
                   </ol>
-                  <p className="mt-3">
+                  <p className="mt-3 font-semibold">Deterministic Mapping:</p>
+                  <p>
                     Mathematically, tokenization is a deterministic mapping function:
                   </p>
-                  <div className="bg-slate-950 p-3 rounded my-2 font-mono text-center text-blue-400 overflow-x-auto">
+                  <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto" }}>
                     {"f: Unicode Text → [t_1, t_2, ..., t_N]  where  t_i ∈ {0, 1, ..., V - 1}"}
-                  </div>
+                  </Box>
                   <p className="mt-2">
                     This guarantees zero out-of-vocabulary (OOV) errors because unknown words are split into individual bytes or characters. BPE is trained on the corpus but inference is computed using a precompiled static merge file.
                   </p>
@@ -182,21 +277,22 @@ export default function Tokenization({ slide = 0 }: { slide?: number }) {
                     <li>En sık geçen <code>(A, B)</code> çiftini birleştirip <code>AB</code> şeklinde yeni bir token oluşturur.</li>
                     <li>Hedef sözlük boyutuna (örn. LLaMA için 32.000, GPT-4 için 100.000) ulaşılana kadar 2-3. adımları tekrarlar.</li>
                   </ol>
-                  <p className="mt-3">
+                  <p className="mt-3 font-semibold">Deterministik Eşleme:</p>
+                  <p>
                     Matematiksel olarak tokenlaştırma, deterministik bir eşleme fonksiyonudur:
                   </p>
-                  <div className="bg-slate-950 p-3 rounded my-2 font-mono text-center text-blue-400 overflow-x-auto">
+                  <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto" }}>
                     {"f: Unicode Metin → [t_1, t_2, ..., t_N]  burada  t_i ∈ {0, 1, ..., V - 1}"}
-                  </div>
+                  </Box>
                   <p className="mt-2">
                     Bu sayede sözlük dışı (out-of-vocabulary - OOV) hatası alma olasılığı sıfıra indirilir, çünkü bilinmeyen kelimeler tekil baytlara veya karakterlere kadar parçalanabilir.
                   </p>
                 </>
               }
             />
-          </motion.div>
+          </Box>
         </>
       )}
-    </motion.div>
+    </Box>
   );
 }

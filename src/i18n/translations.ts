@@ -5,33 +5,35 @@ export const translations: Record<Locale, Record<string, string>> = {
     // App chrome
     "app.title": "How LLMs Work",
     "app.subtitle": "Visual Guide for Students",
-    "app.step": "Step {current} of {total}",
+    "app.step": "{current} of {total}",
 
     // Sidebar section titles
     "nav.overview": "What is an LLM?",
-    "nav.tokenization": "Step 1: Tokens",
-    "nav.embedding": "Step 2: Embedding",
-    "nav.layernorm": "Step 3: Layer Normalization",
-    "nav.attention": "Step 4: Self-Attention & Projection",
-    "nav.mlp": "Step 5: MLP (Feed-Forward)",
-    "nav.transformer": "Step 6: Transformer Block",
-    "nav.softmax": "Step 7: Softmax (Probability)",
-    "nav.output": "Step 8: Output & Sampling",
-    "nav.training": "Step 9: Training (Learning)",
-    "nav.inference": "Step 10: Inference & Playground",
+    "nav.tokenization": "Tokens",
+    "nav.embedding": "Embedding",
+    "nav.layernorm": "Layer Normalization",
+    "nav.attention": "Self-Attention & Projection",
+    "nav.mlp": "MLP (Feed-Forward)",
+    "nav.transformer": "Transformer Block",
+    "nav.softmax": "Softmax (Probability)",
+    "nav.output": "Output & Sampling",
+    "nav.training": "Training (Learning)",
+    "nav.inference": "Inference & Playground",
 
     // Overview
     "overview.title": "What is a Large Language Model (LLM)?",
-    "overview.desc.0": "A Large Language Model (LLM) is a computer program trained on billions of sentences to learn language patterns. It generates text by predicting the next word.",
+    "overview.desc.0": "Large Language Models (LLMs) are so incredible that I built this app with Gemini. Who wouldn't want to learn such technology? It generates text by predicting the next word, discovering language patterns from billions of sentences.",
     "overview.desc.1": "Think of it like a very smart autocomplete on your phone. Let's look at some examples of autocomplete predictions.",
-    "overview.desc.2": "Our promise: We will prepare a simple text dataset, train the world's simplest LLM model on it, and let you run live inference at the end of this guide!",
+    "overview.desc.2": "We will explore the entire journey of a language model from input to output in 10 steps. You will grasp the logic behind every step.",
     "overview.autocomplete": "Think of it like autocomplete, but much smarter:",
-    "overview.promise": "Our promise: We will prepare a simple text dataset, train the world's simplest LLM model on it, and let you run live inference at the end of this guide!",
+    "overview.promise": "We will prepare a simple text dataset, train the world's simplest LLM model on it, and let you run live inference at the end of this guide!",
     "overview.next": "Let's explore each step of the pipeline to see what happens inside an LLM.",
+    "overview.history": "Actually, these algorithms are not new. However, it wasn't predicted that they would keep getting better and provide better answers when fed this much text (books, etc.). Models like ChatGPT know all the books written to date and almost all the text on the internet.",
+    "overview.fact": "While the human brain is estimated to consist of 100 Trillion connections, current models consist of 1 Trillion parameters. I heard it somewhere too. Take it with a grain of salt!",
 
     // Tokenization
-    "token.title": "Step 1: Tokens",
-    "token.desc.0": "AI models cannot read words directly; they only understand numbers. Therefore, text is first split into small units called <strong>tokens</strong>.",
+    "token.title": "Tokens",
+    "token.desc.0": "AI models cannot read words directly; they only understand numbers. Therefore, text is first split into small units called <strong>tokens</strong>. Splitting text into tokens instead of whole words or characters optimizes memory usage and vastly improves processing performance.",
     "token.desc.1": "Assigning a number to every word uses too much memory. Splitting words into sub-words (like prefixes or suffixes) and punctuation solves this problem.",
     "token.desc.2": "Type a sentence below to see how it is split into tokens and converted into numerical Token IDs in real time.",
     "token.try": "Try it! Type a sentence:",
@@ -42,7 +44,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "token.insight": "<strong>Key Insight:</strong> The model does not see characters or words — it only sees these numbers. The vocabulary list typically contains 30,000 to over 100,000 tokens.",
 
     // Embedding
-    "embed.title": "Step 2: Embedding",
+    "embed.title": "Embedding",
     "embed.desc.0": "Each token ID is converted into a list of numbers called a <strong>vector</strong> (embedding) that represents its meaning. Words with similar meanings have similar vectors.",
     "embed.desc.1": "Embeddings capture mathematical relationships between words. For example: king - man + woman yields a vector very close to queen.",
     "embed.desc.2": "Similar words are mapped close to each other in vector space. View the 2D projection below to see how the model groups similar items.",
@@ -55,7 +57,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "embed.insight": "<strong>Key Insight:</strong> Embeddings are learned during training. The model discovers which words share context and groups them closer in high-dimensional space.",
 
     // Layer Norm
-    "ln.title": "Step 3: Layer Normalization",
+    "ln.title": "Layer Normalization",
     "ln.desc.0": "As numbers flow through the network, they can grow too large or vanish. <strong>Layer Normalization</strong> rescales them to keep the network stable.",
     "ln.desc.1": "Think of it like grading exam scores on a curve. We adjust everyone's score so the class average is zero and the spread is one, making scores comparable.",
     "ln.desc.2": "Adjust the sliders below to see how raw scores are normalized in real time with a mean of 0 and standard deviation of 1.",
@@ -69,7 +71,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "ln.insight": "<strong>Key Insight:</strong> Layer Norm is applied before each sub-layer in modern transformers. This ensures inputs are kept in a well-behaved range.",
 
     // Self-Attention
-    "attn.title": "Step 4: Self-Attention & Projection",
+    "attn.title": "Self-Attention & Projection",
     "attn.desc.0": "<strong>Self-Attention</strong> lets each word look at every other word in the sentence and decide which ones are relevant. This is how the model captures context.",
     "attn.desc.1": "Words decide how much attention to pay to each other using three vectors: Query (Q) (what to find), Key (K) (what it contains), and Value (V) (what it provides).",
     "attn.desc.2": "Modern models run multiple attention heads in parallel (Multi-Head) and use a linear projection matrix (W_O) to combine their outputs.",
@@ -92,7 +94,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "attn.insight": "<strong>Key Insight:</strong> Attention allows the model to process all words simultaneously and connect distant terms, yielding rich context representation.",
 
     // MLP
-    "mlp.title": "Step 5: MLP (Feed-Forward Network)",
+    "mlp.title": "MLP (Feed-Forward Network)",
     "mlp.desc.0": "After attention finds relationships, the <strong>MLP</strong> (Multi-Layer Perceptron) processes that information to reason about it and store knowledge.",
     "mlp.desc.1": "The activation function (GELU) introduces non-linearity. Without it, the network could only learn simple, straight-line patterns.",
     "mlp.desc.2": "The input is expanded 4x in the hidden layer, activated, and compressed back down. View the step-by-step neural flow chart below.",
@@ -111,7 +113,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "mlp.insight": "<strong>Key Insight:</strong> The MLP contains the majority of the model's parameters and acts as a facts database, encoding general knowledge in its weights.",
 
     // Transformer
-    "tf.title": "Step 6: The Transformer Block",
+    "tf.title": "The Transformer Block",
     "tf.desc.0": "A Transformer model is built by stacking identical blocks on top of each other. Each block contains Normalization, Attention, and MLP.",
     "tf.desc.1": "To prevent information loss across deep layers, we use **residual connections**. These shortcuts allow gradients to flow easily during training.",
     "tf.desc.2": "More layers mean a deeper understanding, but require more compute. GPT-2 has 12 layers, whereas GPT-3 has 96.",
@@ -128,7 +130,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "tf.insight": "<strong>Key Insight:</strong> The transformer architecture is elegant: just two main operations (attention + MLP) repeated many times. Scaled up, this simple recipe yields highly capable models.",
 
     // Softmax
-    "sm.title": "Step 7: Softmax (Probability)",
+    "sm.title": "Softmax (Probability)",
     "sm.desc.0": "<strong>Softmax</strong> converts raw scores (logits) into a probability distribution that sums to 1. Higher scores turn into larger percentages.",
     "sm.desc.1": "This is how the model makes decisions, allowing it to say: 'I am 80% confident the next word is cat'.",
     "sm.desc.2": "Adjust the raw scores below to see how they are converted into probabilities and how the highest score dominates.",
@@ -145,7 +147,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "sm.insight": "<strong>Key Insight:</strong> Softmax acts as a squashing function. Large differences between scores are exaggerated, making the model decisive about its top choice.",
 
     // Output
-    "out.title": "Step 8: Output & Sampling",
+    "out.title": "Output & Sampling",
     "out.desc.0": "The model samples a word, appends it to the input, and runs again. This is called <strong>autoregressive generation</strong>.",
     "out.desc.1": "<strong>Temperature</strong> controls randomness. Low temperature is predictable and safe; high temperature is creative and erratic.",
     "out.desc.2": "Click generate below to watch the model generate text token by token in an autoregressive loop.",
@@ -170,7 +172,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "out.insight": "<strong>Key Insight:</strong> LLMs generate one token at a time. A 100-word response requires 100 passes through the network. This makes generation computationally demanding.",
 
     // Training
-    "train.title": "Step 9: Training (How LLMs Learn)",
+    "train.title": "Training (How LLMs Learn)",
     "train.desc.0": "<strong>Training</strong> is the learning phase. The model reads text, predicts the next word, and updates its parameters when it makes mistakes.",
     "train.desc.1": "Training requires massive datasets. LLaMA 3 was trained on 15 trillion tokens — far more than a human could read in thousands of lifetimes.",
     "train.desc.2": "Simulate training below to watch the loss decrease as the model learns to make correct predictions.",
@@ -194,7 +196,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "train.insight": "<strong>Key Insight:</strong> Through predicting next words on huge web corpora, the model implicitly absorbs facts, reasoning patterns, and syntax.",
 
     // Inference
-    "infer.title": "Step 10: Inference (Running the Model)",
+    "infer.title": "Inference (Running the Model)",
     "infer.desc.0": "<strong>Inference</strong> is using the trained model. The parameters are frozen, meaning no learning happens, making it very fast and cheap.",
     "infer.desc.1": "Let's do a live test! You can edit the text corpus below, inspect transition probabilities, and auto-generate text starting from any word.",
     "infer.phase": "🚀 Inference Phase (Execution)",
@@ -217,44 +219,46 @@ export const translations: Record<Locale, Record<string, string>> = {
     // App chrome
     "app.title": "LLM'ler Nasıl Çalışır",
     "app.subtitle": "Beş yaşında gibi anlatıyoruz.",
-    "app.step": "Adım {current} / {total}",
+    "app.step": "{current} / {total}",
 
     // Sidebar section titles
     "nav.overview": "LLM de Ne?",
-    "nav.tokenization": "Adım 1: Token",
-    "nav.embedding": "Adım 2: Kelimeyi Sayıya Dökme (Embedding)",
-    "nav.layernorm": "Adım 3: Dengeleme (Layer Normalization)",
-    "nav.attention": "Adım 4: Öz-Dikkat ve Yansıtma",
-    "nav.mlp": "Adım 5: Mantık Katmanı (MLP)",
-    "nav.transformer": "Adım 6: Transformer Bloğu",
-    "nav.softmax": "Adım 7: Karar Verme (Softmax)",
-    "nav.output": "Adım 8: Kelime Seçimi ve Üretim",
-    "nav.training": "Adım 9: Eğitim (Nasıl Öğrenir?)",
-    "nav.inference": "Adım 10: Çıkarım ve Oyun Alanı",
+    "nav.tokenization": "Token",
+    "nav.embedding": "Kelimeyi Sayıya Dökme (Embedding)",
+    "nav.layernorm": "Dengeleme (Layer Normalization)",
+    "nav.attention": "Öz-Dikkat ve Yansıtma",
+    "nav.mlp": "Mantık Katmanı (MLP)",
+    "nav.transformer": "Transformer Bloğu",
+    "nav.softmax": "Karar Verme (Softmax)",
+    "nav.output": "Kelime Seçimi ve Üretim",
+    "nav.training": "Eğitim (Nasıl Öğrenir?)",
+    "nav.inference": "Çıkarım ve Oyun Alanı",
 
     // Overview
-    "overview.title": "Büyük Dil Modeli (LLM) de Neyin Nesi?",
-    "overview.desc.0": "Yapay zeka modelleri (LLM) inanılmaz. Eminim arka planı çok zor sanıyorsun. 10. adımda işin temel prensiplerini öğreneceğine söz veriyorum. Ufkun açılacak bak gör.",
+    "overview.title": "Bu ChatGPT nasıl çalışıyor ya?",
+    "overview.desc.0": "Yapay zeka modelleri (LLM) inanılmaz. LLM o kadar inanılmaz ki bu uygulamayı bile Gemini ile yaptım. Böyle bir teknoloji öğrenilmez mi? Eminim arka planı çok zor sanıyorsun. 10. adımda işin temel prensiplerini öğreneceğine söz veriyorum. Ufkun açılacak bak gör.",
     "overview.desc.1": "Tıpkı telefonlarımızdaki akıllı kelime tamamlama (klavye) gibidir. Aşağıda bunun nasıl çalıştığına dair birkaç örneği görebilirsin.",
-    "overview.desc.2": "Sözümüz söz: Bu rehberin en başında kendi yazacağımız basit bir modeli eğitip test edeceğiz! Sonunda kendi cümlenizi yazıp modelin tahminlerini görebileceksiniz.",
+    "overview.desc.2": "Bir dil modelinin girdiden çıktıya tüm yolculuğunu 10 adımda göreceğiz. Her adımda işin mantığını kavrayacaksın.",
     "overview.autocomplete": "Klavye üstündeki kelime tamamlama gibi düşün, ama çok daha zekisi:",
-    "overview.promise": "Sözümüz söz: Bu rehberin en başında kendi yazacağımız basit bir modeli eğitip test edeceğiz! Sonunda kendi cümlenizi yazıp modelin tahminlerini görebileceksiniz.",
+    "overview.promise": "Bu rehberin en başında kendi yazacağımız basit bir modeli eğitip test edeceğiz! Sonunda kendi cümlenizi yazıp modelin tahminlerini görebileceksiniz.",
     "overview.next": "Gelin bu aşamaları tek tek inceleyip içerde neler döndüğünü görelim!",
+    "overview.history": "Aslında bu algoritmalar yeni değil. Ancak bu kadar çok yazı (kitap vs.) verilince daha iyiye giderek daha iyi cevap vermesi tahmin edilmiyordu. ChatGPT gibi modeller bugüne kadar yazılmış tüm kitapları ve neredeyse tüm internetteki yazıları biliyor.",
+    "overview.fact": "İnsan beyninin 100 Trilyon parametreden oluştuğu tahmin edilirken, güncel modeller 1 Trilyon parametreden oluşuyor. Ben de bir yerde duydum. Yani yersen!",
 
     // Tokenization
-    "token.title": "Adım 1: Token",
-    "token.desc.0": "Yapay zekalar kelimeleri doğrudan okuyamaz, sadece sayıları anlarlar. Bu yüzden metinler önce <strong>token</strong> adı verilen küçük parçalara bölünür.",
+    "token.title": "Token",
+    "token.desc.0": "Yapay zekalar kelimeleri doğrudan okuyamaz, sadece sayıları anlarlar. Bu yüzden metinler önce <strong>token</strong> adı verilen küçük parçalara bölünür. Yapay zekanın her kelimeyi ezberlemek yerine yapboz parçaları (token) kullanması bellek tasarrufu sağlar ve işlem performansını ciddi oranda artırır.",
     "token.desc.1": "Her kelimeye ayrı bir sayı atamak imkansızdır. Bu yüzden kelimeleri eklerine, köklerine ve noktalama işaretlerine ayırarak tanıdık yapboz parçaları oluştururuz.",
     "token.desc.2": "Yazdığın cümlelerin nasıl token'lara bölündüğünü ve her birinin sayısal kimliğini (Token ID) canlı olarak incele!",
     "token.try": "Hemen dene! Kafana göre bir cümle yaz:",
     "token.placeholder": "Bir şeyler karala...",
     "token.tokens": "Oluşan Tokenlar:",
-    "token.total": "Toplam parça sayısı:",
-    "token.ids": "Her bir parçanın bilgisayardaki sayısal kimliği (Token ID):",
+    "token.total": "Toplam token sayısı:",
+    "token.ids": "Her bir token'ın bilgisayardaki sayısal kimliği (Token ID):",
     "token.insight": "<strong>Olayın Sırrı:</strong> Yapay zeka kelimeleri harf harf görmüyor, sadece bu sayıları okuyor! Modelin hafızasında 30.000 ile 100.000+ arası değişen dev bir kelime-sayı sözlüğü var.",
 
     // Embedding
-    "embed.title": "Adım 2: Kelimeyi Sayıya Dökme (Embedding)",
+    "embed.title": "Kelimeyi Sayıya Dökme (Embedding)",
     "embed.desc.0": "Her token, kelimenin anlamını taşıyan ve <strong>vektör</strong> adı verilen bir sayı listesine dönüştürülür. Benzer anlamdaki kelimelerin sayıları da benzer olur.",
     "embed.desc.1": "Embedding katmanı kelimeler arasındaki ilişkileri yakalar. Örneğin: kral - erkek + kadın işlemi kraliçe vektörünü verir.",
     "embed.desc.2": "Benzer kelimeler uzayda birbirine yakın konumlanır. Kelimelerin iki boyutlu uzaydaki haritasını aşağıdan inceleyebilirsin.",
@@ -262,12 +266,12 @@ export const translations: Record<Locale, Record<string, string>> = {
     "embed.dims": "← Sadece 8 tane sayı gösteriyoruz ama gerçek modellerde bu liste 768 ile 12.288 sayı arasında değişiyor! →",
     "embed.relationships": "Embedding neden süper bir şey? İşte kelimelerin ilişkisi:",
     "embed.formula": "kral - erkek + kadın ≈ kraliçe",
-    "embed.similar": "Benzer kelimeler → Benzer sayılar → Uzayda dip dibe olmak",
+    "embed.similar": "Benzer kelimeler → Benzer sayılar → Uzayda dip bile olmak",
     "embed.2d": "Kelimelerin uzaydaki 2 boyutlu haritası",
     "embed.insight": "<strong>Olayın Sırrı:</strong> Bu sayıları biz elle yazmıyoruz, model kendi kendine öğreniyor! Model okuma yaptıkça 'kral' ve 'kraliçe' gibi kelimelerin benzer ortamlarda geçtiğini görüp onları uzayda birbirine yaklaştırıyor.",
 
     // Layer Norm
-    "ln.title": "Adım 3: Dengeleme (Layer Normalization)",
+    "ln.title": "Dengeleme (Layer Normalization)",
     "ln.desc.0": "Sayılar katmanlar arasında ilerlerken çığ gibi büyüyebilir veya sıfırlanabilir. <strong>Layer Normalization</strong> sayıları güvenli bir aralığa getirerek sistemi dengeler.",
     "ln.desc.1": "Bu işlem okuldaki çan eğrisi not sistemine benzer. Sınav notları çok dengesiz olsa bile, sınıf ortalamasına göre hizalayarak puanları karşılaştırabiliriz.",
     "ln.desc.2": "Aşağıdaki sürgüleri kaydırarak ham sayıların ortalamasını sıfır ve standart sapmasını bir yapacak şekilde nasıl dengelendiğini gör.",
@@ -281,7 +285,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "ln.insight": "<strong>Olayın Sırrı:</strong> Modern modellerde her işlemden hemen önce bu dengeleme yapılır. Böylece sayılar hep güvenli aralıkta akar.",
 
     // Self-Attention
-    "attn.title": "Adım 4: Öz-Dikkat ve Yansıtma",
+    "attn.title": "Öz-Dikkat ve Yansıtma",
     "attn.desc.0": "<strong>Self-Attention</strong>, cümledeki her kelimenin diğer kelimelere tek tek bakıp hangilerinin kendisiyle alakalı olduğuna karar vermesidir. Kelimeler bağlamı bu sayede kavrar.",
     "attn.desc.1": "Bir kelime, diğer kelimelere ne kadar odaklanacağını Sorgu (Q), Anahtar (K) ve Değer (V) adı verilen vektörlerin matematiksel çarpımıyla belirler.",
     "attn.desc.2": "Model birden fazla dikkat kafasını paralel çalıştırır (Multi-Head). Sonra bu kafalardan çıkan sonuçları yansıtma matrisi (W_O) ile birleştirerek tek bir çıktı üretir.",
@@ -304,7 +308,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "attn.insight": "<strong>Olayın Sırrı:</strong> Eski yapay zekalar metni sırayla tek tek okurdu. Attention ise aynı anda cümlenin tamamına bakıp, birbirine çok uzak kelimelerin bile arasındaki gizli bağları anında çözer!",
 
     // MLP
-    "mlp.title": "Adım 5: Mantık Katmanı (MLP)",
+    "mlp.title": "Mantık Katmanı (MLP)",
     "mlp.desc.0": "Attention kelimelerin ilişkisini bulduktan sonra, <strong>MLP</strong> (Mantık Katmanı) bu bilgiyi işler ve akıl yürütür. Modelin genel bilgi birikimi buradadır.",
     "mlp.desc.1": "MLP'de doğrusal olmayanlığı sağlamak için GELU aktivasyon fonksiyonu kullanılır. Bu fonksiyon olmasaydı model karmaşık problemleri çözemezdi.",
     "mlp.desc.2": "Bilgiler önce 4 kat genişletilir, süzgeçten (aktivasyon) geçirilir ve tekrar eski boyutuna sıkıştırılır. Aşağıdaki şemadan izle!",
@@ -323,8 +327,8 @@ export const translations: Record<Locale, Record<string, string>> = {
     "mlp.insight": "<strong>Olayın Sırrı:</strong> Modelin ezberlediği tüm ansiklopedik bilgiler aslında bu MLP katmanındaki sayılarda saklıdır! Bilgiyi önce 4 kat genişletip inceler, sonra özetleyip geri yollar.",
 
     // Transformer
-    "tf.title": "Adım 6: Transformer Bloğu",
-    "tf.desc.0": "Bir Transformer modeli, üst üste dizilmiş onlarca özdeş bloktan oluşur. Her blok sırasıyla Normalizasyon, Dikkat ve MLP adımlarını çalıştırır.",
+    "tf.title": "Transformer Bloğu",
+    "tf.desc.0": "Bir Transformer modeli, üst üste dizilmiş onlarca özdeş bloktan oluşur. Her blok sırasıyla Normalizasyon, Dikkat ve MLP işlemlerini çalıştırır.",
     "tf.desc.1": "Katmanlar arasında bilgilerin kaybolmaması için <strong>residual (artık) bağlantılar</strong> kullanılır. Bu yollar sayesinde gradyanlar geriye kolayca akar.",
     "tf.desc.2": "Katman sayısı arttıkça modelin gücü ve derinliği artar. Örneğin GPT-2 12 katmandan oluşurken GPT-3 tam 96 katmana sahiptir.",
     "tf.inside": "Bir Transformer Bloğunun İçi:",
@@ -340,7 +344,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "tf.insight": "<strong>Olayın Sırrı:</strong> Transformer mimarisi aslında çok basittir: Sadece dikkat ve mantık katmanlarının ardı ardına dizilmesinden ibarettir. Bu basit yapıyı devasa miktarda veriyle beslediğimizde ortaya GPT-4 çıkıyor!",
 
     // Softmax
-    "sm.title": "Adım 7: Karar Verme (Softmax)",
+    "sm.title": "Karar Verme (Softmax)",
     "sm.desc.0": "Yapay zekanın ürettiği ham skorları (logits) toplamı %100 olan anlamlı <strong>olasılıklara</strong> dönüştürmek için **Softmax** kullanılır.",
     "sm.desc.1": "Bu sayede model 'Bence %80 olasılıkla sıradaki kelime kedi olmalı' gibi kararlar alabilir.",
     "sm.desc.2": "Aşağıdaki sürgüleri oynatarak ham skorların nasıl olasılıklara dönüştürüldüğünü ve en yüksek skorun olasılığı nasıl domine ettiğini gör.",
@@ -357,7 +361,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "sm.insight": "<strong>Olayın Sırrı:</strong> Softmax hem dikkat oranlarını belirlerken hem de son aşamada kelimeyi seçerken kullanılır. Fark ettiysen en yüksek puanlı kelime olasılığı tamamen domine ediyor, model böylece kararsız kalmıyor.",
 
     // Output
-    "out.title": "Adım 8: Kelime Seçimi ve Üretim",
+    "out.title": "Kelime Seçimi ve Üretim",
     "out.desc.0": "Model olasılıklar arasından bir kelime seçer, onu girdinin sonuna ekler ve baştan çalıştırır. Buna <strong>otoregresif üretim</strong> denir.",
     "out.desc.1": "Sıcaklık (Temperature) ayarı üretimin rastgeleliğini kontrol eder. Düşük sıcaklık garantici/sıkıcı, yüksek sıcaklık ise yaratıcı/çılgın sonuçlar verir.",
     "out.desc.2": "Yazdır butonuna basarak yapay zekanın kelime kelime metin üretmesini canlı olarak izle!",
@@ -382,7 +386,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "out.insight": "<strong>Olayın Sırrı:</strong> Modeller her kelimeyi tek tek üretir. 100 kelimelik bir cevap için model tüm katmanlarını 100 kez baştan aşağı çalıştırır! Yapay zekanın yazarken yavaşça kelime kelime ilerlemesinin sebebi de tam olarak budur.",
 
     // Training
-    "train.title": "Adım 9: Model Eğitimi (Nasıl Öğreniyorlar?)",
+    "train.title": "Model Eğitimi (Nasıl Öğreniyorlar?)",
     "train.desc.0": "<strong>Eğitim (Training)</strong>, modelin dildeki kalıpları öğrenmek için milyarlarca cümle okuduğu ve hata yaptıkça parametrelerini güncellediği aşamadır.",
     "train.desc.1": "Eğitim için devasa veri gerekir. LLaMA 3 tam 15 trilyon token ile eğitilmiştir. Bu, bir insanın ömrü boyunca okuyabileceğinden kat kat fazladır.",
     "train.desc.2": "Aşağıdaki buton ile eğitimi simüle et. Model doğru tahminler yapmaya başladıkça hata payı (loss) sıfıra doğru düşecektir.",
@@ -406,7 +410,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     "train.insight": "<strong>Olayın Sırrı:</strong> Eğitim, yapay zekayı zeki yapan asıl şeydir. Trilyonlarca kelimede bir sonraki kelimeyi tahmin etmeye çalışırken model dilbilgisini, genel kültür gerçeklerini ve mantık kurallarını farkında olmadan kapar!",
 
     // Inference
-    "infer.title": "Adım 10: Çıkarım (Inference - Çalıştırma)",
+    "infer.title": "Çıkarım (Inference - Çalıştırma)",
     "infer.desc.0": "<strong>Çıkarım (Inference)</strong>, eğitilmiş hazır modeli çalıştırıp soru sorduğumuz andır. Bu aşamada model artık hiçbir şey öğrenmez; içindeki tüm ayar sayıları tamamen dondurulmuştur.",
     "infer.desc.1": "Burada canlı bir deneme yapalım! Aşağıdaki eğitim metnini düzenleyebilir, kelime olasılıklarını inceleyebilir ve kendi prompt'unla modeli test edebilirsin.",
     "infer.phase": "🚀 Çıkarım Aşaması (Çalıştırma)",

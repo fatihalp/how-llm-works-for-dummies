@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { useI18n } from "@/i18n/context";
 import SeniorDeveloperMode from "@/components/SeniorDeveloperMode";
+import { Box, Typography, Paper, Button, useTheme } from "@mui/material";
 
 const container = { hidden: {}, show: { transition: { staggerChildren: 0.1 } } };
 const item = { hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } };
@@ -18,10 +19,10 @@ const embeddings: Record<string, number[]> = {
 };
 
 function getBarColor(value: number) {
-  if (value > 0.5) return "bg-green-400";
-  if (value > 0) return "bg-green-600";
-  if (value > -0.5) return "bg-red-600";
-  return "bg-red-400";
+  if (value > 0.5) return "#4caf50";
+  if (value > 0) return "#2e7d32";
+  if (value > -0.5) return "#c62828";
+  return "#e53935";
 }
 
 const wordTranslations: Record<string, Record<string, string>> = {
@@ -31,6 +32,7 @@ const wordTranslations: Record<string, Record<string, string>> = {
 
 export default function Embedding({ slide = 0 }: { slide?: number }) {
   const { t, locale } = useI18n();
+  const theme = useTheme();
   const [selected, setSelected] = useState("king");
   const vec = embeddings[selected];
   
@@ -39,134 +41,221 @@ export default function Embedding({ slide = 0 }: { slide?: number }) {
   };
 
   return (
-    <motion.div variants={container} initial="hidden" animate="show" className="space-y-8">
+    <Box 
+      component={motion.div} 
+      variants={container} 
+      initial="hidden" 
+      animate="show" 
+      sx={{ display: "flex", flexDirection: "column", gap: 4 }}
+    >
       {slide === 0 && (
         <>
-          <motion.div variants={item}>
-            <h3 className="text-2xl font-bold text-white mb-3">{t("embed.title")}</h3>
-            <p className="text-slate-300 leading-relaxed text-lg" dangerouslySetInnerHTML={{ __html: t("embed.desc.0") }} />
-          </motion.div>
+          <Box component={motion.div} variants={item}>
+            <Typography sx={{ fontWeight: "bold" }} variant="h4" component="h3" gutterBottom>
+              {t("embed.title")}
+            </Typography>
+            <Typography 
+              variant="body1" 
+              sx={{ color: "text.secondary", fontSize: "1.1rem", lineHeight: 1.7 }}
+              dangerouslySetInnerHTML={{ __html: t("embed.desc.0") }} 
+            />
+          </Box>
 
-          <motion.div variants={item} className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
-            <h4 className="text-base font-semibold text-slate-400 uppercase tracking-wide mb-4">{t("embed.select")}</h4>
-            <div className="flex gap-2 flex-wrap mb-6">
+          <Paper component={motion.div} variants={item} sx={{ p: 3 }}>
+            <Typography variant="subtitle1" sx={{ mb: 2, color: "text.secondary", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: "bold" }}>
+              {t("embed.select")}
+            </Typography>
+            <Box sx={{ display: "flex", gap: 1.5, flexWrap: "wrap", mb: 4 }}>
               {words.map((w) => (
-                <button
+                <Button
                   key={w}
+                  variant={selected === w ? "contained" : "outlined"}
                   onClick={() => setSelected(w)}
-                  className={`px-4 py-2.5 rounded-lg font-mono text-base transition-all cursor-pointer ${
-                    selected === w
-                      ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20"
-                      : "bg-slate-700 text-slate-300 hover:bg-slate-600"
-                  }`}
+                  sx={{
+                    fontFamily: "monospace",
+                    fontSize: "0.95rem",
+                    px: 3,
+                    py: 1,
+                    boxShadow: selected === w ? "0 4px 12px rgba(0,113,227,0.2)" : "none",
+                  }}
                 >
                   {displayWord(w)}
-                </button>
+                </Button>
               ))}
-            </div>
+            </Box>
 
-            <div className="space-y-2">
-              <p className="text-sm text-slate-400 font-mono mb-2">embedding[&quot;{displayWord(selected)}&quot;] = [{vec.map(v => v.toFixed(2)).join(", ")}]</p>
-              <div className="flex items-end gap-1.5 h-36">
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              <Typography variant="body2" sx={{ fontFamily: "monospace", color: "text.secondary", fontSize: "0.95rem" }}>
+                embedding[&quot;{displayWord(selected)}&quot;] = [{vec.map(v => v.toFixed(2)).join(", ")}]
+              </Typography>
+              
+              <Box sx={{ display: "flex", alignItems: "end", gap: 1.5, height: 160, pt: 2 }}>
                 {vec.map((v, i) => (
-                  <motion.div
+                  <Box
                     key={i}
-                    className="flex-1 flex flex-col items-center justify-end h-full"
+                    component={motion.div}
                     initial={{ scaleY: 0 }}
                     animate={{ scaleY: 1 }}
                     transition={{ delay: i * 0.05, type: "spring" }}
+                    sx={{
+                      flex: 1,
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "end",
+                      height: "100%",
+                      transformOrigin: "bottom"
+                    }}
                   >
-                    <div
-                      className={`w-full rounded-t ${getBarColor(v)} transition-all`}
-                      style={{ height: `${Math.abs(v) * 100}%`, minHeight: 4 }}
+                    <Box
+                      sx={{
+                        width: "100%",
+                        borderRadius: "4px 4px 0 0",
+                        bgcolor: getBarColor(v),
+                        height: `${Math.abs(v) * 100}%`,
+                        minHeight: 4,
+                        transition: "all 0.2s"
+                      }}
                     />
-                    <span className="text-xs text-slate-500 mt-1">{v.toFixed(1)}</span>
-                  </motion.div>
+                    <Typography variant="caption" sx={{ color: "text.secondary", mt: 1, fontFamily: "monospace" }}>
+                      {v.toFixed(1)}
+                    </Typography>
+                  </Box>
                 ))}
-              </div>
-              <p className="text-xs text-slate-500 text-center mt-2">{t("embed.dims")}</p>
-            </div>
-          </motion.div>
+              </Box>
+              <Typography variant="caption" sx={{ color: "text.secondary", textAlign: "center", mt: 2, display: "block" }}>
+                {t("embed.dims")}
+              </Typography>
+            </Box>
+          </Paper>
         </>
       )}
 
       {slide === 1 && (
         <>
-          <motion.div variants={item}>
-            <h3 className="text-2xl font-bold text-white mb-3">{t("embed.title")}</h3>
-            <p className="text-slate-300 leading-relaxed text-lg" dangerouslySetInnerHTML={{ __html: t("embed.desc.1") }} />
-          </motion.div>
+          <Box component={motion.div} variants={item}>
+            <Typography sx={{ fontWeight: "bold" }} variant="h4" component="h3" gutterBottom>
+              {t("embed.title")}
+            </Typography>
+            <Typography 
+              variant="body1" 
+              sx={{ color: "text.secondary", fontSize: "1.1rem", lineHeight: 1.7 }}
+              dangerouslySetInnerHTML={{ __html: t("embed.desc.1") }} 
+            />
+          </Box>
 
-          <motion.div variants={item} className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
-            <h4 className="text-base font-semibold text-slate-400 uppercase tracking-wide mb-4">{t("embed.relationships")}</h4>
-            <div className="bg-slate-900 rounded-lg p-5 font-mono text-base space-y-2.5">
-              <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} className="text-green-400">
+          <Paper component={motion.div} variants={item} sx={{ p: 3 }}>
+            <Typography variant="subtitle1" sx={{ mb: 2, color: "text.secondary", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: "bold" }}>
+              {t("embed.relationships")}
+            </Typography>
+            <Box sx={{ bgcolor: theme.palette.mode === "dark" ? "grey.950" : "grey.100", p: 3, borderRadius: 2, fontFamily: "monospace", display: "flex", flexDirection: "column", gap: 1.5 }}>
+              <Typography component={motion.p} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} sx={{ color: "#34d399", fontSize: "1.1rem", fontFamily: "monospace" }}>
                 {t("embed.formula")}
-              </motion.p>
-              <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="text-blue-400">
+              </Typography>
+              <Typography component={motion.p} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} sx={{ color: "#60a5fa", fontSize: "1.1rem", fontFamily: "monospace" }}>
                 {t("embed.similar")}
-              </motion.p>
-            </div>
-          </motion.div>
+              </Typography>
+            </Box>
+          </Paper>
         </>
       )}
 
       {slide === 2 && (
         <>
-          <motion.div variants={item}>
-            <h3 className="text-2xl font-bold text-white mb-3">{t("embed.title")}</h3>
-            <p className="text-slate-300 leading-relaxed text-lg" dangerouslySetInnerHTML={{ __html: t("embed.desc.2") }} />
-          </motion.div>
+          <Box component={motion.div} variants={item}>
+            <Typography sx={{ fontWeight: "bold" }} variant="h4" component="h3" gutterBottom>
+              {t("embed.title")}
+            </Typography>
+            <Typography 
+              variant="body1" 
+              sx={{ color: "text.secondary", fontSize: "1.1rem", lineHeight: 1.7 }}
+              dangerouslySetInnerHTML={{ __html: t("embed.desc.2") }} 
+            />
+          </Box>
 
-          <motion.div variants={item} className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
-            <div className="relative h-56 bg-slate-900 rounded-lg overflow-hidden border border-slate-850">
+          <Paper component={motion.div} variants={item} sx={{ p: 3 }}>
+            <Box sx={{ position: "relative", height: 240, bgcolor: theme.palette.mode === "dark" ? "grey.950" : "grey.100", borderRadius: 2, overflow: "hidden", border: 1, borderColor: theme.palette.mode === "dark" ? "grey.800" : "grey.300" }}>
               {Object.entries(embeddings).map(([word, vec], i) => {
                 const x = ((vec[0] + 0.5) / 1.5) * 80 + 10;
                 const y = ((vec[1] + 0.5) / 1.5) * 80 + 10;
                 return (
-                  <motion.div
+                  <Box
                     key={word}
+                    component={motion.div}
                     initial={{ opacity: 0, scale: 0 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.2 + i * 0.1, type: "spring" }}
-                    className="absolute"
-                    style={{ left: `${x}%`, top: `${y}%`, transform: "translate(-50%, -50%)" }}
+                    sx={{
+                      position: "absolute",
+                      left: `${x}%`,
+                      top: `${y}%`,
+                      transform: "translate(-50%, -50%)",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center"
+                    }}
                   >
-                    <div className={`w-3.5 h-3.5 rounded-full ${selected === word ? "bg-blue-500 ring-2 ring-blue-300" : "bg-blue-400"}`} />
-                    <span className="absolute top-4 left-1/2 -translate-x-1/2 text-sm text-slate-300 whitespace-nowrap">{displayWord(word)}</span>
-                  </motion.div>
+                    <Box 
+                      sx={{ 
+                        width: 14, 
+                        height: 14, 
+                        borderRadius: "50%", 
+                        bgcolor: selected === word ? "primary.main" : "primary.light", 
+                        ring: selected === word ? 3 : 0, 
+                        ringColor: "primary.light",
+                        boxShadow: selected === word ? "0 0 10px #0071e3" : "none",
+                        transition: "all 0.2s" 
+                      }} 
+                    />
+                    <Typography variant="caption" sx={{ mt: 0.5, color: "text.primary", whiteSpace: "nowrap", fontFamily: "monospace" }}>
+                      {displayWord(word)}
+                    </Typography>
+                  </Box>
                 );
               })}
-              <div className="absolute bottom-2 right-2 text-xs text-slate-600">{t("embed.2d")}</div>
-            </div>
-          </motion.div>
+              <Typography variant="caption" sx={{ position: "absolute", bottom: 8, right: 8, color: "text.secondary", fontFamily: "monospace" }}>
+                {t("embed.2d")}
+              </Typography>
+            </Box>
+          </Paper>
 
-          <motion.div variants={item} className="text-slate-400 text-base bg-blue-900/20 border border-blue-800/30 rounded-lg p-5">
-            <span dangerouslySetInnerHTML={{ __html: t("embed.insight") }} />
-          </motion.div>
+          <Paper
+            component={motion.div}
+            variants={item}
+            elevation={0}
+            sx={{
+              p: 2.5,
+              bgcolor: theme.palette.mode === "dark" ? "rgba(0, 113, 227, 0.1)" : "rgba(0, 113, 227, 0.05)",
+              border: 1,
+              borderColor: theme.palette.mode === "dark" ? "rgba(0, 113, 227, 0.2)" : "rgba(0, 113, 227, 0.1)",
+              borderRadius: 2
+            }}
+          >
+            <Typography variant="body1" sx={{ color: "text.primary", fontSize: "1rem" }} dangerouslySetInnerHTML={{ __html: t("embed.insight") }} />
+          </Paper>
 
-          <motion.div variants={item}>
+          <Box component={motion.div} variants={item}>
             <SeniorDeveloperMode
               contentEn={
                 <>
                   <p>
                     In production, an embedding layer is represented by a parameter matrix <code>W_e</code> of shape <code>(V, d_model)</code>. The lookup is computationally optimized as a slice selection (equivalent to multiplying a one-hot vector representation of the token ID with the embedding weight matrix):
                   </p>
-                  <div className="bg-slate-950 p-3 rounded my-2 font-mono text-center text-blue-400 overflow-x-auto">
+                  <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto" }}>
                     {"x_t = Embedding(t_t) = W_e[t_t, :]"}
-                  </div>
+                  </Box>
                   <p className="mt-2 font-semibold">Position Embeddings:</p>
                   <p className="text-slate-300">
                     Since Transformer&apos;s self-attention has no inherent sense of token order (permutation invariance), positional information must be injected. Modern architectures (like LLaMA-2/3, Mistral, Gemma) discard original additive sinusoidal position embeddings in favor of <strong>Rotary Position Embeddings (RoPE)</strong>.
                   </p>
                   <p className="mt-2 font-semibold">How RoPE Works:</p>
-                  <p className="text-slate-300">
+                  <p className="text-slate-300 font-sans">
                     Instead of adding a position vector to the token embedding, RoPE applies a rotation to the Query (Q) and Key (K) vectors in 2D planes. For a query vector <code>q</code> at position <code>m</code>:
                   </p>
-                  <div className="bg-slate-950 p-3 rounded my-2 font-mono text-center text-blue-400 overflow-x-auto">
+                  <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto" }}>
                     {"R_{Θ, m}^d q = diag(R_1, R_2, ..., R_{d/2}) q"}
-                  </div>
-                  <p className="mt-2 text-slate-300">
+                  </Box>
+                  <p className="mt-2 text-slate-300 font-sans">
                     where each <code>R_i</code> is a 2D rotation matrix rotating the <code>2i</code> and <code>2i+1</code> dimensions of the vector by angle <code>m \theta_i</code>. This preserves relative distances because the inner product of queries and keys depends only on their relative distance <code>m - n</code>.
                   </p>
                 </>
@@ -176,29 +265,29 @@ export default function Embedding({ slide = 0 }: { slide?: number }) {
                   <p>
                     Gelişmiş uygulamalarda gömme (embedding) katmanı, <code>(V, d_model)</code> boyutlarında bir parametre matrisi olan <code>W_e</code> ile temsil edilir. Gömme arama (lookup) işlemi, bilgisayarda doğrudan bir indeks erişimi (dilim seçimi) şeklinde yapılır:
                   </p>
-                  <div className="bg-slate-950 p-3 rounded my-2 font-mono text-center text-blue-400 overflow-x-auto">
+                  <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto" }}>
                     {"x_t = Embedding(t_t) = W_e[t_t, :]"}
-                  </div>
+                  </Box>
                   <p className="mt-2 font-semibold">Pozisyon Kodlama (Position Embeddings):</p>
                   <p className="text-slate-300">
                     Transformer&apos;ın öz-dikkat mekanizması yer değiştirme altında değişmez (permutation-invariant) olduğundan, kelimelerin sırasını modele bildirmek için konumsal bilgilerin eklenmesi gerekir. Modern mimariler (LLaMA-2/3, Mistral, Gemma gibi), eklemeli sinüzoidal pozisyon vektörleri yerine <strong>Döner Konumsal Gömme (Rotary Position Embeddings - RoPE)</strong> kullanır.
                   </p>
-                  <p className="mt-2 font-semibold">RoPE Nasıl Çalışır?</p>
-                  <p className="text-slate-300">
+                  <p className="mt-2 font-semibold font-sans">RoPE Nasıl Çalışır?</p>
+                  <p className="text-slate-300 font-sans">
                     RoPE, pozisyon vektörlerini doğrudan gömme vektörüne eklemek yerine, dikkat katmanındaki Sorgu (Q) ve Anahtar (K) vektörlerini iki boyutlu düzlemlerde döndürür. <code>m</code>. pozisyondaki bir <code>q</code> sorgu vektörü için rotasyon şu şekildedir:
                   </p>
-                  <div className="bg-slate-950 p-3 rounded my-2 font-mono text-center text-blue-400 overflow-x-auto">
+                  <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto" }}>
                     {"R_{Θ, m}^d q = diag(R_1, R_2, ..., R_{d/2}) q"}
-                  </div>
-                  <p className="mt-2 text-slate-300">
+                  </Box>
+                  <p className="mt-2 text-slate-300 font-sans">
                     Burada her <code>R_i</code>, vektörün ilgili boyutlarını <code>m \theta_i</code> açısıyla döndüren 2B bir rotasyon matrisidir. Bu sayede sorgu ve anahtar vektörlerinin iç çarpımı, sadece kelimelerin birbirine olan bağıl mesafesine (<code>m - n</code>) bağlı hale gelir.
                   </p>
                 </>
               }
             />
-          </motion.div>
+          </Box>
         </>
       )}
-    </motion.div>
+    </Box>
   );
 }

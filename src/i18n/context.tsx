@@ -20,8 +20,9 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   const locale: Locale = (params?.locale as Locale) === "tr" ? "tr" : "en";
 
   const setLocale = useCallback((newLocale: Locale) => {
-    router.push(`/${newLocale}`);
-  }, [router]);
+    const stepPart = params?.step ? `/${params.step}` : "";
+    router.push(`/${newLocale}${stepPart}`);
+  }, [router, params]);
 
   const t = useCallback(
     (key: string, params?: Record<string, string | number>) => {
