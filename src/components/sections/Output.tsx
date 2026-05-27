@@ -284,27 +284,29 @@ export default function Output({ slide = 0 }: { slide?: number }) {
               }
               contentTr={
                 <>
-                  <p>
-                    Nedensel (causal) öz-dikkat mekanizması bağlam boyutu <code>N</code> ile karesel <code>O(N^2)</code> olarak büyür. Metin üretimi otoregresif olduğu için, her adımda cümlenin başından itibaren tüm vektörleri yeniden çarpmak aşırı derecede verimsizdir.
-                  </p>
-                  <p className="mt-2 font-semibold">KV Cache (Anahtar-Değer Bellekleme) Optimizasyonu:</p>
-                  <p className="text-slate-300 font-sans">
-                    Bu karesel maliyetten kaçınmak için endüstriyel sunucularda **KV Cache** kullanılır. Her bir katman için geçmiş kelimelerin Key (K) ve Value (V) vektörleri bellekte tutulur. Yeni bir kelime üretilirken sadece <em>o yeni kelimenin</em> Query, Key ve Value vektörleri hesaplanır:
-                  </p>
-                  <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light", my: 2, overflowX: "auto", fontWeight: "bold" }}>
-                    {"K_cached^(l) ← [K_cached^(l); k_t^(l)],  V_cached^(l) ← [V_cached^(l); v_t^(l)]"}
-                  </Box>
-                  <p className="text-slate-300 mt-2 font-sans">
-                    Daha sonra yeni Query vektörü, bellekteki birleşik K ve V vektörleri ile çarpılır. Bu sayede her adımda yapılan karesel hesaplama yükü doğrusal <code>O(N)</code> karmaşıklığına indirgenmiş olur.
-                  </p>
-                  <p className="mt-3 font-semibold font-sans">Gelişmiş Kod Çözme (Decoding) Stratejileri:</p>
-                  <p className="text-slate-300 font-sans">
-                    Her zaman en olası kelimeyi seçmek (Greedy Decoding) yerine, rastgelelik ve yaratıcılık eklemek amacıyla olasılık dağılımından örnekleme yapılır:
-                  </p>
-                  <ul className="list-disc list-inside space-y-1.5 pl-2 text-slate-300 font-sans">
-                    <li><strong>Top-K Örnekleme:</strong> En yüksek olasılığa sahip ilk <code>K</code> adet kelime havuzunu belirler ve gerisini eler.</li>
-                    <li><strong>Top-p (Nucleus) Örnekleme:</strong> Kümülâtif (toplam) olasılıkları <code>p</code> barajını (örn. <code>p = 0.90</code>) aşana kadar en olası kelimeleri havuzda toplar. Bu havuz dışındaki kelimeler tamamen elenerek anlamsız kelimelerin seçilmesi engellenir.</li>
-                  </ul>
+                  <div className="mb-3 p-3 bg-slate-800/50 rounded-lg">
+                    <p className="font-semibold text-white mb-1">⚡ Verimlilik Sorunu:</p>
+                    <p className="text-slate-300 text-sm">
+                      Her yeni kelime üretirken model tüm geçmiş kelimelere yeniden bakmak zorunda. Bu, özellikle uzun metinlerde (1000+ kelime) çok büyük bir işlem yükü demek.
+                    </p>
+                  </div>
+                  <div className="mb-3 p-3 bg-slate-800/50 rounded-lg">
+                    <p className="font-semibold text-green-400 mb-1">💡 Çözüm: KV Cache (Bellekleme)</p>
+                    <p className="text-slate-300 text-sm">
+                      Daha önce hesaplanmış Key (K) ve Value (V) vektörleri bellekten silinmez, saklanır. Yeni kelime için sadece o kelimenin K ve V vektörü hesaplanır ve eskilerin yanına eklenir. Böylece her seferinde sıfırdan hesaplama yapmak zorunda kalmayız.
+                    </p>
+                  </div>
+                  <div className="mb-3 p-3 bg-slate-800/50 rounded-lg">
+                    <p className="font-semibold text-blue-400 mb-1">🎯 Seçim Stratejileri (Nasıl Karar Veriyor?)</p>
+                    <p className="text-slate-300 text-sm mb-2">
+                      Model her zaman en yüksek olasılıklı kelimeyi seçmez. Bazen yaratıcılık için farklı stratejiler kullanılır:
+                    </p>
+                    <ul className="space-y-2 text-sm text-slate-300">
+                      <li><strong className="text-yellow-400">Greedy (Açgözlü):</strong> En yüksek puanlı kelimeyi seç. Garantici ama sıkıcı, hep aynı cümleleri kurar.</li>
+                      <li><strong className="text-yellow-400">Top-K:</strong> İlk K (örn. 40) kelime arasından rastgele seç. Biraz çeşitlilik katar.</li>
+                      <li><strong className="text-yellow-400">Top-p (Nucleus):</strong> Toplam olasılığı %90'ı geçene kadar en iyi kelimeleri havuza al, gerisini at. En popüler yöntem; hem mantıklı hem yaratıcı.</li>
+                    </ul>
+                  </div>
                 </>
               }
             />

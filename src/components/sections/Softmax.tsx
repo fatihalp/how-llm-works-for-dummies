@@ -121,20 +121,6 @@ export default function Softmax({ slide = 0 }: { slide?: number }) {
 
           <Paper component={motion.div} variants={item} sx={{ p: 3 }}>
             <Typography variant="subtitle1" sx={{ mb: 2, color: "text.secondary", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: "bold" }}>
-              {t("sm.formula.title")}
-            </Typography>
-            <Box sx={{ bgcolor: theme.palette.mode === "dark" ? "grey.950" : "grey.100", p: 3, borderRadius: 2, fontFamily: "monospace", textAlign: "center", display: "flex", flexDirection: "column", gap: 1 }}>
-              <Typography variant="h6" sx={{ color: "primary.main", fontFamily: "monospace", fontWeight: "bold" }}>
-                softmax(xᵢ) = e^xᵢ / Σ(e^xⱼ)
-              </Typography>
-              <Typography variant="caption" sx={{ color: "text.secondary" }}>
-                {t("sm.formula.desc")}
-              </Typography>
-            </Box>
-          </Paper>
-
-          <Paper component={motion.div} variants={item} sx={{ p: 3 }}>
-            <Typography variant="subtitle1" sx={{ mb: 2, color: "text.secondary", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: "bold" }}>
               {t("sm.example")}
             </Typography>
             <Box 
@@ -191,6 +177,15 @@ export default function Softmax({ slide = 0 }: { slide?: number }) {
             <SeniorDeveloperMode
               contentEn={
                 <>
+                  <div className="mb-4 p-3 border border-blue-500/30 rounded-lg bg-blue-950/20">
+                    <p className="font-semibold text-blue-400 mb-2">📐 The Formula:</p>
+                    <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light" }}>
+                      softmax(xᵢ) = e^xᵢ / Σ(e^xⱼ)
+                    </Box>
+                    <p className="text-slate-300 mt-2 text-sm">
+                      For each value: take e^value, then divide by the sum of all e^values. This turns any set of numbers into percentages that add up to 100%.
+                    </p>
+                  </div>
                   <p>
                     In hardware acceleration, directly calculating the softmax function can cause numeric overflow or underflow because <code>e^x</code> grows exponentially. To prevent this, standard libraries implement <strong>Safe Softmax</strong> by subtracting the maximum value from all inputs:
                   </p>
@@ -211,6 +206,15 @@ export default function Softmax({ slide = 0 }: { slide?: number }) {
               }
               contentTr={
                 <>
+                  <div className="mb-4 p-3 border border-blue-500/30 rounded-lg bg-blue-950/20">
+                    <p className="font-semibold text-blue-400 mb-2">📐 Matematiksel Formülü:</p>
+                    <Box sx={{ bgcolor: "grey.950", p: 2, borderRadius: 1.5, fontFamily: "monospace", textAlign: "center", color: "primary.light" }}>
+                      softmax(xᵢ) = e^xᵢ / Σ(e^xⱼ)
+                    </Box>
+                    <p className="text-slate-300 mt-2 text-sm">
+                      Her sayının e^sayı değerini hesapla, sonra her birini tüm sayıların toplamına böl. Bu işlem herhangi bir sayı kümesini %100'e tamamlanan olasılıklara dönüştürür.
+                    </p>
+                  </div>
                   <p>
                     Donanım hızlandırıcılarında (GPU/TPU), <code>e^x</code> üstel olarak büyüdüğü için doğrudan softmax hesaplaması yapmak sayısal taşmaya (overflow) veya sıfırlanmaya (underflow) sebep olur. Bunu önlemek için kütüphaneler tüm girdilerden maksimum değeri çıkararak <strong>Güvenli Softmax (Safe Softmax)</strong> formülünü uygular:
                   </p>

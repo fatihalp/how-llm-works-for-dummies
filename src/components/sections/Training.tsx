@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { useI18n } from "@/i18n/context";
 import SeniorDeveloperMode from "@/components/SeniorDeveloperMode";
@@ -122,7 +122,7 @@ export default function Training({ slide = 0 }: { slide?: number }) {
         <>
           <Box component={motion.div} variants={item}>
             <Typography sx={{ fontWeight: "bold" }} variant="h4" component="h3" gutterBottom>
-              {locale === "tr" ? "Büyük Veri İhtiyacı" : "Massive Data Requirements"}
+              {locale === "tr" ? "Büyük Resim: Bir Cümlenin Yolculuğu" : "Big Picture: A Sentence's Journey"}
             </Typography>
             <Typography 
               variant="body1" 
@@ -131,56 +131,7 @@ export default function Training({ slide = 0 }: { slide?: number }) {
             />
           </Box>
 
-          {/* Big Picture Pipeline */}
-          <Paper 
-            component={motion.div} 
-            variants={item} 
-            sx={{ 
-              p: 3, 
-              bg: theme.palette.mode === "dark" ? "linear-gradient(90deg, rgba(30,58,138,0.15) 0%, rgba(17,24,39,0.3) 100%)" : "linear-gradient(90deg, rgba(0,113,227,0.05) 0%, rgba(255,255,255,0.4) 100%)", 
-              border: 1, 
-              borderColor: theme.palette.mode === "dark" ? "grey.800" : "grey.300"
-            }}
-          >
-            <Typography variant="subtitle1" sx={{ mb: 3, fontWeight: "bold" }}>
-              {locale === "tr" ? "Transformer İşlem Akışı (Büyük Resim)" : "Transformer Pipeline (The Big Picture)"}
-            </Typography>
-            <Box sx={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 1, fontSize: "0.75rem" }}>
-              {[
-                locale === "tr" ? "Metin Girişi" : "Input Text", "→", 
-                locale === "tr" ? "Tokenize" : "Tokenize", "→", 
-                locale === "tr" ? "Gömme (Embed)" : "Embed", "→",
-                locale === "tr" ? "Dengeleme (Norm)" : "Norm", "→", 
-                locale === "tr" ? "Öz-Dikkat (Attention)" : "Self-Attention", "→", 
-                locale === "tr" ? "Yansıtma" : "Projection", "→", 
-                locale === "tr" ? "Artık (Residual)" : "Residual", "→",
-                locale === "tr" ? "Dengeleme (Norm)" : "Norm", "→", 
-                locale === "tr" ? "MLP Katmanı" : "MLP", "→", 
-                locale === "tr" ? "Artık (Residual)" : "Residual", "→",
-                locale === "tr" ? "(×N Katman Tekrarı)" : "(×N layers)", "→", 
-                locale === "tr" ? "Son Norm" : "Final Norm", "→", 
-                locale === "tr" ? "Lineer + Softmax" : "Linear + Softmax", "→", 
-                locale === "tr" ? "Sonraki Kelime" : "Next Token"
-              ].map((s, i) => (
-                <Box 
-                  key={i} 
-                  sx={{ 
-                    fontFamily: "monospace",
-                    fontWeight: s === "→" ? "bold" : "normal",
-                    color: s === "→" ? "text.secondary" : "text.primary",
-                    bgcolor: s === "→" ? "transparent" : (theme.palette.mode === "dark" ? "grey.900" : "grey.200"),
-                    border: s === "→" ? "none" : 1,
-                    borderColor: theme.palette.mode === "dark" ? "grey.850" : "grey.300",
-                    borderRadius: 1.5,
-                    px: s === "→" ? 0.5 : 1.5,
-                    py: s === "→" ? 0 : 0.75
-                  }}
-                >
-                  {s}
-                </Box>
-              ))}
-            </Box>
-          </Paper>
+          <PipelineAnimation locale={locale} theme={theme} />
 
           <Paper
             component={motion.div}
@@ -214,6 +165,19 @@ export default function Training({ slide = 0 }: { slide?: number }) {
 
           {/* Loss animation */}
           <Paper component={motion.div} variants={item} sx={{ p: 3, display: "flex", flexDirection: "column", gap: 2.5 }}>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5, mb: 1 }}>
+              <Typography variant="subtitle2" sx={{ color: "text.secondary" }}>
+                {locale === "tr"
+                  ? "Gerçek eğitimde model milyarlarca cümle okur. Her cümlede bir sonraki kelimeyi tahmin etmeye çalışır, yanlış yaparsa ağırlıklarını günceller."
+                  : "During real training, the model reads billions of sentences. For each sentence, it predicts the next word; if wrong, it updates its weights."}
+              </Typography>
+              <Box sx={{ bgcolor: theme.palette.mode === "dark" ? "grey.950" : "grey.100", p: 1.5, borderRadius: 1.5, fontFamily: "monospace", fontSize: "0.8rem", color: "text.secondary", display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 1 }}>
+                <span>{locale === "tr" ? "📖 Veri: Milyarlarca cümle" : "📖 Data: Billions of sentences"}</span>
+                <span>⚙️ {locale === "tr" ? "Parametre: 1 Milyar+" : "Params: 1B+"}</span>
+                <span>🎯 {locale === "tr" ? "Amaç: Hata Payını Sıfırlamak" : "Goal: Minimize Loss"}</span>
+              </Box>
+            </Box>
+
             <Box sx={{ display: "flex", alignItems: "center", gap: 3, flexWrap: "wrap" }}>
               <Button
                 variant="contained"
@@ -223,8 +187,14 @@ export default function Training({ slide = 0 }: { slide?: number }) {
                 {t("train.simulate")}
               </Button>
               <Typography variant="body2" sx={{ fontFamily: "monospace", color: "text.secondary" }}>
-                {t("train.epoch")} <Box component="span" sx={{ color: "text.primary", fontWeight: "bold" }}>{epoch}</Box> | {t("train.loss")} <Box component="span" sx={{ color: "primary.light", fontWeight: "bold" }}>{loss.toFixed(3)}</Box>
+                {t("train.epoch")} <Box component="span" sx={{ color: "text.primary", fontWeight: "bold" }}>{epoch}</Box> / 20
               </Typography>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                <Box sx={{ width: 8, height: 8, borderRadius: "50%", bgcolor: loss > 2 ? "#f87171" : (loss > 1 ? "#fbbf24" : "#34d399") }} />
+                <Typography variant="body2" sx={{ fontFamily: "monospace", color: "text.secondary" }}>
+                  {t("train.loss")} <Box component="span" sx={{ color: "primary.light", fontWeight: "bold" }}>{loss.toFixed(3)}</Box>
+                </Typography>
+              </Box>
             </Box>
 
             <Box sx={{ position: "relative", height: 160, bgcolor: theme.palette.mode === "dark" ? "grey.950" : "grey.100", borderRadius: 2, overflow: "hidden", border: 1, borderColor: theme.palette.mode === "dark" ? "grey.850" : "grey.300" }}>
@@ -245,7 +215,24 @@ export default function Training({ slide = 0 }: { slide?: number }) {
               <Typography variant="caption" sx={{ position: "absolute", top: 8, left: 8, color: "text.secondary", fontFamily: "monospace", fontSize: "0.7rem" }}>{t("train.lossup")}</Typography>
               <Typography variant="caption" sx={{ position: "absolute", bottom: 8, right: 8, color: "text.secondary", fontFamily: "monospace", fontSize: "0.7rem" }}>{t("train.steps")}</Typography>
             </Box>
-            <Typography variant="caption" sx={{ color: "text.secondary" }}>{t("train.lossdesc")}</Typography>
+
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2, p: 1.5, bgcolor: theme.palette.mode === "dark" ? "rgba(0, 113, 227, 0.08)" : "rgba(0, 113, 227, 0.04)", borderRadius: 2, border: 1, borderColor: theme.palette.mode === "dark" ? "rgba(0, 113, 227, 0.2)" : "rgba(0, 113, 227, 0.1)" }}>
+              <Typography variant="h5" sx={{ lineHeight: 1 }}>
+                {loss > 3 ? "🔴" : (loss > 1 ? "🟡" : "🟢")}
+              </Typography>
+              <Box>
+                <Typography variant="body2" sx={{ fontWeight: "bold", color: loss > 3 ? "#f87171" : (loss > 1 ? "#fbbf24" : "#34d399") }}>
+                  {loss > 3
+                    ? (locale === "tr" ? "Model henüz çok karışık, çoğu tahmini yanlış" : "Model is very confused, most predictions are wrong")
+                    : (loss > 1
+                      ? (locale === "tr" ? "Model öğreniyor, hata payı düşüyor" : "Model is learning, loss is decreasing")
+                      : (locale === "tr" ? "Model iyi öğrendi! Tahminler giderek doğrulaşıyor" : "Model learned well! Predictions are getting accurate"))}
+                </Typography>
+                <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                  {t("train.lossdesc")}
+                </Typography>
+              </Box>
+            </Box>
           </Paper>
 
           {/* Senior Developer Mode */}
@@ -308,5 +295,182 @@ export default function Training({ slide = 0 }: { slide?: number }) {
         </>
       )}
     </Box>
+  );
+}
+
+function PipelineAnimation({ locale, theme }: { locale: string; theme: any }) {
+  const [activeStep, setActiveStep] = useState(0);
+  const [playing, setPlaying] = useState(false);
+  const sentence = locale === "tr" ? "Kedi" : "The";
+  const fullSentence = {
+    tr: ["Kedi", "halının", "üzerine", "oturdu"],
+    en: ["The", "cat", "sat"],
+  };
+  const words = locale === "tr" ? fullSentence.tr : fullSentence.en;
+
+  const stages = [
+    { label: locale === "tr" ? "📝 Giriş Metni" : "📝 Input Text", desc: locale === "tr" ? `"${words.join(" ")}" cümlesi girilir.` : `Sentence "${words.join(" ")}" enters the model.` },
+    { label: locale === "tr" ? "🔢 Tokenize Et" : "🔢 Tokenize", desc: locale === "tr" ? "Cümle küçük parçalara (token) ayrılır ve her birine bir sayı (ID) verilir." : "Sentence is split into tokens, each assigned a number (ID)." },
+    { label: locale === "tr" ? "📊 Vektöre Çevir (Embedding)" : "📊 Embedding", desc: locale === "tr" ? "Her token ID, anlamını taşıyan bir sayı listesine (vektör) dönüştürülür." : "Each token ID is converted into a meaning-carrying vector." },
+    { label: locale === "tr" ? "🧠 Transformer Blokları (×N)" : "🧠 Transformer Blocks (×N)", desc: locale === "tr" ? "Vektörler sırayla Dengeleme → Attention → MLP adımlarından geçer. Her blok kelimeler arası bağlamı ve anlamı derinleştirir." : "Vectors flow through Norm → Attention → MLP repeatedly. Each block deepens context and meaning." },
+    { label: locale === "tr" ? "🎯 Karar Verme (Softmax)" : "🎯 Decision (Softmax)", desc: locale === "tr" ? "Son bloğun çıktısı Softmax'e girer. Tüm kelimelere birer olasılık yüzdesi atanır." : "Last block output enters Softmax. Every possible word gets a probability percentage." },
+    { label: locale === "tr" ? "✨ Sonraki Kelimeyi Seç" : "✨ Pick Next Word", desc: locale === "tr" ? "En yüksek olasılıklı kelime seçilir, cümlenin sonuna eklenir ve döngü başa döner!" : "Highest-probability word is picked, appended to the sentence, and the loop repeats!" },
+  ];
+
+  const isPlayingRef = playing;
+
+  useEffect(() => {
+    if (playing && activeStep < stages.length) {
+      const timer = setTimeout(() => {
+        if (activeStep < stages.length - 1) {
+          setActiveStep(activeStep + 1);
+        } else {
+          setPlaying(false);
+        }
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [playing, activeStep, stages.length]);
+
+  const toggle = useCallback(() => {
+    if (activeStep >= stages.length - 1) {
+      setActiveStep(0);
+    }
+    setPlaying(p => !p);
+  }, [activeStep, stages.length]);
+
+  const stageColors = [
+    { border: "rgba(76, 175, 80, 0.4)", bg: "rgba(76, 175, 80, 0.1)", text: "#34d399" },
+    { border: "rgba(33, 150, 243, 0.4)", bg: "rgba(33, 150, 243, 0.1)", text: "#60a5fa" },
+    { border: "rgba(255, 235, 59, 0.4)", bg: "rgba(255, 235, 59, 0.1)", text: "#fdeb3b" },
+    { border: "rgba(156, 39, 176, 0.4)", bg: "rgba(156, 39, 176, 0.1)", text: "#c084fc" },
+    { border: "rgba(255, 152, 0, 0.4)", bg: "rgba(255, 152, 0, 0.1)", text: "#fb923c" },
+    { border: "rgba(76, 175, 80, 0.4)", bg: "rgba(76, 175, 80, 0.1)", text: "#34d399" },
+  ];
+
+  return (
+    <Paper
+      component={motion.div}
+      variants={item}
+      sx={{
+        p: 3,
+        bg: theme.palette.mode === "dark" ? "linear-gradient(90deg, rgba(30,58,138,0.15) 0%, rgba(17,24,39,0.3) 100%)" : "linear-gradient(90deg, rgba(0,113,227,0.05) 0%, rgba(255,255,255,0.4) 100%)",
+        border: 1,
+        borderColor: theme.palette.mode === "dark" ? "grey.800" : "grey.300",
+      }}
+    >
+      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 2 }}>
+        <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+          {locale === "tr" ? "🔄 Bir Cümlenin Model İçindeki Yolculuğu" : "🔄 A Sentence's Journey Through the Model"}
+        </Typography>
+        <Button
+          variant={playing ? "outlined" : "contained"}
+          size="small"
+          onClick={toggle}
+          sx={{ px: 2, minWidth: 100 }}
+        >
+          {playing
+            ? (locale === "tr" ? "⏸ Durdur" : "⏸ Pause")
+            : (activeStep >= stages.length - 1
+              ? (locale === "tr" ? "🔄 Baştan Başlat" : "🔄 Replay")
+              : (locale === "tr" ? "▶ Başlat" : "▶ Play"))}
+        </Button>
+      </Box>
+
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
+        {stages.map((stage, i) => {
+          const isActive = i === activeStep;
+          const isPast = i < activeStep;
+          const colors = stageColors[i % stageColors.length];
+          return (
+            <Box
+              key={i}
+              component={motion.div}
+              initial={false}
+              animate={{
+                opacity: isPast ? 0.6 : 1,
+                scale: isActive ? 1.02 : 1,
+              }}
+              transition={{ duration: 0.3 }}
+              sx={{
+                p: 1.5,
+                borderRadius: 2,
+                border: 1,
+                borderColor: isActive ? colors.border : (isPast ? "grey.800" : "grey.750"),
+                bgcolor: isActive ? colors.bg : "transparent",
+                display: "flex",
+                alignItems: "center",
+                gap: 2,
+              }}
+            >
+              <Box
+                sx={{
+                  width: 32,
+                  height: 32,
+                  borderRadius: "50%",
+                  bgcolor: isActive ? colors.text : (isPast ? "grey.700" : "grey.800"),
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "0.75rem",
+                  color: isActive ? "#000" : (isPast ? "#fff" : "grey.500"),
+                  fontWeight: "bold",
+                  flexShrink: 0,
+                  transition: "all 0.3s",
+                }}
+              >
+                {i + 1}
+              </Box>
+              <Box sx={{ flex: 1 }}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    fontWeight: isActive ? "bold" : "normal",
+                    color: isActive ? colors.text : (isPast ? "grey.400" : "grey.500"),
+                    fontFamily: "monospace",
+                    fontSize: "0.85rem",
+                  }}
+                >
+                  {stage.label}
+                </Typography>
+                {isActive && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <Typography
+                      variant="caption"
+                      sx={{ color: "text.secondary", display: "block", mt: 0.5, lineHeight: 1.4 }}
+                    >
+                      {stage.desc}
+                    </Typography>
+                  </motion.div>
+                )}
+              </Box>
+              {isActive && (
+                <motion.div
+                  animate={{ opacity: [1, 0] }}
+                  transition={{ repeat: Infinity, duration: 0.8 }}
+                  style={{ color: colors.text, fontSize: "1.2rem" }}
+                >
+                  ●
+                </motion.div>
+              )}
+              {isPast && (
+                <Typography variant="body2" sx={{ color: "success.main", fontWeight: "bold" }}>
+                  ✓
+                </Typography>
+              )}
+            </Box>
+          );
+        })}
+      </Box>
+      <Typography variant="caption" sx={{ color: "text.secondary", display: "block", mt: 2, textAlign: "center", fontStyle: "italic" }}>
+        {locale === "tr"
+          ? "Her seferinde bir sonraki kelime tahmin edilir ve cümle uzar. Bu döngü milyonlarca kez tekrarlanır!"
+          : "Each step predicts the next word. The sentence grows one word at a time. This loops millions of times during training!"}
+      </Typography>
+    </Paper>
   );
 }
