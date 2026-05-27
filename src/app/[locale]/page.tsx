@@ -122,17 +122,15 @@ function AppContent() {
   const [currentStep,  setCurrentStep]  = useState(0);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [direction,    setDirection]    = useState(0);
-  const [sidebarOpen,  setSidebarOpen]  = useState(false); // start closed; effect below opens on desktop
+  const [sidebarOpen,  setSidebarOpen]  = useState(true); // user controls via hamburger
   const [shareUrl,     setShareUrl]     = useState("");
   const [mounted,      setMounted]      = useState(false);
 
   // ── effects ────────────────────────────────────────────────────────────────
   useEffect(() => { setMounted(true); }, []);
 
-  useEffect(() => {
-    // On resize: open sidebar on desktop, close on mobile
-    setSidebarOpen(!isMobile);
-  }, [isMobile]);
+  // Note: sidebar state is user-controlled via hamburger button only.
+  // No auto-sync on resize — user's choice is preserved.
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -224,7 +222,6 @@ function AppContent() {
                 <ListItemButton
                   onClick={() => {
                     goTo(i);
-                    if (isMobile) setSidebarOpen(false);
                   }}
                   selected={isSelected}
                   sx={{
@@ -296,6 +293,7 @@ function AppContent() {
             anchor="left"
             open={sidebarOpen}
             onClose={() => setSidebarOpen(false)}
+            hideBackdrop
             sx={{ "& .MuiDrawer-paper": { width: 260 } }}
           >
             {sidebarContent}

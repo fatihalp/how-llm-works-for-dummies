@@ -163,22 +163,169 @@ export default function Training({ slide = 0 }: { slide?: number }) {
             />
           </Box>
 
-          {/* Loss animation */}
-          <Paper component={motion.div} variants={item} sx={{ p: 3, display: "flex", flexDirection: "column", gap: 2.5 }}>
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5, mb: 1 }}>
-              <Typography variant="subtitle2" sx={{ color: "text.secondary" }}>
-                {locale === "tr"
-                  ? "Gerçek eğitimde model milyarlarca cümle okur. Her cümlede bir sonraki kelimeyi tahmin etmeye çalışır, yanlış yaparsa ağırlıklarını günceller."
-                  : "During real training, the model reads billions of sentences. For each sentence, it predicts the next word; if wrong, it updates its weights."}
+          {/* Concrete example card */}
+          <Paper component={motion.div} variants={item} sx={{ p: 3 }}>
+            <Typography variant="subtitle1" sx={{ mb: 3, fontWeight: "bold" }}>
+              {locale === "tr" ? "🎯 Tek Bir Örnek Üzerinden Görelim" : "🎯 Let's Walk Through One Example"}
+            </Typography>
+
+            {/* The example sentence */}
+            <Box sx={{ textAlign: "center", mb: 3 }}>
+              <Typography variant="body2" sx={{ color: "text.secondary", mb: 1, fontFamily: "monospace" }}>
+                {locale === "tr" ? "Cümle: " : "Sentence: "}
+                <Box component="span" sx={{ color: "text.primary" }}>
+                  &quot;{locale === "tr" ? "Türkiye'nin başkenti" : "The capital of Turkey is"}&quot;
+                </Box>
               </Typography>
-              <Box sx={{ bgcolor: theme.palette.mode === "dark" ? "grey.950" : "grey.100", p: 1.5, borderRadius: 1.5, fontFamily: "monospace", fontSize: "0.8rem", color: "text.secondary", display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 1 }}>
-                <Typography variant="caption" component="span" sx={{ fontFamily: "monospace" }}>{locale === "tr" ? "📖 Veri: Milyarlarca cümle" : "📖 Data: Billions of sentences"}</Typography>
-                <Typography variant="caption" component="span" sx={{ fontFamily: "monospace" }}>⚙️ {locale === "tr" ? "Parametre: 1 Milyar+" : "Params: 1B+"}</Typography>
-                <Typography variant="caption" component="span" sx={{ fontFamily: "monospace" }}>🎯 {locale === "tr" ? "Amaç: Hata Payını Sıfırlamak" : "Goal: Minimize Loss"}</Typography>
+              <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 2, mt: 1 }}>
+                <Box sx={{ px: 2, py: 1, borderRadius: 1.5, bgcolor: "rgba(96,165,250,0.15)", border: 1, borderColor: "#60a5fa", fontFamily: "monospace", color: "#60a5fa", fontSize: "0.85rem" }}>
+                  {locale === "tr" ? "Türkiye'nin" : "The"}
+                </Box>
+                <Typography variant="caption" sx={{ color: "grey.500" }}>+</Typography>
+                <Box sx={{ px: 2, py: 1, borderRadius: 1.5, bgcolor: "rgba(52,211,153,0.15)", border: 1, borderColor: "#34d399", fontFamily: "monospace", color: "#34d399", fontSize: "0.85rem" }}>
+                  {locale === "tr" ? "başkenti" : "capital"}
+                </Box>
+                <Typography variant="caption" sx={{ color: "grey.500" }}>+</Typography>
+                <Box sx={{ px: 2, py: 1, borderRadius: 1.5, bgcolor: "rgba(251,191,36,0.15)", border: 1, borderColor: "#fbbf24", fontFamily: "monospace", color: "#fbbf24", fontSize: "0.85rem" }}>
+                  {locale === "tr" ? "→ ?" : "of Turkey is → ?"}
+                </Box>
               </Box>
             </Box>
 
-            <Box sx={{ display: "flex", alignItems: "center", gap: 3, flexWrap: "wrap" }}>
+            {/* BEFORE / AFTER comparison */}
+            <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" }, gap: 2.5 }}>
+              {/* BEFORE */}
+              <Paper variant="outlined" sx={{ p: 2.5, borderColor: "#f87171" }}>
+                <Typography variant="caption" sx={{ color: "#f87171", textTransform: "uppercase", fontWeight: "bold", letterSpacing: "0.05em", mb: 1.5, display: "block" }}>
+                  {locale === "tr" ? "🔴 Eğitim ÖNCESİ" : "🔴 BEFORE Training"}
+                </Typography>
+                <Typography variant="body2" sx={{ color: "text.secondary", mb: 1.5, fontSize: "0.85rem" }}>
+                  {locale === "tr" ? "Model rastgele tahmin ediyor:" : "Model guesses randomly:"}
+                </Typography>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 1.5 }}>
+                  <Typography variant="body2" sx={{ color: "text.secondary", fontFamily: "monospace" }}>
+                    {locale === "tr" ? "Tahmin:" : "Prediction:"}
+                  </Typography>
+                  {locale === "tr"
+                    ? ["İstanbul", "Ankara", "Bursa", "İzmir"].map((w, i) => (
+                        <Box key={w} sx={{ px: 1.5, py: 0.75, borderRadius: 1.5, border: 1, borderColor: i === 0 ? "#f87171" : "grey.700", bgcolor: i === 0 ? "rgba(248,113,113,0.15)" : "transparent", fontFamily: "monospace", fontSize: "0.75rem", color: i === 0 ? "#f87171" : "grey.500", fontWeight: i === 0 ? "bold" : "normal" }}>
+                          {w}
+                        </Box>
+                      ))
+                    : ["London", "Ankara", "Paris", "Berlin"].map((w, i) => (
+                        <Box key={w} sx={{ px: 1.5, py: 0.75, borderRadius: 1.5, border: 1, borderColor: i === 0 ? "#f87171" : "grey.700", bgcolor: i === 0 ? "rgba(248,113,113,0.15)" : "transparent", fontFamily: "monospace", fontSize: "0.75rem", color: i === 0 ? "#f87171" : "grey.500", fontWeight: i === 0 ? "bold" : "normal" }}>
+                          {w}
+                        </Box>
+                      ))}
+                </Box>
+                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", p: 1.5, bgcolor: "rgba(248,113,113,0.1)", borderRadius: 1.5, border: 1, borderColor: "rgba(248,113,113,0.2)" }}>
+                  <Box>
+                    <Typography variant="caption" sx={{ color: "#f87171", fontWeight: "bold" }}>
+                      {locale === "tr" ? "Doğru cevap:" : "Correct answer:"}
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: "#34d399", fontWeight: "bold", fontFamily: "monospace" }}>
+                      &quot;{locale === "tr" ? "Ankara" : "Ankara"}&quot;
+                    </Typography>
+                  </Box>
+                  <Box sx={{ textAlign: "right" }}>
+                    <Typography variant="caption" sx={{ color: "#f87171", fontSize: "0.6rem" }}>
+                      {locale === "tr" ? "Hata Payı:" : "Loss:"}
+                    </Typography>
+                    <Typography variant="h5" sx={{ color: "#f87171", fontWeight: "bold", fontFamily: "monospace" }}>
+                      4.5
+                    </Typography>
+                  </Box>
+                </Box>
+                <Box sx={{ mt: 1, p: 1, bgcolor: "rgba(248,113,113,0.05)", borderRadius: 1 }}>
+                  <Typography variant="caption" sx={{ color: "#f87171", fontSize: "0.65rem", display: "flex", alignItems: "center", gap: 0.5 }}>
+                    ❌ {locale === "tr" ? '"İstanbul" dedi, "Ankara" olmalıydı. Çok yanlış! Model ağırlıklarını güncelliyor...' : 'Said "London", should be "Ankara". Very wrong! Updating weights...'}
+                  </Typography>
+                </Box>
+              </Paper>
+
+              {/* AFTER */}
+              <Paper variant="outlined" sx={{ p: 2.5, borderColor: "#34d399" }}>
+                <Typography variant="caption" sx={{ color: "#34d399", textTransform: "uppercase", fontWeight: "bold", letterSpacing: "0.05em", mb: 1.5, display: "block" }}>
+                  {locale === "tr" ? "🟢 Eğitim SONRASI" : "🟢 AFTER Training"}
+                </Typography>
+                <Typography variant="body2" sx={{ color: "text.secondary", mb: 1.5, fontSize: "0.85rem" }}>
+                  {locale === "tr" ? "Model artık doğru tahmin ediyor:" : "Model now predicts correctly:"}
+                </Typography>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 1.5 }}>
+                  <Typography variant="body2" sx={{ color: "text.secondary", fontFamily: "monospace" }}>
+                    {locale === "tr" ? "Tahmin:" : "Prediction:"}
+                  </Typography>
+                  {locale === "tr"
+                    ? ["İstanbul", "Ankara", "Bursa", "İzmir"].map((w, i) => (
+                        <Box key={w} sx={{ px: 1.5, py: 0.75, borderRadius: 1.5, border: 1, borderColor: i === 1 ? "#34d399" : "grey.700", bgcolor: i === 1 ? "rgba(52,211,153,0.15)" : "transparent", fontFamily: "monospace", fontSize: "0.75rem", color: i === 1 ? "#34d399" : "grey.500", fontWeight: i === 1 ? "bold" : "normal" }}>
+                          {w}
+                        </Box>
+                      ))
+                    : ["London", "Ankara", "Paris", "Berlin"].map((w, i) => (
+                        <Box key={w} sx={{ px: 1.5, py: 0.75, borderRadius: 1.5, border: 1, borderColor: i === 1 ? "#34d399" : "grey.700", bgcolor: i === 1 ? "rgba(52,211,153,0.15)" : "transparent", fontFamily: "monospace", fontSize: "0.75rem", color: i === 1 ? "#34d399" : "grey.500", fontWeight: i === 1 ? "bold" : "normal" }}>
+                          {w}
+                        </Box>
+                      ))}
+                </Box>
+                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", p: 1.5, bgcolor: "rgba(52,211,153,0.1)", borderRadius: 1.5, border: 1, borderColor: "rgba(52,211,153,0.2)" }}>
+                  <Box>
+                    <Typography variant="caption" sx={{ color: "#34d399", fontWeight: "bold" }}>
+                      {locale === "tr" ? "Doğru cevap:" : "Correct answer:"}
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: "#34d399", fontWeight: "bold", fontFamily: "monospace" }}>
+                      &quot;{locale === "tr" ? "Ankara" : "Ankara"}&quot;
+                    </Typography>
+                  </Box>
+                  <Box sx={{ textAlign: "right" }}>
+                    <Typography variant="caption" sx={{ color: "#34d399", fontSize: "0.6rem" }}>
+                      {locale === "tr" ? "Hata Payı:" : "Loss:"}
+                    </Typography>
+                    <Typography variant="h5" sx={{ color: "#34d399", fontWeight: "bold", fontFamily: "monospace" }}>
+                      0.3
+                    </Typography>
+                  </Box>
+                </Box>
+                <Box sx={{ mt: 1, p: 1, bgcolor: "rgba(52,211,153,0.05)", borderRadius: 1 }}>
+                  <Typography variant="caption" sx={{ color: "#34d399", fontSize: "0.65rem", display: "flex", alignItems: "center", gap: 0.5 }}>
+                    ✅ {locale === "tr" ? '"Ankara" dedi, doğru! Hata payı çok düştü.' : 'Said "Ankara" — correct! Loss is very low now.'}
+                  </Typography>
+                </Box>
+              </Paper>
+            </Box>
+
+            {/* Arrow showing loss decreasing */}
+            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 2, mt: 2.5, p: 1.5, bgcolor: theme.palette.mode === "dark" ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.02)", borderRadius: 2 }}>
+              <Typography variant="caption" sx={{ color: "#f87171", fontWeight: "bold", fontFamily: "monospace", fontSize: "0.9rem" }}>
+                Hata: 4.5
+              </Typography>
+              <Typography variant="h5" sx={{ color: "grey.500" }}>→</Typography>
+              <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                <Typography variant="caption" sx={{ color: "grey.500", fontSize: "0.6rem" }}>
+                  {locale === "tr" ? "Ağırlıkları Güncelle" : "Update Weights"}
+                </Typography>
+                <Typography variant="caption" sx={{ color: "grey.500", fontSize: "0.55rem" }}>
+                  (× Milyarlarca tekrar)
+                </Typography>
+              </Box>
+              <Typography variant="h5" sx={{ color: "grey.500" }}>→</Typography>
+              <Typography variant="caption" sx={{ color: "#34d399", fontWeight: "bold", fontFamily: "monospace", fontSize: "0.9rem" }}>
+                Hata: 0.3
+              </Typography>
+            </Box>
+          </Paper>
+
+          {/* Loss chart simulation */}
+          <Paper component={motion.div} variants={item} sx={{ p: 3 }}>
+            <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: "bold" }}>
+              {locale === "tr" ? "📉 Hata Payının Düşüşünü İzle" : "📉 Watch the Loss Decrease"}
+            </Typography>
+            <Typography variant="caption" sx={{ color: "text.secondary", mb: 2, display: "block" }}>
+              {locale === "tr"
+                ? "Her adımda model bir cümle okur, tahmin yapar, yanlışsa ağırlıklarını günceller. Hata payı giderek azalır:"
+                : "Each step: model reads a sentence, predicts, if wrong updates weights. Loss keeps decreasing:"}
+            </Typography>
+
+            <Box sx={{ display: "flex", alignItems: "center", gap: 3, mb: 2, flexWrap: "wrap" }}>
               <Button
                 variant="contained"
                 onClick={() => { setEpoch(0); setLoss(4.5); setIsTraining(true); }}
@@ -187,52 +334,107 @@ export default function Training({ slide = 0 }: { slide?: number }) {
                 {t("train.simulate")}
               </Button>
               <Typography variant="body2" sx={{ fontFamily: "monospace", color: "text.secondary" }}>
-                {t("train.epoch")} <Box component="span" sx={{ color: "text.primary", fontWeight: "bold" }}>{epoch}</Box> / 20
+                {locale === "tr" ? "Adım" : "Step"}: <Box component="span" sx={{ color: "text.primary", fontWeight: "bold" }}>{epoch}</Box> / 20
               </Typography>
-              <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                <Box sx={{ width: 8, height: 8, borderRadius: "50%", bgcolor: loss > 2 ? "#f87171" : (loss > 1 ? "#fbbf24" : "#34d399") }} />
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                <Box sx={{ width: 12, height: 12, borderRadius: "50%", bgcolor: loss > 2 ? "#f87171" : (loss > 1 ? "#fbbf24" : "#34d399") }} />
                 <Typography variant="body2" sx={{ fontFamily: "monospace", color: "text.secondary" }}>
-                  {t("train.loss")} <Box component="span" sx={{ color: "primary.light", fontWeight: "bold" }}>{loss.toFixed(3)}</Box>
+                  {locale === "tr" ? "Hata" : "Loss"}: <Box component="span" sx={{ color: loss > 2 ? "#f87171" : (loss > 1 ? "#fbbf24" : "#34d399"), fontWeight: "bold" }}>{loss.toFixed(2)}</Box>
                 </Typography>
+                {loss < 0.5 && (
+                  <Typography variant="caption" sx={{ color: "#34d399", fontWeight: "bold" }}>
+                    ✅ {locale === "tr" ? "Neredeyse sıfır!" : "Almost zero!"}
+                  </Typography>
+                )}
               </Box>
             </Box>
 
-            <Box sx={{ position: "relative", height: 160, bgcolor: theme.palette.mode === "dark" ? "grey.950" : "grey.100", borderRadius: 2, overflow: "hidden", border: 1, borderColor: theme.palette.mode === "dark" ? "grey.850" : "grey.300" }}>
-              <svg className="w-full h-full" style={{ width: "100%", height: "100%", position: "absolute", left: 0, top: 0 }} viewBox="0 0 200 100" preserveAspectRatio="none">
+            {/* Chart */}
+            <Box sx={{ position: "relative", height: 180, bgcolor: theme.palette.mode === "dark" ? "grey.950" : "grey.100", borderRadius: 2, overflow: "hidden", border: 1, borderColor: theme.palette.mode === "dark" ? "grey.850" : "grey.300" }}>
+              {/* Y-axis labels */}
+              <Typography variant="caption" sx={{ position: "absolute", top: 4, left: 8, color: "#f87171", fontFamily: "monospace", fontSize: "0.6rem" }}>
+                ↑ Hata / Loss
+              </Typography>
+              <Typography variant="caption" sx={{ position: "absolute", top: 8, right: 8, color: "#f87171", fontFamily: "monospace", fontSize: "0.55rem" }}>
+                Yüksek
+              </Typography>
+              <Typography variant="caption" sx={{ position: "absolute", bottom: 8, right: 8, color: "#34d399", fontFamily: "monospace", fontSize: "0.55rem" }}>
+                Düşük
+              </Typography>
+              <Typography variant="caption" sx={{ position: "absolute", bottom: 8, left: 8, color: "text.secondary", fontFamily: "monospace", fontSize: "0.55rem" }}>
+                Eğitim Adımları →
+              </Typography>
+
+              <svg width="100%" height="100%" style={{ position: "absolute", left: 0, top: 0 }} viewBox="0 0 200 100" preserveAspectRatio="none">
+                {/* Grid lines */}
+                <line x1="0" y1="20" x2="200" y2="20" stroke="#333" strokeWidth="0.3" opacity="0.5" />
+                <line x1="0" y1="50" x2="200" y2="50" stroke="#333" strokeWidth="0.3" opacity="0.5" />
+                <line x1="0" y1="80" x2="200" y2="80" stroke="#333" strokeWidth="0.3" opacity="0.5" />
+
+                {/* Loss curve */}
                 {lossHistory.length > 1 && (
-                  <polyline
-                    points={lossHistory.map((l, i) => {
-                      const x = (i / 20) * 200;
-                      const y = 100 - ((l - 0.2) / 4.5) * 90;
-                      return `${x},${y}`;
-                    }).join(" ")}
-                    fill="none"
-                    stroke="#0071e3"
-                    strokeWidth="2.5"
-                  />
+                  <>
+                    <defs>
+                      <linearGradient id="lossGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#f87171" stopOpacity="0.3" />
+                        <stop offset="100%" stopColor="#34d399" stopOpacity="0.05" />
+                      </linearGradient>
+                    </defs>
+                    <path
+                      d={lossHistory.map((l, i) => {
+                        const x = (i / 20) * 200;
+                        const y = 100 - ((l - 0.2) / 4.5) * 90;
+                        return `${i === 0 ? "M" : "L"}${x},${y}`;
+                      }).join(" ")}
+                      fill="none"
+                      stroke="url(#lossGrad)"
+                      strokeWidth="0"
+                    />
+                    <path
+                      d={lossHistory.map((l, i) => {
+                        const x = (i / 20) * 200;
+                        const y = 100 - ((l - 0.2) / 4.5) * 90;
+                        return `${i === 0 ? "M" : "L"}${x},${y}`;
+                      }).join(" ")}
+                      fill="none"
+                      stroke={loss > 2 ? "#f87171" : (loss > 1 ? "#fbbf24" : "#34d399")}
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    {/* Current point */}
+                    <circle cx={(epoch / 20) * 200} cy={100 - ((loss - 0.2) / 4.5) * 90} r="4" fill={loss > 2 ? "#f87171" : (loss > 1 ? "#fbbf24" : "#34d399")} stroke="#000" strokeWidth="1" />
+                  </>
+                )}
+                {/* Before line (dashed, showing starting loss at 4.5) */}
+                <line x1="0" y1="14" x2="40" y2="14" stroke="#f87171" strokeWidth="1" strokeDasharray="3,2" opacity="0.5" />
+                <text x="2" y="12" fill="#f87171" fontSize="4" opacity="0.6">4.5</text>
+                {/* After line */}
+                {epoch >= 20 && (
+                  <>
+                    <line x1="160" y1="92" x2="195" y2="92" stroke="#34d399" strokeWidth="1" strokeDasharray="3,2" opacity="0.5" />
+                    <text x="162" y="90" fill="#34d399" fontSize="4" opacity="0.7">0.3</text>
+                  </>
                 )}
               </svg>
-              <Typography variant="caption" sx={{ position: "absolute", top: 8, left: 8, color: "text.secondary", fontFamily: "monospace", fontSize: "0.7rem" }}>{t("train.lossup")}</Typography>
-              <Typography variant="caption" sx={{ position: "absolute", bottom: 8, right: 8, color: "text.secondary", fontFamily: "monospace", fontSize: "0.7rem" }}>{t("train.steps")}</Typography>
-            </Box>
 
-            <Box sx={{ display: "flex", alignItems: "center", gap: 2, p: 1.5, bgcolor: theme.palette.mode === "dark" ? "rgba(0, 113, 227, 0.08)" : "rgba(0, 113, 227, 0.04)", borderRadius: 2, border: 1, borderColor: theme.palette.mode === "dark" ? "rgba(0, 113, 227, 0.2)" : "rgba(0, 113, 227, 0.1)" }}>
-              <Typography variant="h5" sx={{ lineHeight: 1 }}>
-                {loss > 3 ? "🔴" : (loss > 1 ? "🟡" : "🟢")}
-              </Typography>
-              <Box>
-                <Typography variant="body2" sx={{ fontWeight: "bold", color: loss > 3 ? "#f87171" : (loss > 1 ? "#fbbf24" : "#34d399") }}>
-                  {loss > 3
-                    ? (locale === "tr" ? "Model henüz çok karışık, çoğu tahmini yanlış" : "Model is very confused, most predictions are wrong")
+              {/* Overlay status */}
+              <Box sx={{ position: "absolute", top: 4, left: "50%", transform: "translateX(-50%)", px: 1.5, py: 0.5, borderRadius: 1.5, bgcolor: loss > 2 ? "rgba(248,113,113,0.15)" : (loss > 1 ? "rgba(251,191,36,0.15)" : "rgba(52,211,153,0.15)") }}>
+                <Typography variant="caption" sx={{ color: loss > 2 ? "#f87171" : (loss > 1 ? "#fbbf24" : "#34d399"), fontWeight: "bold", fontSize: "0.6rem" }}>
+                  {loss > 2
+                    ? (locale === "tr" ? "🔴 Çok karışık, çoğu tahmin yanlış" : "🔴 Very confused, most guesses wrong")
                     : (loss > 1
-                      ? (locale === "tr" ? "Model öğreniyor, hata payı düşüyor" : "Model is learning, loss is decreasing")
-                      : (locale === "tr" ? "Model iyi öğrendi! Tahminler giderek doğrulaşıyor" : "Model learned well! Predictions are getting accurate"))}
-                </Typography>
-                <Typography variant="caption" sx={{ color: "text.secondary" }}>
-                  {t("train.lossdesc")}
+                      ? (locale === "tr" ? "🟡 Öğreniyor, hata düşüyor..." : "🟡 Learning, loss decreasing...")
+                      : (locale === "tr" ? "🟢 İyi öğrendi! Tahminler doğru" : "🟢 Learned well! Predictions accurate"))}
                 </Typography>
               </Box>
             </Box>
+
+            <Typography variant="caption" sx={{ color: "text.secondary", mt: 1, display: "block", textAlign: "center", fontStyle: "italic", fontSize: "0.6rem" }}>
+              {locale === "tr"
+                ? "20 adımlık simülasyon. Gerçek eğitim milyarlarca adım sürer."
+                : "20-step simulation. Real training takes billions of steps."}
+            </Typography>
           </Paper>
 
           {/* Senior Developer Mode */}
@@ -300,7 +502,6 @@ export default function Training({ slide = 0 }: { slide?: number }) {
 
 function PipelineAnimation({ locale, theme }: { locale: string; theme: any }) {
   const [activeStep, setActiveStep] = useState(0);
-  const [playing, setPlaying] = useState(false);
 
   const trWords = ["Kedi", "halının", "üzerine", "oturdu"];
   const enWords = ["The", "cat", "sat"];
@@ -314,25 +515,15 @@ function PipelineAnimation({ locale, theme }: { locale: string; theme: any }) {
     : [{ word: "sat", score: 0.68 }, { word: "slept", score: 0.15 }, { word: "lay", score: 0.10 }, { word: "jumped", score: 0.07 }];
   const nextWord = locale === "tr" ? "oturdu" : "sat";
 
-  useEffect(() => {
-    if (playing && activeStep < 6) {
-      const timer = setTimeout(() => {
-        if (activeStep < 5) {
-          setActiveStep(activeStep + 1);
-        } else {
-          setPlaying(false);
-        }
-      }, 2000);
-      return () => clearTimeout(timer);
+  const next = useCallback(() => {
+    if (activeStep < 5) {
+      setActiveStep(s => s + 1);
     }
-  }, [playing, activeStep]);
-
-  const toggle = useCallback(() => {
-    if (activeStep >= 5) {
-      setActiveStep(0);
-    }
-    setPlaying(p => !p);
   }, [activeStep]);
+
+  const reset = useCallback(() => {
+    setActiveStep(0);
+  }, []);
 
   const stageColors = [
     { border: "rgba(76, 175, 80, 0.4)", bg: "rgba(76, 175, 80, 0.1)", text: "#34d399" },
@@ -503,11 +694,22 @@ function PipelineAnimation({ locale, theme }: { locale: string; theme: any }) {
             {locale === "tr" ? `Örnek: "${sentence}"` : `Example: "${sentence}"`}
           </Typography>
         </Box>
-        <Button variant={playing ? "outlined" : "contained"} size="small" onClick={toggle} sx={{ px: 2, minWidth: 100 }}>
-          {playing
-            ? (locale === "tr" ? "⏸ Durdur" : "⏸ Pause")
-            : (activeStep >= 5 ? (locale === "tr" ? "🔄 Baştan Başlat" : "🔄 Replay") : (locale === "tr" ? "▶ Başlat" : "▶ Play"))}
-        </Button>
+        <Box sx={{ display: "flex", gap: 1 }}>
+          {activeStep > 0 && (
+            <Button variant="text" size="small" onClick={reset} sx={{ px: 1.5, minWidth: 60 }}>
+              {locale === "tr" ? "🔄 Başa Dön" : "🔄 Reset"}
+            </Button>
+          )}
+          {activeStep < 5 ? (
+            <Button variant="contained" size="small" onClick={next} sx={{ px: 2, minWidth: 100 }}>
+              {locale === "tr" ? `▶ Adım ${activeStep + 1}` : `▶ Step ${activeStep + 1}`}
+            </Button>
+          ) : (
+            <Button variant="outlined" size="small" onClick={reset} sx={{ px: 2, minWidth: 100 }}>
+              {locale === "tr" ? "🔄 Baştan Başlat" : "🔄 Replay"}
+            </Button>
+          )}
+        </Box>
       </Box>
 
       <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
@@ -522,12 +724,14 @@ function PipelineAnimation({ locale, theme }: { locale: string; theme: any }) {
               initial={false}
               animate={{ opacity: isPast ? 0.5 : 1, scale: isActive ? 1.02 : 1 }}
               transition={{ duration: 0.3 }}
+              onClick={() => setActiveStep(i)}
               sx={{
                 p: 1.5,
                 borderRadius: 2,
                 border: 1,
                 borderColor: isActive ? colors.border : (isPast ? "grey.800" : "grey.750"),
                 bgcolor: isActive ? colors.bg : "transparent",
+                cursor: "pointer",
               }}
             >
               <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
@@ -547,11 +751,6 @@ function PipelineAnimation({ locale, theme }: { locale: string; theme: any }) {
                     </motion.div>
                   )}
                 </Box>
-                {isActive && (
-                  <motion.div animate={{ opacity: [1, 0] }} transition={{ repeat: Infinity, duration: 0.8 }} style={{ color: colors.text, fontSize: "1.2rem" }}>
-                    ●
-                  </motion.div>
-                )}
                 {isPast && (
                   <Typography variant="body2" sx={{ color: "success.main", fontWeight: "bold" }}>
                     ✓

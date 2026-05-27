@@ -120,9 +120,17 @@ export default function Embedding({ slide = 0 }: { slide?: number }) {
                     <Typography variant="caption" sx={{ color: "text.secondary", mt: 1, fontFamily: "monospace" }}>
                       {v.toFixed(1)}
                     </Typography>
+                    <Typography variant="caption" sx={{ color: "grey.500", fontSize: "0.5rem", lineHeight: 1 }}>
+                      {["👑", "♀", "💪", "📏", "⚡", "🎭", "🔊", "🌍"][i]}
+                    </Typography>
                   </Box>
                 ))}
               </Box>
+              <Typography variant="caption" sx={{ color: "text.secondary", textAlign: "center", mt: 1, display: "block", fontStyle: "italic" }}>
+                {locale === "tr"
+                  ? "Her sayı bir \"özellik\": kraliyet, dişillik, güç, boyut, enerji, rol, ses, coğrafya..."
+                  : "Each number is a \"feature\": royalty, femininity, power, size, energy, role, sound, geography..."}
+              </Typography>
               <Typography variant="caption" sx={{ color: "text.secondary", textAlign: "center", mt: 2, display: "block" }}>
                 {t("embed.dims")}
               </Typography>

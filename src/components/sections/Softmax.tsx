@@ -54,54 +54,133 @@ export default function Softmax({ slide = 0 }: { slide?: number }) {
             />
           </Box>
 
-          <Paper component={motion.div} variants={item} sx={{ p: 3 }}>
-            <Typography variant="subtitle1" sx={{ mb: 3, color: "text.secondary", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: "bold" }}>
-              {t("sm.interactive")}
+          {/* Example sentence context */}
+          <Paper
+            component={motion.div}
+            variants={item}
+            elevation={0}
+            sx={{
+              p: 2,
+              bgcolor: theme.palette.mode === "dark" ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.02)",
+              border: 1,
+              borderColor: "divider",
+              borderRadius: 2,
+              textAlign: "center",
+            }}
+          >
+            <Typography variant="body1" sx={{ fontFamily: "monospace", color: "text.secondary" }}>
+              {locale === "tr" ? "Model hangi kelimeyi tahmin ediyor?" : "What word is the model predicting?"}
             </Typography>
+            <Typography variant="h5" sx={{ fontFamily: "monospace", mt: 1, color: "text.primary" }}>
+              {locale === "tr"
+                ? <>&quot;Kedi halının üzerine <Box component="span" sx={{ color: "warning.main", bgcolor: "rgba(251,191,36,0.1)", px: 1, borderRadius: 1 }}>___</Box>&quot;</>
+                : <>&quot;The cat sat on the <Box component="span" sx={{ color: "warning.main", bgcolor: "rgba(251,191,36,0.1)", px: 1, borderRadius: 1 }}>___</Box>&quot;</>}
+            </Typography>
+          </Paper>
 
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}>
-              {rawValues.map((val, i) => (
-                <Box key={i} sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                  <Typography variant="body2" sx={{ width: 56, fontFamily: "monospace", color: "text.secondary" }}>
-                    {labels[i]}
-                  </Typography>
-                  <Slider
-                    min={-5}
-                    max={5}
-                    step={0.1}
-                    value={val}
-                    onChange={(_, newVal) => updateValue(i, newVal as number)}
-                    sx={{ flexGrow: 1 }}
-                  />
-                  <Typography variant="body2" sx={{ width: 40, fontFamily: "monospace", color: "text.primary", textAlign: "right" }}>
-                    {val.toFixed(1)}
-                  </Typography>
-                  <Box sx={{ width: 140, display: "flex", alignItems: "center", gap: 1.5 }}>
-                    <Box
-                      component={motion.div}
-                      sx={{
-                        height: 20,
-                        bgcolor: "primary.main",
-                        borderRadius: 1,
-                      }}
-                      animate={{ width: `${probs[i] * 90}px` }}
-                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                    />
-                    <Typography variant="caption" sx={{ color: "primary.light", fontFamily: "monospace", fontWeight: "bold", whiteSpace: "nowrap" }}>
-                      {(probs[i] * 100).toFixed(1)}%
+          <Paper component={motion.div} variants={item} sx={{ p: 3 }}>
+            <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, gap: 3, alignItems: "stretch" }}>
+              {/* LEFT: Raw Scores */}
+              <Box sx={{ flex: 1 }}>
+                <Typography variant="caption" sx={{ color: "text.secondary", textTransform: "uppercase", letterSpacing: "0.05em", mb: 2, display: "block", fontWeight: "bold" }}>
+                  {locale === "tr" ? "🔴 Ham Puanlar (Logits)" : "🔴 Raw Scores (Logits)"}
+                </Typography>
+                <Typography variant="caption" sx={{ color: "grey.500", mb: 2, display: "block", fontSize: "0.65rem" }}>
+                  {locale === "tr" ? "Sürgüleri kaydırarak her kelimenin puanını değiştir" : "Drag the sliders to change each word's score"}
+                </Typography>
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                  {rawValues.map((val, i) => (
+                    <Box key={i} sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                      <Typography variant="body2" sx={{ width: 56, fontFamily: "monospace", color: "text.secondary", fontSize: "0.8rem" }}>
+                        {labels[i]}
+                      </Typography>
+                      <Slider
+                        min={-5}
+                        max={5}
+                        step={0.1}
+                        value={val}
+                        onChange={(_, newVal) => updateValue(i, newVal as number)}
+                        sx={{ flexGrow: 1 }}
+                      />
+                      <Typography variant="body2" sx={{ width: 36, fontFamily: "monospace", color: "text.primary", textAlign: "right", fontSize: "0.8rem" }}>
+                        {val > 0 ? "+" : ""}{val.toFixed(1)}
+                      </Typography>
+                    </Box>
+                  ))}
+                </Box>
+              </Box>
+
+              {/* Arrow in the middle */}
+              <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", px: 1 }}>
+                <Box sx={{ display: { xs: "none", md: "flex" }, flexDirection: "column", alignItems: "center", gap: 0.5 }}>
+                  <Typography variant="h4" sx={{ color: "primary.main" }}>→</Typography>
+                  <Box sx={{ px: 1.5, py: 0.5, borderRadius: 1.5, bgcolor: "rgba(0,113,227,0.1)", border: 1, borderColor: "rgba(0,113,227,0.3)" }}>
+                    <Typography variant="caption" sx={{ color: "primary.light", fontWeight: "bold", fontSize: "0.6rem", whiteSpace: "nowrap" }}>
+                      Softmax
                     </Typography>
                   </Box>
+                  <Typography variant="h4" sx={{ color: "primary.main" }}>→</Typography>
                 </Box>
-              ))}
-            </Box>
+              </Box>
 
-            <Typography variant="caption" sx={{ color: "text.secondary", mt: 3, display: "block", fontFamily: "monospace" }}>
-              {t("sm.sum")}{" "}
-              <Box component="span" sx={{ color: "text.primary", fontWeight: "bold" }}>
-                {probs.reduce((a, b) => a + b, 0).toFixed(4)}
-              </Box>{" "}
-              {t("sm.always")}
-            </Typography>
+              {/* RIGHT: Probabilities */}
+              <Box sx={{ flex: 1 }}>
+                <Typography variant="caption" sx={{ color: "text.secondary", textTransform: "uppercase", letterSpacing: "0.05em", mb: 2, display: "block", fontWeight: "bold" }}>
+                  {locale === "tr" ? "🟢 Olasılıklar (%)" : "🟢 Probabilities (%)"}
+                </Typography>
+                <Typography variant="caption" sx={{ color: "grey.500", mb: 2, display: "block", fontSize: "0.65rem" }}>
+                  {locale === "tr" ? "Softmax yüksek puanları daha da baskın yapar" : "Softmax makes high scores dominate"}
+                </Typography>
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                  {probs.map((p, i) => {
+                    const isWinner = p === Math.max(...probs);
+                    const barPercent = p * 100;
+                    return (
+                      <Box key={i} sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                        <Typography variant="body2" sx={{ width: 56, fontFamily: "monospace", color: "text.secondary", fontSize: "0.8rem" }}>
+                          {labels[i]}
+                        </Typography>
+                        <Box sx={{ flexGrow: 1, height: 22, bgcolor: theme.palette.mode === "dark" ? "grey.800" : "grey.200", borderRadius: 1.5, overflow: "hidden" }}>
+                          <Box
+                            component={motion.div}
+                            animate={{ width: `${barPercent}%` }}
+                            transition={{ type: "spring", stiffness: 200, damping: 20 }}
+                            sx={{
+                              height: "100%",
+                              borderRadius: 1.5,
+                              bgcolor: isWinner ? "success.main" : "grey.500",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "flex-end",
+                              px: 1,
+                              minWidth: barPercent > 5 ? 0 : 0,
+                            }}
+                          >
+                            {barPercent > 15 && (
+                              <Typography variant="caption" sx={{ color: isWinner ? "#000" : "#fff", fontWeight: "bold", fontSize: "0.65rem" }}>
+                                {barPercent.toFixed(0)}%
+                              </Typography>
+                            )}
+                          </Box>
+                        </Box>
+                        {isWinner && (
+                          <Typography variant="body2" sx={{ color: "success.main", fontSize: "0.9rem" }}>
+                            🏆
+                          </Typography>
+                        )}
+                      </Box>
+                    );
+                  })}
+                </Box>
+                <Typography variant="caption" sx={{ color: "text.secondary", mt: 2, display: "block", fontFamily: "monospace", fontSize: "0.65rem", textAlign: "center" }}>
+                  {t("sm.sum")}{" "}
+                  <Box component="span" sx={{ color: "success.main", fontWeight: "bold" }}>
+                    %{(probs.reduce((a, b) => a + b, 0) * 100).toFixed(1)}
+                  </Box>{" "}
+                  {t("sm.always")}
+                </Typography>
+              </Box>
+            </Box>
           </Paper>
         </>
       )}

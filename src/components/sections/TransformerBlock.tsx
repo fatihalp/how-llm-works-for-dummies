@@ -100,24 +100,7 @@ export default function TransformerBlock({ slide = 0 }: { slide?: number }) {
                     {layer.label}
                   </Box>
                   {i < layers.length - 1 && <Box sx={{ width: 1, height: 12, bgcolor: theme.palette.mode === "dark" ? "grey.800" : "grey.400" }} style={{ width: 1 }} />}
-                  {(layer.id === "res1" || layer.id === "res2") && (
-                    <Box
-                      component={motion.div}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 0.5 }}
-                      sx={{
-                        position: "absolute",
-                        left: -80,
-                        top: 10,
-                        fontSize: "0.65rem",
-                        color: "success.light",
-                        fontStyle: "italic",
-                        fontFamily: "monospace"
-                      }}
-                    >
-                      {t("tf.skip")}
-                    </Box>
-                  )}
+
                 </Box>
               ))}
 

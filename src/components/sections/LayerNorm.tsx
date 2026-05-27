@@ -119,17 +119,45 @@ export default function LayerNorm({ slide = 0 }: { slide?: number }) {
             />
           </Box>
 
-          <Paper component={motion.div} variants={item} sx={{ p: 3, display: "flex", flexDirection: "column", gap: 4 }}>
-            <Typography variant="subtitle1" sx={{ color: "text.secondary", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: "bold" }}>
-              {locale === "tr" ? "Etkileşimli Dengeleme: Ham Değerleri Ayarla" : "Interactive Normalization: Adjust Raw Values"}
-            </Typography>
+          {/* Analogy reminder */}
+          <Paper
+            component={motion.div}
+            variants={item}
+            elevation={0}
+            sx={{
+              p: 2,
+              bgcolor: theme.palette.mode === "dark" ? "rgba(0, 113, 227, 0.1)" : "rgba(0, 113, 227, 0.05)",
+              border: 1,
+              borderColor: theme.palette.mode === "dark" ? "rgba(0, 113, 227, 0.2)" : "rgba(0, 113, 227, 0.1)",
+              display: "flex",
+              alignItems: "center",
+              gap: 1.5,
+            }}
+          >
+            <Typography variant="h5">🎯</Typography>
+            <Box>
+              <Typography variant="body2" sx={{ fontWeight: "bold" }}>
+                {locale === "tr" ? "Sınav Notlarını Çana Göre Ayarlamak" : "Grading on a Curve"}
+              </Typography>
+              <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                {locale === "tr"
+                  ? "Aşağıdaki 4 öğrencinin sınav notlarını ayarla. Modelin ham sayıları nasıl sıfır ortalamalı ve dengeli hale getirdiğini gör."
+                  : "Adjust 4 students' test scores below. Watch how the model normalizes them to zero mean and balanced spread."}
+              </Typography>
+            </Box>
+          </Paper>
 
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+          <Paper component={motion.div} variants={item} sx={{ p: 3, display: "flex", flexDirection: "column", gap: 4 }}>
+            {/* Sliders section with student names */}
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
               {values.map((val, i) => (
                 <Box key={i} sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" }, alignItems: "center", gap: 2 }}>
-                  <Typography variant="body2" sx={{ width: 64, fontFamily: "monospace", color: "text.secondary" }}>
-                    Val {i + 1}
-                  </Typography>
+                  <Box sx={{ width: 80, display: "flex", alignItems: "center", gap: 0.5, flexShrink: 0 }}>
+                    <Typography variant="body2" sx={{ fontSize: "0.7rem" }}>{["📘", "📗", "📙", "📕"][i]}</Typography>
+                    <Typography variant="body2" sx={{ fontFamily: "monospace", color: "text.secondary", fontSize: "0.8rem" }}>
+                      {locale === "tr" ? `Öğrenci ${i + 1}` : `Stdnt ${i + 1}`}
+                    </Typography>
+                  </Box>
                   <Slider
                     min={-5}
                     max={5}
@@ -138,86 +166,93 @@ export default function LayerNorm({ slide = 0 }: { slide?: number }) {
                     onChange={(_, newVal) => updateValue(i, newVal as number)}
                     sx={{ flexGrow: 1 }}
                   />
-                  <Box sx={{ display: "flex", gap: 3, width: 180, flexShrink: 0, fontFamily: "monospace", justifyContent: "end" }}>
-                    <Typography variant="body2" sx={{ color: "text.primary" }}>
-                      Raw: {val.toFixed(1)}
+                  <Box sx={{ display: "flex", gap: 2, width: 180, flexShrink: 0, fontFamily: "monospace", justifyContent: "end" }}>
+                    <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                      {val.toFixed(1)}
                     </Typography>
-                    <Typography variant="body2" sx={{ color: "primary.main", fontWeight: "bold" }}>
-                      Norm: {normalized[i].toFixed(2)}
+                    <Typography variant="caption" sx={{ color: "primary.main", fontWeight: "bold" }}>
+                      → {normalized[i].toFixed(2)}
                     </Typography>
                   </Box>
                 </Box>
               ))}
             </Box>
 
-            {/* Visual Bar Chart Comparisons */}
+            {/* BEFORE / AFTER bar charts with zero line */}
             <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" }, gap: 4, mt: 2 }}>
-              <Paper variant="outlined" sx={{ p: 2.5, display: "flex", flexDirection: "column", alignItems: "center" }}>
-                <Typography variant="caption" sx={{ color: "text.secondary", textTransform: "uppercase", letterSpacing: "0.05em", mb: 3 }}>
-                  {t("ln.raw")}
+              {/* BEFORE: Raw values */}
+              <Box>
+                <Typography variant="caption" sx={{ color: "text.secondary", textTransform: "uppercase", letterSpacing: "0.05em", mb: 1.5, display: "block", textAlign: "center" }}>
+                  {locale === "tr" ? "🔴 ÖNCE — Ham Puanlar" : "🔴 BEFORE — Raw Scores"}
                 </Typography>
-                <Box sx={{ display: "flex", alignItems: "end", justifyContent: "center", gap: 2, height: 112, pt: 1, width: "100%" }}>
-                  {values.map((v, i) => {
-                    const height = Math.min(100, Math.max(0, ((v + 5) / 10) * 100));
-                    return (
-                      <Box key={i} sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 0.5, width: 48 }}>
-                        <Box
-                          sx={{
-                            width: 32,
-                            borderRadius: "4px 4px 0 0",
-                            bgcolor: theme.palette.mode === "dark" ? "grey.700" : "grey.400",
-                            height: `${height}%`,
-                            minHeight: 4,
-                            transition: "all 0.15s"
-                          }}
-                        />
-                        <Typography variant="caption" sx={{ color: "text.secondary", fontSize: "0.75rem", fontFamily: "monospace" }}>
-                          {v.toFixed(1)}
-                        </Typography>
-                      </Box>
-                    );
-                  })}
-                </Box>
-              </Paper>
+                <Paper variant="outlined" sx={{ p: 2.5, pt: 3, display: "flex", flexDirection: "column", alignItems: "center", position: "relative" }}>
+                  {/* Zero baseline */}
+                  <Box sx={{ position: "absolute", top: `${((0 + 5) / 10) * 100 + 8}%`, left: "10%", right: "10%", height: "1px", borderTop: "1px dashed", borderColor: "grey.600", opacity: 0.5 }} />
+                  <Box sx={{ display: "flex", alignItems: "end", justifyContent: "center", gap: 2, height: 120, width: "100%" }}>
+                    {values.map((v, i) => {
+                      const height = Math.min(100, Math.max(0, ((v + 5) / 10) * 100));
+                      return (
+                        <Box key={i} sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 0.5, width: 48 }}>
+                          <Box
+                            sx={{
+                              width: 32,
+                              borderRadius: "4px 4px 0 0",
+                              bgcolor: theme.palette.mode === "dark" ? "grey.600" : "grey.500",
+                              height: `${height}%`,
+                              minHeight: 4,
+                              transition: "all 0.15s",
+                            }}
+                          />
+                          <Typography variant="caption" sx={{ color: "text.secondary", fontSize: "0.7rem", fontFamily: "monospace" }}>
+                            {v.toFixed(1)}
+                          </Typography>
+                        </Box>
+                      );
+                    })}
+                  </Box>
+                  <Typography variant="caption" sx={{ color: "grey.500", mt: 1, fontSize: "0.6rem" }}>
+                    μ = {mean.toFixed(1)} &nbsp;|&nbsp; σ² = {variance.toFixed(1)}
+                  </Typography>
+                </Paper>
+              </Box>
 
-              <Paper variant="outlined" sx={{ p: 2.5, display: "flex", flexDirection: "column", alignItems: "center" }}>
-                <Typography variant="caption" sx={{ color: "text.secondary", textTransform: "uppercase", letterSpacing: "0.05em", mb: 3 }}>
-                  {t("ln.normalized")}
+              {/* AFTER: Normalized */}
+              <Box>
+                <Typography variant="caption" sx={{ color: "text.secondary", textTransform: "uppercase", letterSpacing: "0.05em", mb: 1.5, display: "block", textAlign: "center" }}>
+                  {locale === "tr" ? "🟢 SONRA — Dengelenmiş" : "🟢 AFTER — Normalized"}
                 </Typography>
-                <Box sx={{ display: "flex", alignItems: "end", justifyContent: "center", gap: 2, height: 112, pt: 1, width: "100%" }}>
-                  {normalized.map((v, i) => {
-                    const height = Math.min(100, Math.max(0, ((v + 2.5) / 5) * 100));
-                    return (
-                      <Box key={i} sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 0.5, width: 48 }}>
-                        <Box
-                          sx={{
-                            width: 32,
-                            borderRadius: "4px 4px 0 0",
-                            bgcolor: "primary.main",
-                            height: `${height}%`,
-                            minHeight: 4,
-                            transition: "all 0.15s"
-                          }}
-                        />
-                        <Typography variant="caption" sx={{ color: "primary.light", fontWeight: "bold", fontSize: "0.75rem", fontFamily: "monospace" }}>
-                          {v.toFixed(2)}
-                        </Typography>
-                      </Box>
-                    );
-                  })}
-                </Box>
-              </Paper>
-            </Box>
-
-            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 3, fontFamily: "monospace", fontSize: "0.85rem", color: "text.secondary" }}>
-              <Typography variant="caption" sx={{ fontFamily: "monospace" }}>
-                {locale === "tr" ? "Ortalama:" : "Calculated Mean (μ):"}{" "}
-                <Box component="span" sx={{ color: "text.primary", fontWeight: "bold" }}>{mean.toFixed(3)}</Box>
-              </Typography>
-              <Typography variant="caption" sx={{ fontFamily: "monospace" }}>
-                {locale === "tr" ? "Varyans:" : "Variance (σ²):"}{" "}
-                <Box component="span" sx={{ color: "text.primary", fontWeight: "bold" }}>{variance.toFixed(3)}</Box>
-              </Typography>
+                <Paper variant="outlined" sx={{ p: 2.5, pt: 3, display: "flex", flexDirection: "column", alignItems: "center", position: "relative" }}>
+                  {/* Zero baseline - this time at center */}
+                  <Box sx={{ position: "absolute", top: "50%", left: "10%", right: "10%", height: "1px", borderTop: "1px dashed", borderColor: "primary.main", opacity: 0.6 }} />
+                  <Box sx={{ display: "flex", alignItems: "end", justifyContent: "center", gap: 2, height: 120, width: "100%" }}>
+                    {normalized.map((v, i) => {
+                      const height = ((v + 2.5) / 5) * 100;
+                      return (
+                        <Box key={i} sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 0.5, width: 48 }}>
+                          <Box sx={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: height > 50 ? "end" : "start", height: "100%" }}>
+                            <Box
+                              sx={{
+                                width: 32,
+                                borderRadius: height > 50 ? "4px 4px 0 0" : "0 0 4px 4px",
+                                bgcolor: v > 0 ? "primary.main" : "error.main",
+                                height: `${Math.abs(v) / 2.5 * 50}%`,
+                                minHeight: 4,
+                                transition: "all 0.15s",
+                              }}
+                            />
+                          </Box>
+                          <Typography variant="caption" sx={{ color: "primary.light", fontWeight: "bold", fontSize: "0.7rem", fontFamily: "monospace" }}>
+                            {v.toFixed(2)}
+                          </Typography>
+                        </Box>
+                      );
+                    })}
+                  </Box>
+                  <Typography variant="caption" sx={{ color: "success.main", mt: 1, fontSize: "0.65rem", fontWeight: "bold" }}>
+                    {locale === "tr" ? "✓ Ortalama (μ) neredeyse 0!" : "✓ Mean (μ) is now ~0!"} &nbsp;|&nbsp; μ = {mean.toFixed(3)}
+                  </Typography>
+                </Paper>
+              </Box>
             </Box>
           </Paper>
 

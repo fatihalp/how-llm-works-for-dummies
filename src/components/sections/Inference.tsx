@@ -45,17 +45,21 @@ export default function Inference({ slide = 0 }: { slide?: number }) {
   const [trainingText, setTrainingText] = useState("");
   const [isEditingText, setIsEditingText] = useState(false);
   const [hasUserEdited, setHasUserEdited] = useState(false);
+  const [retrainFlash, setRetrainFlash] = useState(false);
 
   // Temperature slider state
   const [temperature, setTemperature] = useState(1.0);
+  const [tempFlash, setTempFlash] = useState<string | null>(null);
 
   // Selected word for probability lookup visualization
   const [selectedLookupWord, setSelectedLookupWord] = useState("");
+  const [wordChangeKey, setWordChangeKey] = useState(0);
 
   // Generation state
   const [generationPrompt, setGenerationPrompt] = useState("");
   const [generatedTokens, setGeneratedTokens] = useState<string[]>([]);
   const [isAutoGenerating, setIsAutoGenerating] = useState(false);
+  const [genStepCount, setGenStepCount] = useState(0);
 
   // Initialize training text based on locale
   useEffect(() => {
@@ -171,6 +175,7 @@ export default function Inference({ slide = 0 }: { slide?: number }) {
       } else {
         setGeneratedTokens([...generatedTokens, nextToken]);
       }
+      setGenStepCount(s => s + 1);
     } else {
       // Dead-end transition, append a message or stop
       const fallbackWord = vocabulary[Math.floor(Math.random() * vocabulary.length)];
@@ -198,6 +203,7 @@ export default function Inference({ slide = 0 }: { slide?: number }) {
           } else {
             setGeneratedTokens([...generatedTokens, nextToken]);
           }
+          setGenStepCount(s => s + 1);
         } else {
           setIsAutoGenerating(false);
         }
@@ -209,6 +215,7 @@ export default function Inference({ slide = 0 }: { slide?: number }) {
   const resetGeneration = () => {
     setGeneratedTokens([]);
     setIsAutoGenerating(false);
+    setGenStepCount(0);
   };
 
   return (
@@ -244,7 +251,13 @@ export default function Inference({ slide = 0 }: { slide?: number }) {
               <Button
                 variant="outlined"
                 size="small"
-                onClick={() => setIsEditingText(!isEditingText)}
+                onClick={() => {
+                  if (isEditingText) {
+                    setRetrainFlash(true);
+                    setGenStepCount(0);
+                  }
+                  setIsEditingText(!isEditingText);
+                }}
               >
                 {isEditingText 
                   ? (locale === "tr" ? "Eğitimi Tamamla" : "Save & Retrain") 
@@ -252,7 +265,7 @@ export default function Inference({ slide = 0 }: { slide?: number }) {
               </Button>
             </Box>
 
-            {isEditingText ? (
+                {isEditingText ? (
               <TextField
                 multiline
                 fullWidth
@@ -281,6 +294,21 @@ export default function Inference({ slide = 0 }: { slide?: number }) {
               >
                 {trainingText}
               </Typography>
+            )}
+
+            {retrainFlash && (
+              <Box
+                component={motion.div}
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: [0, 1, 0], y: [0, 0, -4] }}
+                transition={{ duration: 1.2 }}
+                onAnimationComplete={() => setRetrainFlash(false)}
+                sx={{ textAlign: "center" }}
+              >
+                <Typography variant="caption" sx={{ color: "primary.light", fontWeight: "bold", fontFamily: "monospace" }}>
+                  ⚡ {locale === "tr" ? "Model yeniden eğitildi!" : "Model retrained!"}
+                </Typography>
+              </Box>
             )}
 
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 3, fontSize: "0.8rem", color: "text.secondary" }}>
@@ -379,7 +407,10 @@ export default function Inference({ slide = 0 }: { slide?: number }) {
                   <Select
                     size="small"
                     value={selectedLookupWord}
-                    onChange={(e) => setSelectedLookupWord(e.target.value)}
+                    onChange={(e) => {
+                      setSelectedLookupWord(e.target.value);
+                      setWordChangeKey(k => k + 1);
+                    }}
                     sx={{ fontFamily: "monospace", minWidth: 100 }}
                   >
                     {vocabulary.map(word => (
@@ -389,30 +420,37 @@ export default function Inference({ slide = 0 }: { slide?: number }) {
                   <Typography variant="caption" sx={{ fontFamily: "monospace" }}>)</Typography>
                 </Box>
 
-                <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }} key={wordChangeKey + "_" + temperature.toFixed(1)}>
                   {transitionProbs.length > 0 ? (
                     transitionProbs.map((item, i) => (
                       <Box key={item.word} sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                         <Typography variant="body2" noWrap sx={{ width: 64, fontFamily: "monospace", color: "text.primary" }}>
                           {item.word}
                         </Typography>
-                        <Box sx={{ flexGrow: 1, height: 12, bgcolor: theme.palette.mode === "dark" ? "grey.950" : "grey.200", borderRadius: 1, overflow: "hidden" }}>
+                        <Box sx={{ flexGrow: 1, height: 16, bgcolor: theme.palette.mode === "dark" ? "grey.950" : "grey.200", borderRadius: 1.5, overflow: "hidden" }}>
                           <Box
                             component={motion.div}
                             initial={{ width: 0 }}
                             animate={{ width: `${item.probability * 100}%` }}
-                            transition={{ type: "spring", stiffness: 100 }}
+                            transition={{ type: "spring", stiffness: 100, damping: 15 }}
                             sx={{
                               height: "100%",
-                              bgcolor: i === 0 ? "primary.main" : "grey.600",
-                              borderRadius: 1
+                              bgcolor: i === 0 ? "primary.main" : "grey.500",
+                              borderRadius: 1.5,
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "flex-end",
+                              px: 0.5,
                             }}
-                          />
+                          >
+                            {item.probability > 0.08 && (
+                              <Typography variant="caption" sx={{ color: i === 0 ? "#fff" : "#fff", fontWeight: "bold", fontSize: "0.55rem" }}>
+                                {(item.probability * 100).toFixed(0)}%
+                              </Typography>
+                            )}
+                          </Box>
                         </Box>
-                        <Typography variant="caption" sx={{ width: 36, textAlign: "right", fontFamily: "monospace", color: "primary.light" }}>
-                          {(item.probability * 100).toFixed(0)}%
-                        </Typography>
-                        <Typography variant="caption" sx={{ width: 28, color: "text.secondary", fontFamily: "monospace" }}>
+                        <Typography variant="caption" sx={{ width: 36, textAlign: "right", fontFamily: "monospace", color: "text.secondary", fontSize: "0.65rem" }}>
                           ({item.rawCount}x)
                         </Typography>
                       </Box>
@@ -439,7 +477,13 @@ export default function Inference({ slide = 0 }: { slide?: number }) {
                     max={2.0}
                     step={0.1}
                     value={temperature}
-                    onChange={(_, val) => setTemperature(val as number)}
+                    onChange={(_, val) => {
+                      const t = val as number;
+                      setTemperature(t);
+                      setTempFlash(t < 0.5 ? "cold" : t > 1.5 ? "hot" : null);
+                      setTimeout(() => setTempFlash(null), 400);
+                    }}
+                    sx={{ "& .MuiSlider-thumb": { transition: "box-shadow 0.15s", boxShadow: tempFlash === "hot" ? "0 0 0 8px rgba(239,68,68,0.3)" : tempFlash === "cold" ? "0 0 0 8px rgba(96,165,250,0.3)" : "none" } }}
                   />
                   <Box sx={{ display: "flex", justifyContent: "space-between", fontSize: "0.7rem", color: "text.secondary" }}>
                     <Typography variant="caption" component="span" sx={{ fontFamily: "monospace" }}>0.1 ({locale === "tr" ? "Robotik" : "Robotic"})</Typography>
@@ -476,11 +520,16 @@ export default function Inference({ slide = 0 }: { slide?: number }) {
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                     <Sparkles style={{ color: "#0071e3", width: 20, height: 20 }} />
                     <Typography sx={{ fontWeight: "bold" }} variant="subtitle2">
-                      {locale === "tr" ? "Cümle Üretim Laboratuvarı" : "Autoregressive Sentence Generator"}
+                      {locale === "tr" ? "Cümle Üretim Laboratuvarı" : "Sentence Generator"}
                     </Typography>
+                    {genStepCount > 0 && (
+                      <Typography variant="caption" sx={{ color: "success.main", fontFamily: "monospace", fontWeight: "bold", fontSize: "0.65rem" }}>
+                        +{genStepCount} {locale === "tr" ? "kelime" : "words"}
+                      </Typography>
+                    )}
                   </Box>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                    <Typography variant="caption" sx={{ color: "text.secondary" }}>{locale === "tr" ? "Başlangıç:" : "Start Word:"}</Typography>
+                    <Typography variant="caption" sx={{ color: "text.secondary" }}>{locale === "tr" ? "Başlangıç:" : "Start:"}</Typography>
                     <Select
                       size="small"
                       value={generationPrompt}
@@ -498,7 +547,10 @@ export default function Inference({ slide = 0 }: { slide?: number }) {
                 </Box>
 
                 {/* Text Screen Display */}
-                <Box 
+                  <Box 
+                  component={isAutoGenerating ? motion.div : Box}
+                  animate={isAutoGenerating ? { borderColor: ["rgba(0,113,227,0.3)", "rgba(52,211,153,0.3)", "rgba(0,113,227,0.3)"] } : undefined}
+                  transition={isAutoGenerating ? { repeat: Infinity, duration: 1.5 } : undefined}
                   sx={{ 
                     bgcolor: theme.palette.mode === "dark" ? "grey.950" : "grey.100", 
                     border: 1, 

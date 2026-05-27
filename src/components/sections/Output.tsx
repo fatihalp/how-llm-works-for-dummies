@@ -21,6 +21,241 @@ const generationStepsTr = [
   { prompt: "Kedi halının üzerine oturdu.", predictions: [{ word: "Orada", prob: 0.35 }, { word: "Çünkü", prob: 0.25 }, { word: "Sonra", prob: 0.15 }, { word: "Hemen", prob: 0.15 }, { word: "Bir", prob: 0.1 }] },
 ];
 
+function InteractiveLoop({ locale, theme }: { locale: string; theme: any }) {
+  const [step, setStep] = useState(0);
+  const [playing, setPlaying] = useState(false);
+
+  useEffect(() => {
+    if (playing && step < 4) {
+      const timer = setTimeout(() => setStep(s => s + 1), 1800);
+      return () => clearTimeout(timer);
+    } else if (step >= 4) {
+      setPlaying(false);
+    }
+  }, [playing, step]);
+
+  const steps = locale === "tr" ? [
+    "Kelimeleri → Modele gönder",
+    "→ Her kelime için bir skor (logit) hesapla",
+    "→ Softmax ile olasılığa çevir",
+    "→ En yüksek olasılıklı kelimeyi seç",
+    "→ Kelimeyi cümlenin sonuna ekle, başa dön!",
+  ] : [
+    "Send tokens → Transformer",
+    "→ Compute logit for each word",
+    "→ Softmax → Probabilities",
+    "→ Pick highest-probability word",
+    "→ Append to input, repeat!",
+  ];
+
+  const stepEmojis = ["📥", "📊", "🎲", "🎯", "🔄"];
+  const stepColors = ["#60a5fa", "#fbbf24", "#34d399", "#f472b6", "#a78bfa"];
+
+  const candidateWords = locale === "tr"
+    ? ["oturdu", "uzandı", "yattı", "zıpladı", "uyudu"]
+    : ["mat", "floor", "roof", "bed", "chair"];
+
+  const fakeLogits = [3.5, 1.2, -0.5, -1.8, 0.3];
+  const fakeProbs = fakeLogits.map(v => Math.exp(v)).map(e => e / fakeLogits.reduce((s, v) => s + Math.exp(v), 0));
+
+  const currentWord = candidateWords[0];
+
+  const togglePlay = () => {
+    if (step >= 4) setStep(0);
+    setPlaying(p => !p);
+  };
+
+  return (
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+      {/* Steps */}
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+        {steps.map((s, i) => {
+          const isActive = i === step;
+          const isPast = i < step;
+          return (
+            <Box
+              key={i}
+              component={motion.div}
+              initial={false}
+              animate={{ opacity: isPast ? 0.5 : 1, x: isActive ? 8 : 0 }}
+              transition={{ duration: 0.3 }}
+              onClick={() => { setStep(i); setPlaying(false); }}
+              sx={{
+                display: "flex", alignItems: "center", gap: 1.5, cursor: "pointer",
+                p: 1, borderRadius: 1.5,
+                bgcolor: isActive ? `${stepColors[i]}18` : "transparent",
+              }}
+            >
+              <Box sx={{
+                width: 28, height: 28, borderRadius: "50%", flexShrink: 0,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: "0.75rem",
+                bgcolor: isActive ? stepColors[i] : (isPast ? "grey.600" : "grey.800"),
+                color: isActive ? "#000" : (isPast ? "#fff" : "grey.500"),
+                fontWeight: "bold",
+                transition: "all 0.3s",
+              }}>
+                {stepEmojis[i]}
+              </Box>
+              <Typography variant="body2" sx={{ flex: 1, color: isActive ? stepColors[i] : "text.primary", fontWeight: isActive ? "bold" : "normal", fontSize: "0.85rem" }}>
+                {s}
+              </Typography>
+              {isActive && (
+                <motion.div animate={{ opacity: [1, 0] }} transition={{ repeat: Infinity, duration: 0.6 }} style={{ color: stepColors[i], fontSize: "0.6rem" }}>
+                  ●
+                </motion.div>
+              )}
+              {isPast && <Typography variant="caption" sx={{ color: "success.main" }}>✓</Typography>}
+            </Box>
+          );
+        })}
+      </Box>
+
+      {/* Visual data display based on current step */}
+      <Box sx={{ mt: 1, p: 2, bgcolor: theme.palette.mode === "dark" ? "grey.950" : "grey.100", borderRadius: 2, minHeight: 60 }}>
+        {step === 0 && (
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, flexWrap: "wrap", justifyContent: "center" }}>
+            {(["Kedi", "halının", "üzerine"]).map((w, i) => (
+              <Box key={i} sx={{ px: 1.5, py: 0.75, borderRadius: 1.5, bgcolor: `${["#60a5fa", "#34d399", "#fbbf24"][i]}22`, border: 1, borderColor: ["#60a5fa", "#34d399", "#fbbf24"][i], fontFamily: "monospace", fontSize: "0.85rem", color: ["#60a5fa", "#34d399", "#fbbf24"][i] }}>
+                {w}
+              </Box>
+            ))}
+            <Box sx={{ px: 1.5, py: 0.75, borderRadius: 1.5, border: "2px dashed", borderColor: "grey.600", fontFamily: "monospace", fontSize: "0.85rem", color: "grey.500" }}>
+              ???
+            </Box>
+            <Typography variant="h5" sx={{ color: "grey.500" }}>→</Typography>
+            <Box sx={{ px: 1.5, py: 0.75, borderRadius: 1.5, bgcolor: "rgba(96,165,250,0.15)", border: 1, borderColor: "#60a5fa", fontFamily: "monospace", fontSize: "0.85rem", color: "#60a5fa", fontWeight: "bold" }}>
+              {locale === "tr" ? "Transformer" : "Transformer"}
+            </Box>
+          </Box>
+        )}
+        {step === 1 && (
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+            <Typography variant="caption" sx={{ color: "grey.500", textAlign: "center", fontSize: "0.6rem" }}>
+              {locale === "tr" ? "Sözlükteki her kelime bir puan (logit) alır:" : "Every word in the vocabulary gets a score (logit):"}
+            </Typography>
+            {candidateWords.map((w, i) => (
+              <Box key={w} sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <Typography variant="caption" sx={{ width: 50, fontFamily: "monospace", color: "text.secondary", fontSize: "0.7rem" }}>
+                  {w}
+                </Typography>
+                <Box sx={{ flex: 1, height: 14, bgcolor: theme.palette.mode === "dark" ? "grey.800" : "grey.300", borderRadius: 1, overflow: "hidden" }}>
+                  <Box sx={{ width: `${Math.max(5, (fakeLogits[i] + 2) / 7 * 100)}%`, height: "100%", bgcolor: fakeLogits[i] > 0 ? "#60a5fa" : "#ef4444", borderRadius: 1 }} />
+                </Box>
+                <Typography variant="caption" sx={{ width: 36, fontFamily: "monospace", color: fakeLogits[i] > 0 ? "#60a5fa" : "#ef4444", textAlign: "right", fontSize: "0.65rem" }}>
+                  {fakeLogits[i] > 0 ? "+" : ""}{fakeLogits[i].toFixed(1)}
+                </Typography>
+              </Box>
+            ))}
+          </Box>
+        )}
+        {step === 2 && (
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+            <Typography variant="caption" sx={{ color: "grey.500", textAlign: "center", fontSize: "0.6rem" }}>
+              {locale === "tr" ? "Softmax puanları yüzdelere dönüştürür:" : "Softmax turns scores into percentages:"}
+            </Typography>
+            {candidateWords.map((w, i) => (
+              <Box key={w} sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <Typography variant="caption" sx={{ width: 50, fontFamily: "monospace", color: "text.secondary", fontSize: "0.7rem" }}>
+                  {w}
+                </Typography>
+                <Box sx={{ flex: 1, height: 18, bgcolor: theme.palette.mode === "dark" ? "grey.800" : "grey.300", borderRadius: 1.5, overflow: "hidden" }}>
+                  <Box
+                    component={motion.div}
+                    initial={{ width: 0 }}
+                    animate={{ width: `${fakeProbs[i] * 100}%` }}
+                    transition={{ duration: 0.5, delay: i * 0.1 }}
+                    sx={{ height: "100%", bgcolor: i === 0 ? "#34d399" : "grey.500", borderRadius: 1.5, display: "flex", alignItems: "center", justifyContent: "flex-end", px: 0.5 }}
+                  >
+                    {fakeProbs[i] > 0.08 && (
+                      <Typography variant="caption" sx={{ color: i === 0 ? "#000" : "#fff", fontWeight: "bold", fontSize: "0.55rem" }}>
+                        {(fakeProbs[i] * 100).toFixed(0)}%
+                      </Typography>
+                    )}
+                  </Box>
+                </Box>
+              </Box>
+            ))}
+          </Box>
+        )}
+        {step === 3 && (
+          <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 1.5 }}>
+            <Typography variant="caption" sx={{ color: "grey.500", fontSize: "0.6rem" }}>
+              {locale === "tr" ? "En yüksek olasılıklı kelime seçilir:" : "Highest-probability word is picked:"}
+            </Typography>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+              {candidateWords.map((w, i) => (
+                <Box key={w} sx={{ px: 1.5, py: 0.75, borderRadius: 1.5, border: 1, borderColor: i === 0 ? "#34d399" : "grey.700", bgcolor: i === 0 ? "rgba(52,211,153,0.2)" : "transparent", fontFamily: "monospace", color: i === 0 ? "#34d399" : "grey.500", fontWeight: i === 0 ? "bold" : "normal", fontSize: "0.85rem" }}>
+                  {w}
+                </Box>
+              ))}
+            </Box>
+            <Box
+              component={motion.div}
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring" }}
+              sx={{ mt: 0.5, px: 2, py: 0.5, borderRadius: 1.5, bgcolor: "rgba(52,211,153,0.15)", border: 1, borderColor: "#34d399" }}
+            >
+              <Typography variant="body2" sx={{ color: "#34d399", fontWeight: "bold" }}>
+                🏆 {currentWord}!
+              </Typography>
+            </Box>
+          </Box>
+        )}
+        {step === 4 && (
+          <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 1.5 }}>
+            <Typography variant="caption" sx={{ color: "grey.500", fontSize: "0.6rem" }}>
+              {locale === "tr" ? "Kelime eklendi, döngü başa dönüyor!" : "Word appended, loop restarts!"}
+            </Typography>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1, flexWrap: "wrap", justifyContent: "center" }}>
+              {(["Kedi", "halının", "üzerine"]).map((w, i) => (
+                <Box key={i} sx={{ px: 1.5, py: 0.75, borderRadius: 1.5, bgcolor: `${["#60a5fa", "#34d399", "#fbbf24"][i]}22`, border: 1, borderColor: ["#60a5fa", "#34d399", "#fbbf24"][i], fontFamily: "monospace", fontSize: "0.85rem", color: ["#60a5fa", "#34d399", "#fbbf24"][i] }}>
+                  {w}
+                </Box>
+              ))}
+              <Box component={motion.div} initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring" }} sx={{ px: 1.5, py: 0.75, borderRadius: 1.5, bgcolor: "rgba(52,211,153,0.2)", border: 2, borderColor: "#34d399", fontFamily: "monospace", fontSize: "0.85rem", color: "#34d399", fontWeight: "bold" }}>
+                {currentWord}
+              </Box>
+              <Typography variant="h5" sx={{ color: "success.main" }}>✨</Typography>
+            </Box>
+            <Typography variant="caption" sx={{ color: "grey.500", mt: 1, fontStyle: "italic", textAlign: "center", fontSize: "0.65rem" }}>
+              {locale === "tr"
+                ? "Şimdi bu yeni cümleyle model tekrar çalıştırılır ve bir sonraki kelime tahmin edilir!"
+                : "Now the model runs again with the new sentence to predict the next word!"}
+            </Typography>
+          </Box>
+        )}
+      </Box>
+
+      {/* Controls */}
+      <Box sx={{ display: "flex", justifyContent: "center", gap: 1.5, mt: 1 }}>
+        <Button
+          variant={playing ? "outlined" : "contained"}
+          size="small"
+          onClick={togglePlay}
+          sx={{ px: 3, minWidth: 120 }}
+        >
+          {playing
+            ? "⏸ " + (locale === "tr" ? "Durdur" : "Pause")
+            : (step >= 4
+              ? "🔄 " + (locale === "tr" ? "Baştan Başlat" : "Replay")
+              : "▶ " + (locale === "tr" ? "Adım Adım İzle" : "Step Through"))}
+        </Button>
+        <Button
+          variant="text"
+          size="small"
+          onClick={() => { setStep(0); setPlaying(false); }}
+          disabled={step === 0 && !playing}
+          sx={{ px: 2 }}
+        >
+          {locale === "tr" ? "Sıfırla" : "Reset"}
+        </Button>
+      </Box>
+    </Box>
+  );
+}
+
 export default function Output({ slide = 0 }: { slide?: number }) {
   const { t, locale } = useI18n();
   const theme = useTheme();
@@ -157,40 +392,7 @@ export default function Output({ slide = 0 }: { slide?: number }) {
             <Typography variant="subtitle1" sx={{ mb: 3, color: "text.secondary", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: "bold" }}>
               {t("out.loop")}
             </Typography>
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-              {[t("out.loop.1"), t("out.loop.2"), t("out.loop.3"), t("out.loop.4"), t("out.loop.5")].map((stepText, i) => (
-                <Box
-                  key={stepText}
-                  component={motion.div}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.1 }}
-                  sx={{ display: "flex", alignItems: "center", gap: 2 }}
-                >
-                  <Box
-                    sx={{
-                      width: 28,
-                      height: 28,
-                      borderRadius: "50%",
-                      bgcolor: "rgba(0, 113, 227, 0.15)",
-                      border: 1,
-                      borderColor: "rgba(0, 113, 227, 0.3)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: "0.75rem",
-                      color: "primary.light",
-                      fontWeight: "bold"
-                    }}
-                  >
-                    {i + 1}
-                  </Box>
-                  <Typography variant="body2" sx={{ color: "text.primary" }}>
-                    {stepText}
-                  </Typography>
-                </Box>
-              ))}
-            </Box>
+            <InteractiveLoop locale={locale} theme={theme} />
           </Paper>
 
           <Paper component={motion.div} variants={item} sx={{ p: 3 }}>

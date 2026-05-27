@@ -117,7 +117,6 @@ export const translations: Record<Locale, Record<string, string>> = {
     "tf.inside": "Inside One Transformer Block:",
     "tf.input": "Input (token embeddings)",
     "tf.output": "Output → Next Block",
-    "tf.skip": "skip connection",
     "tf.stacking": "Stacking Blocks (depth = power)",
     "tf.layers": "Layers:",
     "tf.models": "GPT-2: <span class=\"text-white\">12 layers</span> | GPT-3: <span class=\"text-white\">96 layers</span> | LLaMA-70B: <span class=\"text-white\">80 layers</span>",
@@ -330,7 +329,6 @@ export const translations: Record<Locale, Record<string, string>> = {
     "tf.inside": "Bir Transformer Bloğunun İç Yolculuğu:",
     "tf.input": "Giriş (Kelime Vektörleri)",
     "tf.output": "Çıktı → Sıradaki Bloğa Gönder",
-    "tf.skip": "kısayol (atlama bağlantısı)",
     "tf.stacking": "Blokları Üst Üste Koymak (Derinlik = Güç)",
     "tf.layers": "Katman Sayısı:",
     "tf.models": "GPT-2: <span class=\"text-white\">12 blok</span> | GPT-3: <span class=\"text-white\">96 blok</span> | LLaMA-70B: <span class=\"text-white\">80 blok</span>",
@@ -341,7 +339,7 @@ export const translations: Record<Locale, Record<string, string>> = {
 
     // Softmax
     "sm.title": "Karar Verme (Softmax) — Oylama Zamanı",
-    "sm.desc.0": "Modelin kafasında her kelimenin bir puanı (logit) var. Ama bu puanlar ham haldeyken anlamlı değil. <strong>Softmax</strong> bu puanları alır ve 'şu kelime %70, bu kelime %20, öteki %10 olasılık' diyerek anlamlı bir sıralamaya dönüştürür. Sonuçta tüm olasılıkların toplamı %100 olur.",
+    "sm.desc.0": "Model her kelimeye bir puan verir (yüksek puan = daha uygun). <strong>Softmax</strong> bu puanları alır ve yüzdeye (%) çevirir. Yüksek puan alan kelime %90 olurken, düşük puan alan %2'de kalır. Tüm yüzdelerin toplamı her zaman %100 olur. Bu sayede model 'en uygun kelime bu!' diyebilir.",
     "sm.desc.1": "Softmax, modelin kararsız kalmasını engeller. Mesela 'kedi' 3.5 puan, 'köpek' 1.0 puan aldıysa, Softmax bunu 'kedi %92, köpek %8' gibi net bir tercihe dönüştürür. En yüksek puan, olasılığı domine eder!",
     "sm.desc.2": "Aşağıdaki sürgüleri oynatarak ham puanların nasıl olasılığa dönüştüğünü canlı izle! Kaydırdıkça en yüksek puanlı kelimenin olasılığının nasıl şiştiğine dikkat et.",
     "sm.interactive": "Etkileşimli: Sürgüleri kaydır, olasılıkların nasıl değiştiğini izle:",
