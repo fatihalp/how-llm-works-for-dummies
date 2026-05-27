@@ -1,6 +1,7 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react";
+import { createContext, useContext, useCallback, ReactNode } from "react";
+import { useParams, useRouter } from "next/navigation";
 import { translations, Locale } from "./translations";
 
 type I18nContextType = {
@@ -12,19 +13,15 @@ type I18nContextType = {
 const I18nContext = createContext<I18nContextType | null>(null);
 
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocale] = useState<Locale>("en");
+  const params = useParams();
+  const router = useRouter();
+  
+  // Read locale from URL parameter dynamic route [locale]
+  const locale: Locale = (params?.locale as Locale) === "tr" ? "tr" : "en";
 
-  // Auto-detect browser language on mount safely
-  useEffect(() => {
-    if (typeof window !== "undefined" && window.navigator) {
-      const browserLang = window.navigator.language || (window.navigator as any).userLanguage || "";
-      if (browserLang.toLowerCase().startsWith("tr")) {
-        setLocale("tr");
-      } else {
-        setLocale("en");
-      }
-    }
-  }, []);
+  const setLocale = useCallback((newLocale: Locale) => {
+    router.push(`/${newLocale}`);
+  }, [router]);
 
   const t = useCallback(
     (key: string, params?: Record<string, string | number>) => {

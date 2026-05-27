@@ -86,5 +86,8 @@ body {
 ::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 10px; border: 2px solid var(--background); }
 ::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-thumb-hover); }
 
-/* Smooth scroll */
-html { scroll-behavior: smooth; }
+/* Smooth scroll and root size scaling */
+html {
+  scroll-behavior: smooth;
+  font-size: 19px;
+}
