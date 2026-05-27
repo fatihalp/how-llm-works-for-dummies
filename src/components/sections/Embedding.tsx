@@ -23,10 +23,19 @@ function getBarColor(value: number) {
   return "bg-red-400";
 }
 
+const wordTranslations: Record<string, Record<string, string>> = {
+  tr: { king: "kral", queen: "kraliçe", man: "erkek", woman: "kadın", cat: "kedi" },
+  en: { king: "king", queen: "queen", man: "man", woman: "woman", cat: "cat" },
+};
+
 export default function Embedding() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [selected, setSelected] = useState("king");
   const vec = embeddings[selected];
+  
+  const displayWord = (w: string) => {
+    return wordTranslations[locale]?.[w] || w;
+  };
 
   return (
     <motion.div variants={container} initial="hidden" animate="show" className="space-y-8">
@@ -44,17 +53,17 @@ export default function Embedding() {
               onClick={() => setSelected(w)}
               className={`px-4 py-2 rounded-lg font-mono text-sm transition-all ${
                 selected === w
-                  ? "bg-purple-600 text-white shadow-lg shadow-purple-600/30"
+                  ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20"
                   : "bg-slate-700 text-slate-300 hover:bg-slate-600"
               }`}
             >
-              {w}
+              {displayWord(w)}
             </button>
           ))}
         </div>
 
         <div className="space-y-2">
-          <p className="text-xs text-slate-400 font-mono mb-2">embedding[&quot;{selected}&quot;] = [{vec.map(v => v.toFixed(2)).join(", ")}]</p>
+          <p className="text-xs text-slate-400 font-mono mb-2">embedding[&quot;{displayWord(selected)}&quot;] = [{vec.map(v => v.toFixed(2)).join(", ")}]</p>
           <div className="flex items-end gap-1 h-32">
             {vec.map((v, i) => (
               <motion.div
@@ -100,8 +109,8 @@ export default function Embedding() {
                 className="absolute"
                 style={{ left: `${x}%`, top: `${y}%`, transform: "translate(-50%, -50%)" }}
               >
-                <div className={`w-3 h-3 rounded-full ${selected === word ? "bg-purple-400 ring-2 ring-purple-300" : "bg-blue-400"}`} />
-                <span className="absolute top-4 left-1/2 -translate-x-1/2 text-xs text-slate-300 whitespace-nowrap">{word}</span>
+                <div className={`w-3 h-3 rounded-full ${selected === word ? "bg-blue-500 ring-2 ring-blue-300" : "bg-blue-400"}`} />
+                <span className="absolute top-4 left-1/2 -translate-x-1/2 text-xs text-slate-300 whitespace-nowrap">{displayWord(word)}</span>
               </motion.div>
             );
           })}

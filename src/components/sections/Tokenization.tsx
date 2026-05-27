@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useI18n } from "@/i18n/context";
 
@@ -44,8 +44,16 @@ function simpleTokenize(text: string): string[] {
 }
 
 export default function Tokenization() {
-  const { t } = useI18n();
-  const [inputText, setInputText] = useState("The cat sat on the mat.");
+  const { t, locale } = useI18n();
+  const [inputText, setInputText] = useState("");
+  const [hasUserEdited, setHasUserEdited] = useState(false);
+
+  useEffect(() => {
+    if (!hasUserEdited) {
+      setInputText(locale === "tr" ? "Kedi halının üzerine oturdu." : "The cat sat on the mat.");
+    }
+  }, [locale, hasUserEdited]);
+
   const tokens = simpleTokenize(inputText);
 
   return (
@@ -60,7 +68,10 @@ export default function Tokenization() {
         <input
           type="text"
           value={inputText}
-          onChange={(e) => setInputText(e.target.value)}
+          onChange={(e) => {
+            setInputText(e.target.value);
+            setHasUserEdited(true);
+          }}
           className="w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-3 text-white font-mono text-sm focus:outline-none focus:border-purple-500 transition"
           placeholder={t("token.placeholder")}
         />
